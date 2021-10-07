@@ -66,42 +66,42 @@
  </tr>
  <tr>
     <td>Use of version control tools</td>
-    <td></td>
+    <td>Two</td>
     <td></td>
  </tr>
   <tr>
     <td>Use of style checkers</td>
-    <td></td>
+    <td>Zero</td>
     <td></td>
  </tr>
  <tr>
     <td>Use of code formatters</td>
-    <td></td>
+    <td>Zero</td>
     <td></td>
  </tr>
  <tr>
     <td>Use of syntax checkers.</td>
-    <td></td>
-    <td></td>
+    <td>Two</td>
+    <td>Via Python IDE</td>
  </tr>
  <tr>
     <td>Use of code coverage</td>
-    <td></td>
+    <td>Zero</td>
     <td></td>
  </tr>
  <tr>
     <td>other automated analysis tools</td>
-    <td></td>
+    <td>Zero</td>
     <td></td>
  </tr>
  <tr>
     <td>test cases exist</td>
-    <td></td>
+    <td>One</td>
     <td></td>
  </tr>
   <tr>
     <td>test cases are routinely executed</td>
-    <td></td>
+    <td>One</td>
     <td></td>
  </tr>
   <tr>
@@ -121,7 +121,7 @@
  </tr>
  <tr>
     <td>test cases:.a large proportion of the issues related to handling failing cases</td>
-    <td></td>
+    <td>One</td>
     <td></td>
  </tr>
  <tr>
