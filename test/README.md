@@ -56,3 +56,42 @@ Once tests are completed, this README will include links per each category/test.
     1. bot, no test 
 23. addUserHistory 
     1. testable
+
+
+## Testable functions
+For each function, what method(s) use it, to better understand the scope. 
+In the future, these should be kept in mind when creating integration tests.
+
+1. validate_entered_amount
+   1. post_amount_input
+   2. edit_cost
+2. write_json
+   1. edit_cost
+   2. command_delete
+   3. post_amount_input
+   4. edit_date
+   5. edit_cat
+3. add_user_record
+   1. post_amount_input
+4. read_json
+   1. command_add
+   2. command_delete
+   3. command_display
+   4. edit1
+   5. show_history
+   6. start_and_menu_command
+5. calculate_spendings
+   1. display_total
+6. getUserHistory
+   1. command_display
+   2. display_total
+   3. edit2
+   4. edit3
+   5. edit_cat
+   6. edit_cost
+   7. edit_date
+   8. show_history
+7. deleteHistory
+   1. command_delete
+8. addUserHistory
+   1. **no usages found**
