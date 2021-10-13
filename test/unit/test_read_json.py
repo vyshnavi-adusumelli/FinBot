@@ -22,7 +22,6 @@ class TestReadJson(unittest.TestCase):
         if os.path.exists('expense_record.json'):
             os.replace("expense_record.json", "test.json")
 
-
     def tearDown(self) -> None:
         """
         if the expense record was moved, restore it
@@ -52,7 +51,7 @@ class TestReadJson(unittest.TestCase):
         expected_1 = {"1": ["Test1"]}
         # move the test_1.json to expected_list.json
         assert not os.path.exists("expense_record.json")
-        copyfile("data/test_1.json", "expense_record.json")
+        copyfile("test/data/test_1.json", "expense_record.json")
 
         # call the read_json
         read_json()
@@ -66,7 +65,7 @@ class TestReadJson(unittest.TestCase):
         expected_2 = {"1": ["Test1", "Test2"]}
         # move the test_1.json to expected_list.json
         assert not os.path.exists("expense_record.json")
-        copyfile("data/test_2.json", "expense_record.json")
+        copyfile("test/data/test_2.json", "expense_record.json")
 
         # call the read_json
         read_json()
@@ -80,7 +79,7 @@ class TestReadJson(unittest.TestCase):
 
         # move the test_1.json to expected_list.json
         assert not os.path.exists("expense_record.json")
-        copyfile("data/test_3.json", "expense_record.json")
+        copyfile("test/data/test_3.json", "expense_record.json")
 
         # call the read_json
         read_json()

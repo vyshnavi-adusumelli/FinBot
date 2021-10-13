@@ -62,7 +62,7 @@ Once tests are completed, this README will include links per each category/test.
 For each function, what method(s) use it, to better understand the scope. 
 In the future, these should be kept in mind when creating integration tests.
 
-1. [validate_entered_amount](test/unit/test_validate_entered_amount.py)
+1. [validate_entered_amount](unit/test_validate_entered_amount.py)
    1. post_amount_input
    2. edit_cost
 2. write_json
@@ -71,18 +71,18 @@ In the future, these should be kept in mind when creating integration tests.
    3. post_amount_input
    4. edit_date
    5. edit_cat
-3. [add_user_record](test/unit/test_add_user_record.py)
+3. [add_user_record](unit/test_add_user_record.py)
    1. post_amount_input
-4. [read_json](test/unit/test_read_json.py)
+4. [read_json](unit/test_read_json.py)
    1. command_add
    2. command_delete
    3. command_display
    4. edit1
    5. show_history
    6. start_and_menu_command
-5. [calculate_spendings](test/unit/test_calculate_spendings.py)
+5. [calculate_spendings](unit/test_calculate_spendings.py)
    1. display_total
-6. [get_user_history](test/unit/test_get_user_history.py)
+6. [get_user_history](unit/test_get_user_history.py)
    1. command_display
    2. display_total
    3. edit2
