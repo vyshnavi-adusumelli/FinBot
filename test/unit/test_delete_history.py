@@ -1,3 +1,7 @@
+"""
+Test for the deleteHistory function
+"""
+
 import unittest
 
 import code.code
@@ -62,24 +66,3 @@ class TestDeleteHistory(unittest.TestCase):
         deleteHistory("2")
         assert "2" not in code.code.user_list
         assert code.code.user_list == {}
-
-    #
-    # def test_calculate_multiple_row(self):
-    #     """
-    #     Given multiple purchases in same category,
-    #     it should sum them
-    #     """
-    #     query = ["d,c1,5", "d1,c2,2", "d1,c1,15"]
-    #
-    #     expected_str = "c1 $20.00\nc2 $2.00\n"
-    #     assert calculate_spendings(query) == expected_str
-    #
-    # def test_calculate_spending_multiple_all(self):
-    #     """
-    #     Given multiple categories with multiple spending's,
-    #     should sum per each category
-    #     """
-    #     query = ["d,c1,5", "d1,c2,2", "d1,c1,15", "d1,c2,35"]
-    #
-    #     expected_str = "c1 $20.00\nc2 $37.00\n"
-    #     assert calculate_spendings(query) == expected_str
