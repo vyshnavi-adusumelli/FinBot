@@ -57,7 +57,7 @@ class TestAddUserRecord(unittest.TestCase):
             add_user_record(user, users[user])
         # validating the list
         message = validate_user_list(users)
-        if message is not "":
+        if message != "":
             assert False, message
 
     def test_add_user_record_multiple_record(self):
@@ -73,7 +73,7 @@ class TestAddUserRecord(unittest.TestCase):
 
         # validating the list
         message = validate_user_list(users)
-        if message is not "":
+        if message != "":
             assert False, message
 
     def test_add_user_record_multiple_user(self):
@@ -90,7 +90,7 @@ class TestAddUserRecord(unittest.TestCase):
 
         # validating the list
         message = validate_user_list(users)
-        if message is not "":
+        if message != "":
             assert False, message
 
     def test_add_user_record_multiple_userrecord(self):
@@ -107,7 +107,7 @@ class TestAddUserRecord(unittest.TestCase):
 
         # validating the list
         message = validate_user_list(users)
-        if message is not "":
+        if message != "":
             assert False, message
 
 

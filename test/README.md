@@ -65,7 +65,7 @@ In the future, these should be kept in mind when creating integration tests.
 1. [validate_entered_amount](unit/test_validate_entered_amount.py)
    1. post_amount_input
    2. edit_cost
-2. write_json
+2. [write_json](unit/test_write_json.py)
    1. edit_cost
    2. command_delete
    3. post_amount_input
@@ -91,7 +91,7 @@ In the future, these should be kept in mind when creating integration tests.
    6. edit_cost
    7. edit_date
    8. show_history
-7. [deletHistory](test/unit/test_delete_history.py)
+7. [deleteHistory](test/unit/test_delete_history.py)
    1. command_delete
 8. addUserHistory
    1. **no usages found**
