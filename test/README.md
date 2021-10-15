@@ -58,7 +58,7 @@ Once tests are completed, this README will include links per each category/test.
     1. testable
 
 
-## Testable functions
+## Testable functions - Unit Tests
 For each function, what method(s) use it, to better understand the scope. 
 In the future, these should be kept in mind when creating integration tests.
 
@@ -95,3 +95,38 @@ In the future, these should be kept in mind when creating integration tests.
    1. command_delete
 8. addUserHistory
    1. **no usages found**
+
+
+## Testable functions - bot test
+
+
+1. [start_and_menu_command](test/bot/test_start_and_menu.py)
+   1. bot, as of now basic test to just see if message handlers are created
+2. command_add 
+   1. bot, no test 
+3. [show_history](test/bot/test_history.py) 
+   1. bot, as of now basic test to just see if message handlers are created
+      1. test with history, message handler is created
+      2. test without history, no message handler created
+4. post_category_selection 
+   1. bot, no test 
+5. post_amount_input 
+   1. bot, no input 
+6. edit1 
+   1. bot, no test 
+7. edit2 
+   1. bot, no test 
+8. edit3 
+   1. bot, no test 
+9. edit_date 
+   1. bot, no test 
+10. edit_cat 
+    1. bot, no test 
+11. edit_cost 
+    1. bot, no test 
+12. command_display 
+    1. bot, no test
+13. display_total 
+    1. bot, no test 
+14. command_delete 
+    1. bot, no test 

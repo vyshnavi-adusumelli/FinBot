@@ -20,4 +20,4 @@ class BotTest(unittest.TestCase):
         self.bot = code.code.bot
 
     def tearDown(self) -> None:
-        self.bot.process_new_messages([create_text_message("nonsense")])
+        self.bot.process_new_messages([create_text_message("clear_text")])
