@@ -54,7 +54,9 @@ class TestAddUserRecord(unittest.TestCase):
         # adding one user
         users = {"1": ["TestRecordOne"]}
         for user in users:
-            add_user_record(user, users[user])
+            # for each record to add
+            for record in users[user]:
+                add_user_record(user, record)
         # validating the list
         message = validate_user_list(users)
         if message != "":
@@ -69,7 +71,9 @@ class TestAddUserRecord(unittest.TestCase):
         # adding one user, but multiple records
         users = {"1": ["TestRecordOne", "TestRecordTwo"]}
         for user in users:
-            add_user_record(user, users[user])
+            # for each record to add
+            for record in users[user]:
+                add_user_record(user, record)
 
         # validating the list
         message = validate_user_list(users)
@@ -85,8 +89,11 @@ class TestAddUserRecord(unittest.TestCase):
         assert len(code.code.user_list) == 0
         # adding all users
         users = {"1": ["TestRecordOne"], "2": ["TestRecordTwo"]}
+
         for user in users:
-            add_user_record(user, users[user])
+            # for each record to add
+            for record in users[user]:
+                add_user_record(user, record)
 
         # validating the list
         message = validate_user_list(users)
@@ -102,8 +109,11 @@ class TestAddUserRecord(unittest.TestCase):
         # adding all users
         users = {"1": ["TestRecordOne", "TestRecordThree"],
                  "2": ["TestRecordTwo", "TestRecordFour"]}
+
         for user in users:
-            add_user_record(user, users[user])
+            # for each record to add
+            for record in users[user]:
+                add_user_record(user, record)
 
         # validating the list
         message = validate_user_list(users)
