@@ -5,6 +5,9 @@ python:
 install:
   - pip install .
   - pip install -r requirements.txt
+  - pip3 install coverage
 script:
   - pytest test/
-
+  - coverage run --source ./code/ -m pytest -v ./test/
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
