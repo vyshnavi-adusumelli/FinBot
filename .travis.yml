@@ -5,6 +5,8 @@ python:
 install:
   - pip install .
   - pip install -r requirements.txt
+  - pip install pylint
+  - pip3 install pytest
 script:
-  - pytest test/
+  - - pylint code/
 
