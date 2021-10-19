@@ -378,10 +378,99 @@ def command_delete(message):
         prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
         prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
         reply_message = bot.reply_to(message, prompt)
-        # bot.register_next_step_handler(reply_message, process_delete_argument)
+        bot.register_next_step_handler(reply_message, process_delete_argument)
     else:
         delete_history_text = "No records there to be deleted. Start adding your expenses to keep track of your spendings!"
         bot.send_message(chat_id, delete_history_text)
+
+
+def process_delete_argument(message):
+    """
+    Handler for delete commend. Given a day/month/or all
+    Displays records to be deleted
+    :param message: the reply message from the delete command
+    :return:
+    """
+    global user_list
+    text = message.text
+    chat_id = message.chat.id
+
+    date = None
+    is_month = False
+    if text.lower() == "all":
+        date = "all"
+    else:
+        # try and parse as Date-Month-Year
+        if validate_date_format(text, dateFormat) is not None:
+            date = validate_date_format(text, dateFormat)
+        # try and parse as Month-Year
+        elif validate_date_format(text, monthFormat) is not None:
+            date = validate_date_format(text, monthFormat)
+            is_month = True
+
+    if date is None:
+        # if none of the formats worked
+        bot.reply_to(message, "Error parsing date")
+    else:
+        # get the records either by given day, month, or all records
+        records_to_delete = get_records_by_date(date, chat_id, is_month)
+        # if none of the records match that day
+        if len(records_to_delete) == 0:
+            bot.reply_to(message, f"No transactions within {text}")
+            return
+        response_str = "Confirm records to delete\n"
+        response_str += "\n".join(records_to_delete)
+
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.add("Yes")
+        markup.add("No")
+        response_str += "\nReply YES or NO"
+        response = bot.reply_to(message, response_str, reply_markup=markup)
+        # bot.register_next_step_handler(response, handle_confirmation, records_to_delete)
+
+
+def validate_date_format(text, date_format):
+    """
+    Given a text, see if it is able to be formatted using the date_format
+    :param text:
+    :param date_format:
+    :return:
+    """
+    date = None
+    # try and parse as Month-Day-Year
+    try:
+        date = datetime.strptime(text, date_format).date()
+    except ValueError:
+        pass
+    return date
+
+
+def get_records_by_date(date: datetime.date, chat_id: int, is_month: bool):
+    """
+    Given a date and chat_id returns all records that match the filter
+    If is_month is true, only matches year and month, not day
+    :param date:
+    :param chat_id:
+    :param is_month:
+    :return:
+    """
+    user_history = getUserHistory(chat_id)
+    if date == "all":
+        return user_history
+    # else filter by date
+    matched_dates = []
+    for record in user_history:
+        record_date = record.split(",")[0]
+        # format it to date and time, then only get the day,month,year
+        record_date = datetime.strptime(record_date, dateFormat + " " + timeFormat).date()
+        if is_month:
+            # strip the date
+            record_date = record_date.replace(day=1)
+            date = date.replace(day=1)
+        # checks if the records are equal/matching
+        if record_date == date:
+            matched_dates.append(record)
+    return matched_dates
 
 def addUserHistory(chat_id, user_record):
 	global user_list
