@@ -353,11 +353,17 @@ def getUserHistory(chat_id):
     return None
 
 
-#function to delete a record
-def deleteHistory(chat_id):
+def deleteHistory(chat_id, records=None):
     global user_list
-    if (str(chat_id) in user_list):
-        del user_list[str(chat_id)]
+    if str(chat_id) in user_list:
+        # if there are specific records to delete
+        # and it is not all records from the user
+        if records is not None and user_list[str(chat_id)] != records:
+            # delete only the records specified
+            for record in records:
+                user_list[str(chat_id)].remove(record)
+        else:
+            del user_list[str(chat_id)]
     return user_list
 
 #handles "/delete" command
@@ -426,7 +432,25 @@ def process_delete_argument(message):
         markup.add("No")
         response_str += "\nReply YES or NO"
         response = bot.reply_to(message, response_str, reply_markup=markup)
-        # bot.register_next_step_handler(response, handle_confirmation, records_to_delete)
+        bot.register_next_step_handler(response, handle_confirmation, records_to_delete)
+
+
+def handle_confirmation(message, records_to_delete):
+    """
+    Given a YES or NO response, deletes the given records
+    :param message:
+    :param records_to_delete:
+    :return:
+    """
+    global user_list
+
+    chat_id = message.chat.id
+    if message.text.lower() == "yes":
+        deleteHistory(chat_id, records_to_delete)
+        write_json(user_list)
+        bot.send_message(message.chat.id, f"Successfully deleted records")
+    else:
+        bot.send_message(message.chat.id, "No records deleted")
 
 
 def validate_date_format(text, date_format):
@@ -480,11 +504,7 @@ def addUserHistory(chat_id, user_record):
 	return user_list
 
 def main():
-    try:
-        bot.polling(none_stop=True)
-    except Exception:
-        time.sleep(3)
-        print("Connection Timeout")
+    bot.polling(none_stop=True)
 
 if __name__ == '__main__':
     main()

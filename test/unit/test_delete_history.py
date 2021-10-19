@@ -66,3 +66,47 @@ class TestDeleteHistory(unittest.TestCase):
         deleteHistory("2")
         assert "2" not in code.code.user_list
         assert code.code.user_list == {}
+
+    def test_delete_one_record(self):
+        """
+        Given there is one user
+        deleting one record from the user
+        should remove it from the user list
+        """
+        # given adding one user
+        starting_list = {"1": ["Test_History", "Test_History_2"]}
+        expected_list = {"1": ["Test_History_2"]}
+        code.code.user_list = starting_list
+        # when another user is passed
+        deleteHistory("1", ["Test_History"])
+        assert "1" in code.code.user_list
+        assert code.code.user_list == expected_list
+
+    def test_delete_multiple_record(self):
+        """
+        Given there is one user
+        deleting one record from the user
+        should remove it from the user list
+        """
+        # given adding one user
+        starting_list = {"1": ["Test_History", "Test_History_2", "Test_History_3"]}
+        expected_list = {"1": ["Test_History_3"]}
+        code.code.user_list = starting_list
+        # when another user is passed
+        deleteHistory("1", ["Test_History_2", "Test_History"])
+        assert "1" in code.code.user_list
+        assert code.code.user_list == expected_list
+
+    def test_delete_all_record(self):
+        """
+        Given there is one user
+        deleting all record from the user
+        should remove it from the user list
+        """
+        # given adding one user
+        starting_list = {"1": ["Test_History", "Test_History_2"]}
+        code.code.user_list = starting_list
+        # when another user is passed
+        deleteHistory("1", ["Test_History", "Test_History_2"])
+        assert "1" not in code.code.user_list
+        assert code.code.user_list == {}
