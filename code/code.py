@@ -363,16 +363,25 @@ def deleteHistory(chat_id):
 #handles "/delete" command
 @bot.message_handler(commands=['delete'])
 def command_delete(message):
+    """
+    Given the delete message, handles deleting records for a user
+    If a user is present, adds a callback
+    :param message: the delete message from the user
+    :return:
+    """
     global user_list
     chat_id = message.chat.id
     read_json()
-    delete_history_text = ""
     if (str(chat_id) in user_list):
-        write_json(deleteHistory(chat_id))
-        delete_history_text = "History has been deleted!"
+        curr_day = datetime.now()
+        prompt = f"Enter the day, month, or All\n"
+        prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
+        prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+        reply_message = bot.reply_to(message, prompt)
+        # bot.register_next_step_handler(reply_message, process_delete_argument)
     else:
         delete_history_text = "No records there to be deleted. Start adding your expenses to keep track of your spendings!"
-    bot.send_message(chat_id, delete_history_text)
+        bot.send_message(chat_id, delete_history_text)
 
 def addUserHistory(chat_id, user_record):
 	global user_list
