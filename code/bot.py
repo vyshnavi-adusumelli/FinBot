@@ -8,6 +8,7 @@ from telebot import types
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import pickle
+
 from user import User
 
 api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
@@ -295,6 +296,96 @@ def edit_cost(message):
         bot.reply_to(message, "The cost is invalid")
         return
 
+
+@bot.message_handler(commands=['delete'])
+def command_delete(message):
+    """
+    Given the delete message, handles deleting records for a user
+    If a user is present, adds a callback
+    :param message: the delete message from the user
+    :return: None
+    """
+    global user_list
+    dateFormat = '%d-%b-%Y'
+    monthFormat = '%b-%Y'
+    chat_id = str(message.chat.id)
+    if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
+        curr_day = datetime.now()
+        prompt = f"Enter the day, month, or All\n"
+        prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
+        prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+        reply_message = bot.reply_to(message, prompt)
+        bot.register_next_step_handler(reply_message, process_delete_argument)
+    else:
+        delete_history_text = "No records to be deleted. Start adding your expenses to keep track of your " \
+                              "spendings! "
+        bot.send_message(chat_id, delete_history_text)
+
+
+def process_delete_argument(message):
+    """
+    Handler for delete commend. Given a day/month/or all
+    Displays records to be deleted
+    :param message: the reply message from the delete command
+    :return:
+    """
+    global user_list
+    dateFormat = '%d-%b-%Y'
+    timeFormat = '%H:%M'
+    monthFormat = '%b-%Y'
+    text = message.text
+    chat_id = str(message.chat.id)
+
+    date = None
+    is_month = False
+    if text.lower() == "all":
+        date = "all"
+    else:
+        # try and parse as Date-Month-Year
+        if user_list[chat_id].validate_date_format(text, dateFormat) is not None:
+            date = user_list[chat_id].validate_date_format(text, dateFormat)
+        # try and parse as Month-Year
+        elif user_list[chat_id].validate_date_format(text, monthFormat) is not None:
+            date = user_list[chat_id].validate_date_format(text, monthFormat)
+            is_month = True
+
+    if date is None:
+        # if none of the formats worked
+        bot.reply_to(message, "Error parsing date")
+    else:
+        # get the records either by given day, month, or all records
+        records_to_delete = user_list[chat_id].get_records_by_date(date, chat_id, is_month)
+        # if none of the records match that day
+        if len(records_to_delete) == 0:
+            bot.reply_to(message, f"No transactions within {text}")
+            return
+        response_str = "Confirm records to delete\n"
+        response_str += user_list[chat_id].display_transaction(records_to_delete)
+
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.add("Yes")
+        markup.add("No")
+        response_str += "\nReply YES or NO"
+        response = bot.reply_to(message, response_str, reply_markup=markup)
+        bot.register_next_step_handler(response, handle_confirmation, records_to_delete)
+
+
+def handle_confirmation(message, records_to_delete):
+    """
+    Given a YES or NO response, deletes the given records
+    :param message:
+    :param records_to_delete:
+    :return:
+    """
+    global user_list
+
+    chat_id = str(message.chat.id)
+    if message.text.lower() == "yes":
+        user_list[chat_id].deleteHistory(records_to_delete)
+        user_list[chat_id].save_user(chat_id)
+        bot.send_message(message.chat.id, f"Successfully deleted records")
+    else:
+        bot.send_message(message.chat.id, "No records deleted")
 
 
 def get_users():

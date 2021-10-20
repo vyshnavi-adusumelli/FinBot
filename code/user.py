@@ -3,6 +3,8 @@ import pickle
 import re
 from datetime import datetime
 
+
+
 class User:
 
     def __init__(self, userid):
@@ -12,6 +14,8 @@ class User:
         self.transactions = {}
         self.edit_transactions = {}
         self.edit_category = {}
+
+
         for category in self.spend_categories:
             self.transactions[category] = []
 
@@ -56,3 +60,92 @@ class User:
                 transaction["Value"] = new_value
                 break
         return transaction
+
+    def deleteHistory(self, records=None):
+        # if there are specific records to delete
+        # and it is not all records from the user
+        if records is not None and self.transactions != records:
+            # delete only the records specified
+            for category in records:
+                for record in records[record]:
+                    self.transactions[category].remove(record)
+        else:
+            self.transactions = {}
+            for category in self.spend_categories:
+                self.transactions[category] = []
+
+
+    def validate_date_format(self, text, date_format):
+        """
+        Given a text, see if it is able to be formatted using the date_format
+        :param text:
+        :param date_format:
+        :return:
+        """
+        date = None
+        # try and parse as Month-Day-Year
+        try:
+            date = datetime.strptime(text, date_format).date()
+        except ValueError:
+            pass
+        return date
+
+    def get_records_by_date(self, date: datetime.date, chat_id: int, is_month: bool):
+        """
+        Given a date and chat_id returns all records that match the filter
+        If is_month is true, only matches year and month, not day
+        :param date:
+        :param chat_id:
+        :param is_month:
+        :return:
+        """
+        dateFormat = '%d-%b-%Y'
+        timeFormat = '%H:%M'
+        monthFormat = '%b-%Y'
+        user_history = self.transactions
+        if date == "all":
+            return user_history
+        # else filter by date
+        matched_dates = {}
+        for category in self.spend_categories:
+            matched_dates[category] = []
+        for category in user_history:
+            for record in user_history[category]:
+                record_date = record['Date']
+                # format it to date and time, then only get the day,month,year
+                record_date = record_date.date()
+                if is_month:
+                    # strip the date
+                    record_date = record_date.replace(day=1)
+                    date = date.replace(day=1)
+                # checks if the records are equal/matching
+                if record_date == date:
+                    matched_dates[category].append(record)
+        return matched_dates
+
+
+    def display_transaction(self, transaction):
+        """
+        Helper function to turn the dictionary into a user-readable string
+        :param transaction: dictionary of category, then items
+        :return:
+        """
+        final_str = ""
+
+        for category in transaction:
+            for record in transaction[category]:
+                final_str += f'{category}, {record["Date"].date()}, {record["Value"]}\n'
+
+        return final_str
+
+    def get_number_of_transactions(self):
+        """
+        Helper function to get the total number of transactions across
+        all categories
+        :return: number of transactions
+        """
+        total = 0
+        for category in self.transactions:
+            for record in self.transactions[category]:
+                total += len(record)
+        return total
