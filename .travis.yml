@@ -9,11 +9,9 @@ install:
   - pip3 install pytest
   - pip install coverage
 script:
-  - pytest test
   - pylint code/
   - coverage run --source ./code/ -m pytest -v ./test/
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 env:
-  - API_TOKEN=2066517791:AAG6PBo0PXnxeK4gHLsMWlR8Zbf_j8jtd9w
-  - CHAT_ID=2097361428
+  - API_TOKEN=2066517791:AAG6PBo0PXnxeK4gHLsMWlR8Zbf_j8jtd9w CHAT_ID=2097361428
