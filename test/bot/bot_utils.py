@@ -9,7 +9,7 @@ sys.path.append("../../..")
 import unittest
 from datetime import datetime
 from importlib import reload
-import code
+import code.bot
 from code.user import User
 from code.bot import bot
 
@@ -30,7 +30,8 @@ class BotTest(unittest.TestCase):
         self.bot = code.bot.bot
 
     def tearDown(self) -> None:
-        self.bot.send_message(CHAT_ID, "TEST")
+        pass
+        # self.bot.send_message(CHAT_ID, "TEST")
 
     @staticmethod
     def create_record(amount: float) -> None:
@@ -39,12 +40,13 @@ class BotTest(unittest.TestCase):
         :param amount: amount to add
         :return: None
         """
-        user = User(1)
-        dateFormat = "%d-%m-%Y"
-        lst = [datetime.now().today().strftime(dateFormat), user.spend_categories[0], amount]
-        expected_dict = {str(CHAT_ID): lst}
-        with open('expense_record.json', 'w', encoding='utf-8') as json_file:
-            json.dump(expected_dict, json_file, ensure_ascii=False, indent=4)
+        user = User(CHAT_ID)
+        user.add_transaction(datetime.now(), user.spend_categories[0], amount, CHAT_ID)
+        user.save_user(CHAT_ID)
+        code.bot.user_list = code.bot.get_users()
+        assert CHAT_ID in code.bot.user_list.keys()
+
+
 
     @staticmethod
     def create_text_message(text: str) -> types.Message:
