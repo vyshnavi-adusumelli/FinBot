@@ -1,3 +1,8 @@
+"""
+
+File contains bot message handlers and their associated functions
+
+"""
 import json
 import logging
 import re
@@ -29,6 +34,12 @@ option = {}
 
 @bot.message_handler(commands=['start', 'menu'])
 def start_and_menu_command(m):
+    """
+    Handles the commands 'start' and 'menu'. Sends an intro text.
+
+    :param m: telebot.types.Message object representing the message object
+    :type: object
+    """
     chat_id = m.chat.id
     text_intro = "Welcome to TrackMyDollar - a simple solution to track your expenses! \nHere is a list of available " \
                  "commands, please enter a command of your choice so that I can assist you further: \n\n "
@@ -40,6 +51,12 @@ def start_and_menu_command(m):
 
 @bot.message_handler(commands=['add'])
 def command_add(message):
+    """
+    Handles the command 'add'. Lists the categories from which the user can select.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     global user_list
     global option
     chat_id = str(message.chat.id)
@@ -56,6 +73,12 @@ def command_add(message):
 
 
 def post_category_selection(message):
+    """
+    Receives the category selected by the user and then asks for the amount spend. If an invalid category is given, an error message is displayed followed by command list.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     global option
     global user_list
     try:
@@ -81,6 +104,12 @@ def post_category_selection(message):
 
 
 def post_amount_input(message):
+    """
+    Receives the amount entered by the user and then adds to transaction history.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     global user_list
     global option
     dateFormat = '%d-%m-%Y'
@@ -105,6 +134,12 @@ def post_amount_input(message):
 
 @bot.message_handler(commands=['history'])
 def show_history(message):
+    """
+    Handles the command 'history'. Lists the transaction history.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     try:
         chat_id = str(message.chat.id)
         spend_total_str = ""
@@ -127,6 +162,12 @@ def show_history(message):
 
 @bot.message_handler(commands=['display'])
 def command_display(message):
+    """
+    Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is transaction history, user is given choices of time periods to choose from.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     global user_list
     global option
     chat_id = str(message.chat.id)
@@ -142,6 +183,12 @@ def command_display(message):
 
 
 def display_total(message):
+    """
+    Receives the input time period and displays the transaction summary for the corresponding time period.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     dateFormat = '%d/%m/%Y'
     timeFormat = '%H:%M'
     monthFormat = '%m/%Y'
@@ -193,6 +240,12 @@ def display_total(message):
 
 @bot.message_handler(commands=['edit'])
 def edit1(message):
+    """
+    Handles the command 'edit' and then displays a message explaining the format.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     global user_list
     global option
     chat_id = str(message.chat.id)
@@ -207,6 +260,12 @@ def edit1(message):
 
 
 def edit2(message):
+    """
+    Receives the transaction to be edited, and then asks the user what they want to edit.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     chat_id = str(message.chat.id)
     info = message.text
     date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
@@ -234,6 +293,12 @@ def edit2(message):
 
 
 def edit3(message):
+    """
+    Receives the user's input corresponding to what they want to edit, and then transfers the execution to the function according to the choice.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     choice1 = message.text
     chat_id = str(message.chat.id)
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -254,6 +319,12 @@ def edit3(message):
 
 
 def edit_date(message):
+    """
+    This function is called if the user chooses to edit the date of a transaction. This function receives the new date and updates the transaction.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     new_date = message.text
     chat_id = str(message.chat.id)
     date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
@@ -269,6 +340,12 @@ def edit_date(message):
 
 
 def edit_cat(message):
+    """
+    This function is called if the user chooses to edit the category of a transaction. This function receives the new category and updates the transaction.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     chat_id = str(message.chat.id)
     new_category = message.text.strip()
     updated_transaction = user_list[chat_id].edit_transaction_category(new_category)
@@ -282,6 +359,12 @@ def edit_cat(message):
 
 
 def edit_cost(message):
+    """
+    This function is called if the user chooses to edit the amount of a transaction. This function receives the new amount and updates the transaction.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    """
     new_cost = message.text
     chat_id = str(message.chat.id)
     new_cost = user_list[chat_id].validate_entered_amount(new_cost)
@@ -300,10 +383,10 @@ def edit_cost(message):
 @bot.message_handler(commands=['delete'])
 def command_delete(message):
     """
-    Given the delete message, handles deleting records for a user
-    If a user is present, adds a callback
-    :param message: the delete message from the user
-    :return: None
+    Handles the 'delete' command. The user is then given 3 options, 'day', 'month' and 'All" from which they can choose.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
     """
     global user_list
     dateFormat = '%d-%b-%Y'
@@ -324,10 +407,10 @@ def command_delete(message):
 
 def process_delete_argument(message):
     """
-    Handler for delete commend. Given a day/month/or all
-    Displays records to be deleted
-    :param message: the reply message from the delete command
-    :return:
+    This function receives the choice that user inputs for delete and asks for a confirmation.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
     """
     global user_list
     dateFormat = '%d-%b-%Y'
@@ -372,10 +455,10 @@ def process_delete_argument(message):
 
 def handle_confirmation(message, records_to_delete):
     """
-    Given a YES or NO response, deletes the given records
-    :param message:
-    :param records_to_delete:
-    :return:
+    Deletes the transactions in the previously chosen time period if the user chooses 'yes'.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
     """
     global user_list
 
