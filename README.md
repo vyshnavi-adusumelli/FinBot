@@ -12,6 +12,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5542548.svg)](https://doi.org/10.5281/zenodo.5542548)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![Build Status](https://app.travis-ci.com/deekay2310/MyDollarBot.svg?branch=main)](https://app.travis-ci.com/github/deekay2310/MyDollarBot)
+[![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
 
 <hr>
 
