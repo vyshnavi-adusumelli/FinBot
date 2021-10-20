@@ -13,5 +13,3 @@ script:
   - coverage run --source ./code/ -m pytest -v ./test/
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-
-
