@@ -1,7 +1,10 @@
 """
 Unit test to check all commands are present
 """
-import code.code as code_lib
+# import sys
+# sys.path.append("../../..")
+# import src
+import code.bot as code_lib
 from bot_utils import BotTest
 
 
@@ -32,8 +35,8 @@ class TestCommands(BotTest):
                           'commands': ["start", "menu"]},
                          {'function': code_lib.command_add, 'commands': ["add"]},
                          {'function': code_lib.show_history, 'commands': ["history"]},
-                         {'function': code_lib.edit1, 'commands': ["edit"]},
                          {'function': code_lib.command_display, 'commands': ["display"]},
+                         {'function': code_lib.edit1, 'commands': ["edit"]},
                          {'function': code_lib.command_delete, 'commands': ["delete"]}]
         # assert each function and command matches
         for actual_func, expected_func in zip(bot_commands, actual_titles):

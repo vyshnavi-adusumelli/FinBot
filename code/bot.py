@@ -9,9 +9,9 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import pickle
 
-from user import User
+from code.user import User
 
-api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
+api_token = os.environ['API_TOKEN']#"2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',

@@ -4,17 +4,20 @@ Util functions for bot tests
 
 import json
 import os
+import sys
+sys.path.append("../../..")
 import unittest
 from datetime import datetime
 from importlib import reload
 import code
-from code.code import dateFormat, spend_categories
+from code.user import User
+from code.bot import bot
 
 from telebot import types
 
 
 CHAT_ID = os.environ['CHAT_ID'] if 'CHAT_ID' in os.environ else 1
-TOKEN = os.environ['TOKEN'] if 'TOKEN' in os.environ else 0
+TOKEN = os.environ['API_TOKEN'] if 'API_TOKEN' in os.environ else 0
 
 
 class BotTest(unittest.TestCase):
@@ -23,17 +26,7 @@ class BotTest(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        reload(code.code)
-        self.bot = code.code.bot
-        if os.path.exists('expense_record.json'):
-            os.replace("expense_record.json", "test.json")
-
-    def tearDown(self) -> None:
-        # if we moved over files due to tests, remove it
-        if os.path.exists('expense_record.json'):
-            os.remove("expense_record.json")
-        if os.path.exists('test.json'):
-            os.replace("test.json", "expense_record.json")
+        self.bot = code.bot.bot
 
     @staticmethod
     def create_record(amount: float) -> None:
@@ -42,7 +35,9 @@ class BotTest(unittest.TestCase):
         :param amount: amount to add
         :return: None
         """
-        lst = [datetime.now().today().strftime(dateFormat), spend_categories[0], amount]
+        user = User(1)
+        dateFormat = "%d-%m-%Y"
+        lst = [datetime.now().today().strftime(dateFormat), user.spend_categories[0], amount]
         expected_dict = {str(CHAT_ID): lst}
         with open('expense_record.json', 'w', encoding='utf-8') as json_file:
             json.dump(expected_dict, json_file, ensure_ascii=False, indent=4)
