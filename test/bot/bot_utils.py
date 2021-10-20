@@ -26,7 +26,11 @@ class BotTest(unittest.TestCase):
     """
 
     def setUp(self) -> None:
+        reload(code.bot)
         self.bot = code.bot.bot
+
+    def tearDown(self) -> None:
+        self.bot.send_message(CHAT_ID, "TEST")
 
     @staticmethod
     def create_record(amount: float) -> None:
