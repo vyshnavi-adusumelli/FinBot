@@ -9,9 +9,9 @@ sys.path.append("../../..")
 import unittest
 from datetime import datetime
 from importlib import reload
-import src.bot
-from src.user import User
-from src.bot import bot
+import code.bot
+from code.user import User
+from code.bot import bot
 
 from telebot import types
 
@@ -30,8 +30,8 @@ class BotTest(unittest.TestCase):
         Creates a new user and ensures no data was left over
         :return: None
         """
-        reload(src.bot)
-        self.bot = src.bot.bot
+        reload(code.bot)
+        self.bot = code.bot.bot
         self.user = User(str(CHAT_ID))
         # reloads the user list
         # src.bot.user_list = src.bot.get_users()
@@ -56,8 +56,8 @@ class BotTest(unittest.TestCase):
         """
         self.user.add_transaction(datetime.now(), self.user.spend_categories[0], amount, CHAT_ID)
         self.user.save_user(CHAT_ID)
-        src.bot.user_list = src.bot.get_users()
-        assert CHAT_ID in src.bot.user_list.keys()
+        code.bot.user_list = code.bot.get_users()
+        assert CHAT_ID in code.bot.user_list.keys()
 
 
 
