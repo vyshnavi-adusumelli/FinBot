@@ -402,5 +402,9 @@ def get_users():
 
 
 if __name__ == '__main__':
-    user_list = get_users()
-    bot.polling(none_stop=True)
+    try:
+        user_list = get_users()
+        bot.polling(none_stop=True)
+    except Exception:
+        time.sleep(3)
+        print("Connection Timeout")
