@@ -9,9 +9,9 @@ sys.path.append("../../..")
 import unittest
 from datetime import datetime
 from importlib import reload
-import code.bot
-from code.user import User
-from code.bot import bot
+import src.bot
+from src.user import User
+from src.bot import bot
 
 from telebot import types
 
@@ -26,30 +26,42 @@ class BotTest(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        reload(code.bot)
-        self.bot = code.bot.bot
+        """
+        Creates a new user and ensures no data was left over
+        :return: None
+        """
+        reload(src.bot)
+        self.bot = src.bot.bot
+        self.user = User(str(CHAT_ID))
+        # reloads the user list
+        # src.bot.user_list = src.bot.get_users()
+        # asserts the current user has no data
+        assert self.user.get_number_of_transactions() == 0
 
     def tearDown(self) -> None:
-        pass
-        # self.bot.send_message(CHAT_ID, "TEST")
+        # Clearing out next step handlers
+        self.bot.next_step_backend.handlers = {}
+        path = f"../data/{CHAT_ID}.pickle"
+        if os.path.isfile(path):
+            os.remove(path)
+        # verifying all old info was deleted
+        self.user = User(CHAT_ID)
+        assert self.user.get_number_of_transactions() == 0
 
-    @staticmethod
-    def create_record(amount: float) -> None:
+    def create_record(self, amount: float) -> None:
         """
         Creates a record in the user list for the given amount
         :param amount: amount to add
         :return: None
         """
-        user = User(CHAT_ID)
-        user.add_transaction(datetime.now(), user.spend_categories[0], amount, CHAT_ID)
-        user.save_user(CHAT_ID)
-        code.bot.user_list = code.bot.get_users()
-        assert CHAT_ID in code.bot.user_list.keys()
+        self.user.add_transaction(datetime.now(), self.user.spend_categories[0], amount, CHAT_ID)
+        self.user.save_user(CHAT_ID)
+        src.bot.user_list = src.bot.get_users()
+        assert CHAT_ID in src.bot.user_list.keys()
 
 
 
-    @staticmethod
-    def create_text_message(text: str) -> types.Message:
+    def create_text_message(self, text: str) -> types.Message:
         """
         Creates a text message
         :param text: text of the message

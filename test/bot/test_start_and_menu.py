@@ -15,7 +15,7 @@ class TestStartMenu(BotTest):
         """
         Tests the start command
         """
-        msg = BotTest.create_text_message('/start')
+        msg = self.create_text_message('/start')
         self.bot.process_new_messages([msg])
         time.sleep(3)
 
@@ -32,7 +32,7 @@ class TestStartMenu(BotTest):
         """
         Tests the menu command
         """
-        msg = BotTest.create_text_message('/menu')
+        msg = self.create_text_message('/menu')
         self.bot.process_new_messages([msg])
         time.sleep(3)
         # assert the message was sent, and text was not changed

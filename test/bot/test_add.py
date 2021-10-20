@@ -15,7 +15,7 @@ class TestAdd(BotTest):
         """
         Tests the add command
         """
-        msg = BotTest.create_text_message('/add')
+        msg = self.create_text_message('/add')
         self.bot.process_new_messages([msg])
         time.sleep(3)
 
