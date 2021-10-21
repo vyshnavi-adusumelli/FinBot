@@ -18,7 +18,8 @@ commands = {
     'display': 'Show sum of expenditure for the current day/month',
     'history': 'Display spending history',
     'delete': 'Clear/Erase all your records',
-    'edit': 'Edit/Change spending details'
+    'edit': 'Edit/Change spending details',
+    'budget': 'Set budget for the month'
 }
 
 bot = telebot.TeleBot(api_token)
@@ -37,6 +38,29 @@ def start_and_menu_command(m):
         text_intro += commands[c] + "\n\n"
     bot.send_message(chat_id, text_intro)
 
+@bot.message_handler(commands=['budget'])
+def command_budget(message):
+    global user_list
+    global option
+    chat_id = str(message.chat.id)
+    option.pop(chat_id, None)
+    if chat_id not in user_list.keys():
+        user_list[chat_id] = User(chat_id)
+    message = bot.send_message(chat_id, 'How much is your monthly budget? \n(Enter numeric values only)')
+    bot.register_next_step_handler(message, post_budget_input)
+
+def post_budget_input(message):
+    try:
+        chat_id = str(message.chat.id)
+        amount_entered = message.text
+        amount_value = user_list[chat_id].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  # cannot be $0 spending
+            raise Exception("Budget amount has to be a non-zero number.")
+        user_list[chat_id].add_monthly_budget(amount_value, chat_id)
+        bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(str(amount_value)))
+
+    except Exception as e:
+        bot.reply_to(message, 'Oh no. ' + str(e))
 
 @bot.message_handler(commands=['add'])
 def command_add(message):
@@ -96,8 +120,18 @@ def post_amount_input(message):
         date_of_entry = datetime.today()
         date_str, category_str, amount_str = str(date_of_entry), str(option[chat_id]), str(amount_value)
         user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
-        bot.send_message(chat_id, 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
-            amount_str, category_str, date_str))
+        total_value = user_list[chat_id].monthly_total()
+        add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
+            amount_str, category_str, date_str, total_value)
+
+        if total_value > user_list[chat_id].monthly_budget:
+            bot.send_message(chat_id, text="*You have gone over the monthly budget*",
+                             parse_mode='Markdown')
+        elif total_value >= 0.8*user_list[chat_id].monthly_budget:
+            bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
+                         parse_mode='Markdown')
+        bot.send_message(chat_id, add_message)
+
 
     except Exception as e:
         bot.reply_to(message, 'Oh no. ' + str(e))
@@ -176,6 +210,8 @@ def display_total(message):
             query = datetime.today()
             query_result = ""
             total_value = 0
+            # print(user_list[chat_id].keys())
+            budget_value = user_list[chat_id].monthly_budget
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%m") == query.strftime("%m"):
@@ -185,7 +221,8 @@ def display_total(message):
             total_spendings = "Here are your total spendings for the Month {} \n".format(
                 datetime.today().strftime("%m"))
             total_spendings += query_result
-            total_spendings += "Total Value {}".format(total_value)
+            total_spendings += "Total Value {}\n".format(total_value)
+            total_spendings += "Budget for the month {}".format(str(budget_value))
             bot.send_message(chat_id, total_spendings)
     except Exception as e:
         bot.reply_to(message, str(e))

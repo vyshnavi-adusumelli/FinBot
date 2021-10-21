@@ -14,6 +14,7 @@ class User:
         self.transactions = {}
         self.edit_transactions = {}
         self.edit_category = {}
+        self.monthly_budget = 0
 
 
         for category in self.spend_categories:
@@ -149,3 +150,27 @@ class User:
             for record in self.transactions[category]:
                 total += len(record)
         return total
+
+    def add_monthly_budget(self, amount, userid):
+        """
+        Given amount and userid, edit the budget of the current user
+        :param amount: budget amount
+        :param userid:
+        :return:
+        """
+        self.monthly_budget = amount
+        self.save_user(userid)
+
+    def monthly_total(self):
+        """
+        Calculates total expenditure for the current month
+        :return: total amount
+        """
+        date = datetime.today()
+        query_result = ""
+        total_value = 0
+        for category in self.spend_categories:
+            for transaction in self.transactions[category]:
+                if transaction["Date"].strftime("%m") == date.strftime("%m"):
+                    total_value += transaction["Value"]
+        return total_value
