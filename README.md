@@ -13,6 +13,8 @@
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![Build Status](https://app.travis-ci.com/mtkumar123/MyDollarBot.svg?branch=main)](https://app.travis-ci.com/mtkumar123/MyDollarBot)
 [![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
+![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
 
 <hr>
 
