@@ -238,6 +238,7 @@ class User:
     def add_monthly_budget(self, amount, userid):
         """
         Given amount and userid, edit the budget of the current user
+
         :param amount: budget amount
         :param userid:
         :return:
@@ -248,7 +249,8 @@ class User:
     def monthly_total(self):
         """
         Calculates total expenditure for the current month
-        :return: total amount
+
+        :return: total amount for the month
         """
         date = datetime.today()
         query_result = ""

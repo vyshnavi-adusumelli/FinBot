@@ -52,6 +52,13 @@ def start_and_menu_command(m):
 
 @bot.message_handler(commands=['budget'])
 def command_budget(message):
+    """
+    Handles the commands 'budget'. Gets input for budget and stores it.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
     global user_list
     global option
     chat_id = str(message.chat.id)
@@ -62,6 +69,13 @@ def command_budget(message):
     bot.register_next_step_handler(message, post_budget_input)
 
 def post_budget_input(message):
+    """
+    Receives the amount entered by the user and then adds it to the monthly_budget attribute of the user object. An error is displayed if the entered amount is zero. Else, a message is shown that the budget has been added.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
     try:
         chat_id = str(message.chat.id)
         amount_entered = message.text
