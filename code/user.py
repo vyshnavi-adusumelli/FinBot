@@ -1,7 +1,5 @@
 """
-
 File contains functions that stores and retreives data from the .pickle file and also handles validations
-
 """
 import os
 import pickle
@@ -28,7 +26,6 @@ class User:
     def save_user(self, userid):
         """
         Saves data to .pickle file
-
         :param userid: userid string which is also the file name
         :type: string
         :return: None
@@ -40,7 +37,6 @@ class User:
     def validate_entered_amount(self, amount_entered):
         """
         Validates that an entered amount is greater than zero and also rounds it to 2 decimal places.
-
         :param amount_entered: entered amount
         :type: float
         :return: rounded amount if valid, else 0.
@@ -57,7 +53,6 @@ class User:
     def add_transaction(self, date, category, value, userid):
         """
         Stores the transaction to file.
-
         :param date: date string of the transaction
         :type: string
         :param category: category of the transaction
@@ -74,7 +69,6 @@ class User:
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
         Assigns the transaction and category to be edited.
-
         :param existing_transaction: the transaction which the user chose to edit
         :type: string
         :param edit_category: the existing category of the transaction
@@ -88,7 +82,6 @@ class User:
     def edit_transaction_date(self, new_date):
         """
         Returns the edited transaction with the new date.
-
         :param new_date: the new date of the transaction.
         :type: string
         :return: transactions dict
@@ -105,7 +98,6 @@ class User:
     def edit_transaction_category(self, new_category):
         """
         Updates the edited transaction with the new category.
-
         :param new_category: the new category of the transaction.
         :type: string
         :return: True
@@ -118,7 +110,6 @@ class User:
     def edit_transaction_value(self, new_value):
         """
         Returns the edited transaction with the new value.
-
         :param new_value: the new value of the transaction.
         :type: string
         :return: transactions dict
@@ -134,7 +125,6 @@ class User:
     def deleteHistory(self, records=None):
         """
         Deletes transactions
-
         :param records: list of records to delete.
         :type: array
         :return: None
@@ -231,14 +221,12 @@ class User:
         """
         total = 0
         for category in self.transactions:
-            for record in self.transactions[category]:
-                total += 1
+            total += len(self.transactions[category])
         return total
 
     def add_monthly_budget(self, amount, userid):
         """
         Given amount and userid, edit the budget of the current user
-
         :param amount: budget amount
         :param userid:
         :return:
@@ -249,7 +237,6 @@ class User:
     def monthly_total(self):
         """
         Calculates total expenditure for the current month
-
         :return: total amount for the month
         """
         date = datetime.today()
