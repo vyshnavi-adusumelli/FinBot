@@ -63,6 +63,7 @@ class BotTest(unittest.TestCase):
 
 
 
+
     def create_text_message(self, text: str) -> types.Message:
         """
         Creates a text message
@@ -70,5 +71,5 @@ class BotTest(unittest.TestCase):
         :return: The created message to be sent
         """
         params = {'text': text}
-        chat = types.User(CHAT_ID, False, 'test')
+        chat = types.User(int(CHAT_ID), False, 'test')
         return types.Message(1, None, None, chat, 'text', params, "")

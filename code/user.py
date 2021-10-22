@@ -1,3 +1,8 @@
+"""
+
+File contains functions that stores and retreives data from the .pickle file and also handles validations
+
+"""
 import os
 import pickle
 import re
@@ -14,17 +19,33 @@ class User:
         self.transactions = {}
         self.edit_transactions = {}
         self.edit_category = {}
+        self.monthly_budget = 0
 
 
         for category in self.spend_categories:
             self.transactions[category] = []
 
     def save_user(self, userid):
+        """
+        Saves data to .pickle file
+
+        :param userid: userid string which is also the file name
+        :type: string
+        :return: None
+        """
         data_dir = "../data"
         with open("{}/{}.pickle".format(data_dir, userid), "wb") as f:
             pickle.dump(self, f)
 
     def validate_entered_amount(self, amount_entered):
+        """
+        Validates that an entered amount is greater than zero and also rounds it to 2 decimal places.
+
+        :param amount_entered: entered amount
+        :type: float
+        :return: rounded amount if valid, else 0.
+        :rtype: float
+        """
         if 0 < len(amount_entered) <= 15:
             if amount_entered.isdigit:
                 if re.match("^[0-9]*\\.?[0-9]*$", amount_entered):
@@ -34,14 +55,46 @@ class User:
         return 0
 
     def add_transaction(self, date, category, value, userid):
+        """
+        Stores the transaction to file.
+
+        :param date: date string of the transaction
+        :type: string
+        :param category: category of the transaction
+        :type: string
+        :param value: amount of the transaction
+        :type: string
+        :param userid: userid string which is also the file name
+        :type: string
+        :return: None
+        """
         self.transactions[category].append({"Date": date, "Value": value})
         self.save_user(userid)
 
     def store_edit_transaction(self, existing_transaction, edit_category):
+        """
+        Assigns the transaction and category to be edited.
+
+        :param existing_transaction: the transaction which the user chose to edit
+        :type: string
+        :param edit_category: the existing category of the transaction
+        :type: string
+        :return: None
+        """
+
         self.edit_transactions = existing_transaction
         self.edit_category = edit_category
 
     def edit_transaction_date(self, new_date):
+        """
+        Returns the edited transaction with the new date.
+
+        :param new_date: the new date of the transaction.
+        :type: string
+        :return: transactions dict
+        :rtype: dict
+        """
+
         new_date_object = datetime.strptime(new_date, "%d/%m/%Y")
         for transaction in self.transactions[self.edit_category]:
             if transaction == self.edit_transactions:
@@ -50,11 +103,28 @@ class User:
         return transaction
 
     def edit_transaction_category(self, new_category):
+        """
+        Updates the edited transaction with the new category.
+
+        :param new_category: the new category of the transaction.
+        :type: string
+        :return: True
+        :rtype: bool
+        """
         self.transactions[self.edit_category].remove(self.edit_transactions)
         self.transactions[new_category].append(self.edit_transactions)
         return True
 
     def edit_transaction_value(self, new_value):
+        """
+        Returns the edited transaction with the new value.
+
+        :param new_value: the new value of the transaction.
+        :type: string
+        :return: transactions dict
+        :rtype: dict
+        """
+
         for transaction in self.transactions[self.edit_category]:
             if transaction == self.edit_transactions:
                 transaction["Value"] = new_value
@@ -62,6 +132,14 @@ class User:
         return transaction
 
     def deleteHistory(self, records=None):
+        """
+        Deletes transactions
+
+        :param records: list of records to delete.
+        :type: array
+        :return: None
+        """
+
         # if there are specific records to delete
         # and it is not all records from the user
         if records is not None and self.transactions != records:
@@ -77,10 +155,13 @@ class User:
 
     def validate_date_format(self, text, date_format):
         """
-        Given a text, see if it is able to be formatted using the date_format
-        :param text:
-        :param date_format:
-        :return:
+        Converts the inputted date to the inputted date format
+        :param text has the date which is to be converted
+        :type: string
+        :param date_format has the format to which the conversion should be done
+        :type: string
+        :return: date, contains the formatted date
+        :rtype: datetime.dateime
         """
         date = None
         # try and parse as Month-Day-Year
@@ -94,10 +175,12 @@ class User:
         """
         Given a date and chat_id returns all records that match the filter
         If is_month is true, only matches year and month, not day
-        :param date:
-        :param chat_id:
-        :param is_month:
-        :return:
+        :param date: date for filtering records
+        :type: datetime.date
+        :param is_month: this parameter is true if records for a month are taken
+        :type: bool
+        :return: matched_dates which is the array of records for that day or month
+        :rtype: array
         """
         dateFormat = '%d-%b-%Y'
         timeFormat = '%H:%M'
@@ -127,8 +210,9 @@ class User:
     def display_transaction(self, transaction):
         """
         Helper function to turn the dictionary into a user-readable string
-        :param transaction: dictionary of category, then items
-        :return:
+        :param transaction: dictionary of category, and each value is a dictionary of transactions of that category
+        :return: final_str, which is the transactions stringifies
+        :rtype: string
         """
         final_str = ""
 
@@ -143,9 +227,36 @@ class User:
         Helper function to get the total number of transactions across
         all categories
         :return: number of transactions
+        :rtype: int
         """
         total = 0
         for category in self.transactions:
             for record in self.transactions[category]:
-                total += len(record)
+                total += 1
         return total
+
+    def add_monthly_budget(self, amount, userid):
+        """
+        Given amount and userid, edit the budget of the current user
+
+        :param amount: budget amount
+        :param userid:
+        :return:
+        """
+        self.monthly_budget = amount
+        self.save_user(userid)
+
+    def monthly_total(self):
+        """
+        Calculates total expenditure for the current month
+
+        :return: total amount for the month
+        """
+        date = datetime.today()
+        query_result = ""
+        total_value = 0
+        for category in self.spend_categories:
+            for transaction in self.transactions[category]:
+                if transaction["Date"].strftime("%m") == date.strftime("%m"):
+                    total_value += transaction["Value"]
+        return total_value

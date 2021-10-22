@@ -19,7 +19,7 @@ class TestCommands(BotTest):
         :return:
         """
         bot_commands = self.bot.message_handlers
-        number_of_commands = 6
+        number_of_commands = 7
         # assert there is the right number of commands
         assert len(bot_commands) == number_of_commands
 
@@ -33,6 +33,7 @@ class TestCommands(BotTest):
         # dictionary of functions and commands to trigger the function
         actual_titles = [{'function': code_lib.start_and_menu_command,
                           'commands': ["start", "menu"]},
+                         {'function': code_lib.command_budget, 'commands': ["budget"]},
                          {'function': code_lib.command_add, 'commands': ["add"]},
                          {'function': code_lib.show_history, 'commands': ["history"]},
                          {'function': code_lib.command_display, 'commands': ["display"]},
