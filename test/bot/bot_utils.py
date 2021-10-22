@@ -30,6 +30,7 @@ class BotTest(unittest.TestCase):
         Creates a new user and ensures no data was left over
         :return: None
         """
+        os.chdir("test/bot")
         reload(code.bot)
         self.bot = code.bot.bot
         self.user = User(str(CHAT_ID))
@@ -47,6 +48,7 @@ class BotTest(unittest.TestCase):
         # verifying all old info was deleted
         self.user = User(CHAT_ID)
         assert self.user.get_number_of_transactions() == 0
+        os.chdir("../..")
 
     def create_record(self, amount: float) -> None:
         """
