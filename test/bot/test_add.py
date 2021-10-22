@@ -24,7 +24,7 @@ class TestAdd(BotTest):
         assert msg.text == '/add'
         # there should be a next step handler
         assert len(self.bot.next_step_backend.handlers) == 1, \
-            "For the /add command, there should not be a next step"
+            "For the /add command, there should be a next step"
         # there should not be any exceptions
         assert self.bot.worker_pool.exception_info is None
 
