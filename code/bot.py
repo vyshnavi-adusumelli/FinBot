@@ -225,7 +225,7 @@ def command_display(message):
     global user_list
     global option
     chat_id = str(message.chat.id)
-    if len(user_list[chat_id].transactions) == 0:
+    if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
         bot.send_message(chat_id, "Oops! Looks like you do not have any spending records!")
     else:
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
