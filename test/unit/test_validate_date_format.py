@@ -43,4 +43,3 @@ class TestValidateDateFormat(BaseCase):
         monthFormat = '%b-%Y'
         validated_m_y = self.user.validate_date_format(date.strftime(dateFormat), monthFormat)
         assert validated_m_y is None
-

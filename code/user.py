@@ -145,7 +145,7 @@ class User:
         if records is not None and self.transactions != records:
             # delete only the records specified
             for category in records:
-                for record in records[category]:
+                for record in records[record]:
                     self.transactions[category].remove(record)
         else:
             self.transactions = {}
@@ -232,7 +232,7 @@ class User:
         total = 0
         for category in self.transactions:
             for record in self.transactions[category]:
-                total += 1
+                total += len(record)
         return total
 
     def add_monthly_budget(self, amount, userid):

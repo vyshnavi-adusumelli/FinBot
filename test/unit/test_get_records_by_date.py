@@ -2,8 +2,8 @@
 Test for the getRecordsByDate function
 """
 
-import unittest
 from datetime import datetime
+
 from BaseCase import BaseCase
 
 
@@ -15,8 +15,6 @@ class TestGetRecordsByDate(BaseCase):
     By this method, tests have been completed that the user is present
     Thus, there are no tests for user not present
     """
-    # given the user_list
-    expected_list = None
 
     def add_expected(self):
 

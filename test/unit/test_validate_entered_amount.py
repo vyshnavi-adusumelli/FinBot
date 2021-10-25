@@ -3,11 +3,10 @@
 """
 Tests the validate_entered_amount method
 """
-import unittest
-# from src.code import validate_entered_amount
+from BaseCase import BaseCase
 
 
-class TestValidateEnteredAmount(unittest.TestCase):
+class TestValidateEnteredAmount(BaseCase):
     """
     Unit test for get user history
     """
@@ -19,7 +18,7 @@ class TestValidateEnteredAmount(unittest.TestCase):
 
         """
         # given an empty string for amount entered, 0 should be returned
-        assert validate_entered_amount("") == 0
+        assert self.user.validate_entered_amount("") == 0
 
     def test_validate_entered_amount_string(self):
         """
@@ -27,9 +26,9 @@ class TestValidateEnteredAmount(unittest.TestCase):
         0 is returned
         """
         # given an string, 0 should be returned
-        assert validate_entered_amount("Test") == 0
+        assert self.user.validate_entered_amount("Test") == 0
         # given a string that contains numbers and a string
-        assert validate_entered_amount("000t") == 0
+        assert self.user.validate_entered_amount("000t") == 0
 
     def test_validate_entered_amount_nan(self):
         """
@@ -37,13 +36,13 @@ class TestValidateEnteredAmount(unittest.TestCase):
         number, 0 is returned
         """
         # given a negative number
-        assert validate_entered_amount("-1") == 0
+        assert self.user.validate_entered_amount("-1") == 0
         # given 0
-        assert validate_entered_amount("0") == 0
+        assert self.user.validate_entered_amount("0") == 0
         # given a number with dollar sign
-        assert validate_entered_amount("$10") == 0
+        assert self.user.validate_entered_amount("$10") == 0
         # given a number with 2 decimals
-        assert validate_entered_amount("10..0") == 0
+        assert self.user.validate_entered_amount("10..0") == 0
 
     def test_validate_entered_amount_valid(self):
         """
@@ -51,8 +50,8 @@ class TestValidateEnteredAmount(unittest.TestCase):
         number, the number is returned
         """
         # given a positive number
-        assert validate_entered_amount("1") == "1.00"
+        assert self.user.validate_entered_amount("1") == "1.00"
         # given a positive number with decimals
-        assert validate_entered_amount("10.10") == "10.10"
+        assert self.user.validate_entered_amount("10.10") == "10.10"
         # given a number with 14 digits
-        assert validate_entered_amount("1000000000.00") == "1000000000.00"
+        assert self.user.validate_entered_amount("1000000000.00") == "1000000000.00"

@@ -11,8 +11,6 @@ class TestDeleteHistory(BaseCase):
     Unit test for deleteHistory
     """
 
-
-
     def test_delete_history_none(self):
         """
         Given no transactions, the list should not change
@@ -60,7 +58,6 @@ class TestDeleteHistory(BaseCase):
         self.user.deleteHistory(transaction)
         assert self.user.get_number_of_transactions() == 1
         assert self.user.transactions[self.user.spend_categories[0]] == [record]
-
 
     def test_delete_multiple_record(self):
         """

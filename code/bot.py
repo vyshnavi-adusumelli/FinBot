@@ -31,7 +31,7 @@ bot = telebot.TeleBot(api_token)
 telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
-day = 1
+
 
 @bot.message_handler(commands=['start', 'menu'])
 def start_and_menu_command(m):
@@ -152,7 +152,7 @@ def post_amount_input(message):
     :type: object
     :return: None
     """
-    global user_list, day
+    global user_list
     global option
     dateFormat = '%d-%m-%Y'
     timeFormat = '%H:%M'
@@ -165,8 +165,6 @@ def post_amount_input(message):
             raise Exception("Spent amount has to be a non-zero number.")
 
         date_of_entry = datetime.today()
-        date_of_entry = date_of_entry.replace(day=day)
-        day += 1
         date_str, category_str, amount_str = str(date_of_entry), str(option[chat_id]), str(amount_value)
         user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
         total_value = user_list[chat_id].monthly_total()
