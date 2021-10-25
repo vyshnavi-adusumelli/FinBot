@@ -1,7 +1,7 @@
 import unittest
 
 import code
-from code.code import add_user_record
+# from src.bot import add_user_record
 
 
 def validate_user_list(users) -> str:

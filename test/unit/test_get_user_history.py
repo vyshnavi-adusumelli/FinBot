@@ -3,8 +3,8 @@ Tests the get_user_history method
 """
 import unittest
 
-import code.code
-from code.code import getUserHistory
+# import src.code
+# from src.code import getUserHistory
 
 
 class TestGetUserHistory(unittest.TestCase):
@@ -14,14 +14,14 @@ class TestGetUserHistory(unittest.TestCase):
 
     def setUp(self) -> None:
         # reset the user list
-        code.code.user_list = {}
+        src.code.user_list = {}
 
     def test_get_user_history_none(self):
         """
         Given there are no users, attempting to get a user
         should return None
         """
-        assert not code.code.user_list
+        assert not src.code.user_list
 
         # asserting getting the user history returns non
         assert getUserHistory(0) is None
@@ -35,11 +35,11 @@ class TestGetUserHistory(unittest.TestCase):
         should return None
         """
         # assert code.code.user_list is  {}
-        code.code.user_list["1"] = ["TestRecordOne"]
+        src.code.user_list["1"] = ["TestRecordOne"]
 
         assert getUserHistory(0) is None
         assert getUserHistory(2) is None
-        code.code.user_list = {}
+        src.code.user_list = {}
 
     def test_get_user_history_valid(self):
         """
@@ -47,15 +47,15 @@ class TestGetUserHistory(unittest.TestCase):
         getting the user history of a present user
         should return the history
         """
-        assert len(code.code.user_list) == 0
-        code.code.user_list["1"] = ["TestRecordOne"]
+        assert len(src.code.user_list) == 0
+        src.code.user_list["1"] = ["TestRecordOne"]
         # getting the user
         assert getUserHistory(1) == ["TestRecordOne"]
         # adding another user
-        code.code.user_list["2"] = ["TestRecordTwo"]
+        src.code.user_list["2"] = ["TestRecordTwo"]
         # getting the user
         assert getUserHistory(2) == ["TestRecordTwo"]
         # appending to user 1
-        code.code.user_list["1"].append("TestRecordThree")
+        src.code.user_list["1"].append("TestRecordThree")
         assert getUserHistory(1) == ["TestRecordOne", "TestRecordThree"]
         assert getUserHistory(2) == ["TestRecordTwo"]

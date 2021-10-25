@@ -6,8 +6,8 @@ import os
 import unittest.mock
 from shutil import copyfile
 
-import code.code
-from code.code import read_json
+# import src.code
+# from src.code import read_json
 
 
 class TestReadJson(unittest.TestCase):
@@ -55,7 +55,7 @@ class TestReadJson(unittest.TestCase):
 
         # call the read_json
         read_json()
-        assert code.code.user_list == expected_1
+        assert src.code.user_list == expected_1
 
     def test_valid_file_2(self):
         """
@@ -69,7 +69,7 @@ class TestReadJson(unittest.TestCase):
 
         # call the read_json
         read_json()
-        assert code.code.user_list == expected_2
+        assert src.code.user_list == expected_2
 
     def test_valid_file_3(self):
         """
@@ -83,4 +83,4 @@ class TestReadJson(unittest.TestCase):
 
         # call the read_json
         read_json()
-        assert code.code.user_list == expected_3
+        assert src.code.user_list == expected_3

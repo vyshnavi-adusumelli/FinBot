@@ -5,8 +5,8 @@ import io
 import json
 import os
 import unittest.mock
-import code.code
-from code.code import write_json
+# import src.code
+# from src.code import write_json
 
 
 class TestWriteJson(unittest.TestCase):
@@ -40,7 +40,7 @@ class TestWriteJson(unittest.TestCase):
         assert not os.path.exists("expense_record.json")
         # calling write_json should not print an error to console
         expected_output = ""
-        write_json(code.code.user_list)
+        write_json(src.code.user_list)
         self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_valid_file_1(self):

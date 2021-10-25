@@ -4,7 +4,7 @@
 Tests the validate_entered_amount method
 """
 import unittest
-from code.code import validate_entered_amount
+# from src.code import validate_entered_amount
 
 
 class TestValidateEnteredAmount(unittest.TestCase):
