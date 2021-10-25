@@ -82,7 +82,7 @@ class TestDeleteHistory(BaseCase):
 
         # delete the last record
         transaction = self.create_transaction()
-        transaction[self.user.spend_categories[0]].append(to_delete)
+        transaction[self.user.spend_categories[0]].append(record)
         self.user.deleteHistory(transaction)
         assert self.user.get_number_of_transactions() == 0
         assert self.user.transactions[self.user.spend_categories[0]] == []
