@@ -14,9 +14,9 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import pickle
 
-from code.user import User
+from user import User
 
-api_token = os.environ['API_TOKEN']#"2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
+api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -328,9 +328,8 @@ def edit2(message):
     """
     chat_id = str(message.chat.id)
     info = message.text
-    date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
     info = info.split(',')
-    info_date = re.search(date_format, info[0].strip())
+    info_date = datetime.strptime(info[0].strip(), "%m/%d/%Y")
     info_category = info[1].strip()
     info_value = info[2].strip()
     if info_date is None:
@@ -343,8 +342,7 @@ def edit2(message):
         markup.add(c)
 
     for transaction in user_list[chat_id].transactions[info_category]:
-        if transaction["Date"].strftime("%d") == info_date.group(1) and transaction["Date"].strftime(
-                "%m") == info_date.group(2) and transaction["Date"].strftime("%Y") == info_date.group(3):
+        if transaction["Date"].date() == info_date.date():
             if str(int(transaction["Value"])) == info_value:
                 user_list[chat_id].store_edit_transaction(transaction, info_category)
                 choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
@@ -367,7 +365,7 @@ def edit3(message):
     for category in user_list[chat_id].spend_categories:
         markup.add(category)
     if choice1 == 'Date':
-        new_date = bot.reply_to(message, "Please enter the new date (in dd/mm/yyyy format)")
+        new_date = bot.reply_to(message, "Please enter the new date (in mm/dd/yyyy format)")
         bot.register_next_step_handler(new_date, edit_date)
 
     if choice1 == 'Category':
@@ -389,12 +387,11 @@ def edit_date(message):
     """
     new_date = message.text
     chat_id = str(message.chat.id)
-    date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
-    user_date = re.search(date_format, new_date)
+    user_date = datetime.strptime(new_date, "%m/%d/%Y")
     if user_date is None:
         bot.reply_to(message, "The date is incorrect")
         return
-    updated_transaction = user_list[chat_id].edit_transaction_date(user_date.group(0))
+    updated_transaction = user_list[chat_id].edit_transaction_date(user_date)
     user_list[chat_id].save_user(chat_id)
     edit_message = "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
         updated_transaction["Date"], updated_transaction["Value"])
