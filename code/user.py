@@ -95,10 +95,9 @@ class User:
         :rtype: dict
         """
 
-        new_date_object = datetime.strptime(new_date, "%d/%m/%Y")
         for transaction in self.transactions[self.edit_category]:
             if transaction == self.edit_transactions:
-                transaction["Date"] = new_date_object
+                transaction["Date"] = new_date
                 break
         return transaction
 
