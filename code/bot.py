@@ -310,8 +310,12 @@ def edit1(message):
     chat_id = str(message.chat.id)
 
     if chat_id in list(user_list.keys()):
-        msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
-                                    "01/03/2021,Transport,25)")
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+        for mode in ["Date", "Category"]:
+            markup.add(mode)
+        msg = bot.reply_to(message, "Please find the transaction you would like to edit either via the date or "
+                                    "category of transaction", reply_markup=markup)
         bot.register_next_step_handler(msg, edit2)
 
     else:
@@ -327,27 +331,43 @@ def edit2(message):
     :return: None
     """
     chat_id = str(message.chat.id)
-    info = message.text
-    info = info.split(',')
-    info_date = datetime.strptime(info[0].strip(), "%m/%d/%Y")
-    info_category = info[1].strip()
-    info_value = info[2].strip()
-    if info_date is None:
-        bot.reply_to(message, "The date is incorrect")
-        return
+    edit_mode = message.text
+    if edit_mode == "Date":
+        msg = bot.send_message("Please enter the date of the transaction you are looking for. Format should be "
+                               "dd/mm/yyyy")
+        bot.register_next_step_handler(msg, edit_choose_transaction_date_wise)
+    if edit_mode == "Category":
+        msg = bot.send_message("Please enter the category of the transaction you are looking for.")
+        bot.register_next_step_handler(msg, edit_choose_transaction_category_wise)
+    # markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    # markup.row_width = 2
+    # choices = ['Date', 'Category', 'Cost']
+    # for c in choices:
+    #     markup.add(c)
+    #
+    # for transaction in user_list[chat_id].transactions[info_category]:
+    #     if transaction["Date"].date() == info_date.date():
+    #         if str(int(transaction["Value"])) == info_value:
+    #             user_list[chat_id].store_edit_transaction(transaction, info_category)
+    #             choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
+    #             bot.register_next_step_handler(choice, edit3)
+    #             break
+
+def edit_choose_transaction_date_wise(message):
+    global user_list
+    chat_id = str(message.chat.id)
+    user_input_date = datetime.strptime(message.text, "%d/%m/%Y")
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.row_width = 2
-    choices = ['Date', 'Category', 'Cost']
-    for c in choices:
-        markup.add(c)
+    for category in user_list[chat_id].transactions.keys():
+        for transaction in user_list[chat_id].transactions[category]:
+            if transaction["Date"].date() == user_input_date.date():
+                text = "{},{},{}".format(category, transaction["Value"], transaction["Date"].strftime("%m/%d/%Y"))
+                markup.add(text)
+    msg = bot.send_message()
 
-    for transaction in user_list[chat_id].transactions[info_category]:
-        if transaction["Date"].date() == info_date.date():
-            if str(int(transaction["Value"])) == info_value:
-                user_list[chat_id].store_edit_transaction(transaction, info_category)
-                choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
-                bot.register_next_step_handler(choice, edit3)
-                break
+def edit_choose_transaction_category_wise(message):
+    pass
 
 
 def edit3(message):
