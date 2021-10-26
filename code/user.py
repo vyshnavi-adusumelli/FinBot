@@ -276,7 +276,7 @@ class User:
                     df = df.drop(index)
         return df
 
-    def create_rules_unknown_spending(self, category, description, userid):
-        print(description)
+    def create_rules_and_add_unknown_spending(self, category, description, date, value, userid):
         self.rules[category].append(description)
+        self.add_transaction(date, category, value, userid)
         self.save_user(userid)

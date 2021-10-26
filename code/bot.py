@@ -208,7 +208,7 @@ def show_history(message):
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
-                    date = str(transaction["Date"])
+                    date = transaction["Date"].strftime("%m/%d/%y")
                     value = str(transaction["Value"])
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
             bot.send_message(chat_id, spend_history_str + spend_total_str)
@@ -481,14 +481,13 @@ def csv_callback(call):
     try:
         data = call.data.split(",")
         category = data[0]
-        date = data[1]
-        debit = data[2]
+        date = datetime.strptime(data[1], "%m/%d/%y")
+        debit = float(data[2])
         description = data[3]
         chat_id = str(call.from_user.id)
-        user_list[chat_id].create_rules_unknown_spending(category, description, chat_id)
+        user_list[chat_id].create_rules_and_add_unknown_spending(category, description, date, debit, chat_id)
         bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
     except Exception as e:
-        print("here")
         print(e)
 
 
