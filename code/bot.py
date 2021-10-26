@@ -13,6 +13,7 @@ from telebot import types
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import pickle
+import pandas
 
 from user import User
 
@@ -50,6 +51,7 @@ def start_and_menu_command(m):
         text_intro += commands[c] + "\n\n"
     bot.send_message(chat_id, text_intro)
 
+
 @bot.message_handler(commands=['budget'])
 def command_budget(message):
     """
@@ -67,6 +69,7 @@ def command_budget(message):
         user_list[chat_id] = User(chat_id)
     message = bot.send_message(chat_id, 'How much is your monthly budget? \n(Enter numeric values only)')
     bot.register_next_step_handler(message, post_budget_input)
+
 
 def post_budget_input(message):
     """
@@ -87,6 +90,7 @@ def post_budget_input(message):
 
     except Exception as e:
         bot.reply_to(message, 'Oh no. ' + str(e))
+
 
 @bot.message_handler(commands=['add'])
 def command_add(message):
@@ -174,9 +178,9 @@ def post_amount_input(message):
         if total_value > user_list[chat_id].monthly_budget:
             bot.send_message(chat_id, text="*You have gone over the monthly budget*",
                              parse_mode='Markdown')
-        elif total_value >= 0.8*user_list[chat_id].monthly_budget:
+        elif total_value >= 0.8 * user_list[chat_id].monthly_budget:
             bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
-                         parse_mode='Markdown')
+                             parse_mode='Markdown')
         bot.send_message(chat_id, add_message)
 
 
@@ -442,6 +446,50 @@ def edit_cost(message):
     else:
         bot.reply_to(message, "The cost is invalid")
         return
+
+
+@bot.message_handler(content_types=['document'])
+def handle_budget_document_csv(message):
+    global user_list
+    global option
+    try:
+        chat_id = str(message.chat.id)
+        file_info = bot.get_file(message.document.file_id)
+        download_file = bot.download_file(file_info.file_path)
+        with open("../data/{}_spending.csv".format(chat_id), mode="wb") as f:
+            f.write(download_file)
+        unknown_spending = user_list[chat_id].read_budget_csv("../data/{}_spending.csv".format(chat_id), chat_id)
+        for index, row in unknown_spending.iterrows():
+            text = "How do you want to categorize the following transaction \n"
+            text += "Date: {}. Description: {}. Debit: {}. \n".format(row["date"], row["description"], row["debit"])
+            buttons = telebot.types.InlineKeyboardMarkup(row_width=3)
+            for category in user_list[chat_id].spend_categories:
+                buttons.add(telebot.types.InlineKeyboardButton(category, callback_data="{},{},{},{}".format(category,
+                                                                                                            row["date"],
+                                                                                                            row["debit"],
+                                                                                                            row["description"])))
+            bot.send_message(chat_id, text, reply_markup=buttons)
+
+    except Exception as e:
+        print(e)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def csv_callback(call):
+    global user_list
+    global option
+    try:
+        data = call.data.split(",")
+        category = data[0]
+        date = data[1]
+        debit = data[2]
+        description = data[3]
+        chat_id = str(call.from_user.id)
+        user_list[chat_id].create_rules_unknown_spending(category, description, chat_id)
+        bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+    except Exception as e:
+        print("here")
+        print(e)
 
 
 @bot.message_handler(commands=['delete'])
