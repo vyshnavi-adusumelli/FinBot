@@ -7,8 +7,9 @@ import os
 import pickle
 import re
 from datetime import datetime
+import logging
 
-
+logger = logging.getLogger()
 
 class User:
 
@@ -33,9 +34,13 @@ class User:
         :type: string
         :return: None
         """
-        data_dir = "../data"
-        with open("{}/{}.pickle".format(data_dir, userid), "wb") as f:
-            pickle.dump(self, f)
+        try:
+            data_dir = "../data"
+            with open("{}/{}.pickle".format(data_dir, userid), "wb") as f:
+                pickle.dump(self, f)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def validate_entered_amount(self, amount_entered):
         """
@@ -68,8 +73,12 @@ class User:
         :type: string
         :return: None
         """
-        self.transactions[category].append({"Date": date, "Value": value})
-        self.save_user(userid)
+        try:
+            self.transactions[category].append({"Date": date, "Value": value})
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
@@ -81,9 +90,12 @@ class User:
         :type: string
         :return: None
         """
+        try:
+            self.edit_transactions = existing_transaction
+            self.edit_category = edit_category
 
-        self.edit_transactions = existing_transaction
-        self.edit_category = edit_category
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def edit_transaction_date(self, new_date):
         """
@@ -110,6 +122,7 @@ class User:
         :return: True
         :rtype: bool
         """
+
         self.transactions[self.edit_category].remove(self.edit_transactions)
         self.transactions[new_category].append(self.edit_transactions)
         return True
@@ -241,8 +254,12 @@ class User:
         :param userid:
         :return:
         """
-        self.monthly_budget = amount
-        self.save_user(userid)
+        try:
+            self.monthly_budget = amount
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def monthly_total(self):
         """
