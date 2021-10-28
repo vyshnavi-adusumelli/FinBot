@@ -165,11 +165,12 @@ def post_amount_input(message):
             raise Exception("Spent amount has to be a non-zero number.")
 
         date_of_entry = datetime.today()
+        date_to_print = date_of_entry.strftime("%m/%d/%Y")
         date_str, category_str, amount_str = str(date_of_entry), str(option[chat_id]), str(amount_value)
         user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
         total_value = user_list[chat_id].monthly_total()
         add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
-            amount_str, category_str, date_str, total_value)
+            amount_str, category_str, str(date_to_print), total_value)
 
         if total_value > user_list[chat_id].monthly_budget:
             bot.send_message(chat_id, text="*You have gone over the monthly budget*",
@@ -198,13 +199,13 @@ def show_history(message):
         spend_total_str = ""
         if chat_id not in list(user_list.keys()):
             raise Exception("Sorry! No spending records found!")
-        spend_history_str = "Here is your spending history : \nDATE, CATEGORY, AMOUNT\n----------------------\n"
+        spend_history_str = "Here is your spending history : \nCATEGORY, DATE, AMOUNT\n----------------------\n"
         if len(user_list[chat_id].transactions) == 0:
             spend_total_str = "Sorry! No spending records found!"
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
-                    date = str(transaction["Date"])
+                    date = transaction["Date"].strftime("%m/%d/%Y %I:%M:%S %p")
                     value = str(transaction["Value"])
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
             bot.send_message(chat_id, spend_history_str + spend_total_str)
@@ -310,7 +311,7 @@ def edit1(message):
     chat_id = str(message.chat.id)
 
     if chat_id in list(user_list.keys()):
-        msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
+        msg = bot.reply_to(message, "Please enter the date (in mm/dd/yyyy format), category and value of the transaction you made (Eg: "
                                     "01/03/2021,Transport,25)")
         bot.register_next_step_handler(msg, edit2)
 
@@ -457,8 +458,8 @@ def command_delete(message):
     if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
         curr_day = datetime.today()
         prompt = f"Enter the day, month, or All\n"
-        prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
-        prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+        prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)} (in mm/dd/yyyy format)\n"
+        prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)} (in mm/yyyy format)"
         reply_message = bot.reply_to(message, prompt)
         bot.register_next_step_handler(reply_message, process_delete_argument)
     else:
