@@ -17,7 +17,7 @@ import pandas
 
 from user import User
 
-api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
+api_token = ""
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -32,6 +32,7 @@ bot = telebot.TeleBot(api_token)
 telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
+all_transactions = []
 
 
 @bot.message_handler(commands=['start', 'menu'])
@@ -312,34 +313,40 @@ def edit1(message):
     global user_list
     global option
     chat_id = str(message.chat.id)
+    global all_transactions
 
     if chat_id in list(user_list.keys()):
-        msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
-                                    "01/03/2021,Transport,25)")
-        bot.register_next_step_handler(msg, edit2)
+        msg = bot.reply_to(message, "Which of the following would you like to edit?")
+        spend_total_str = ""
+        count = 1
+        another_temp = []
+        for category in user_list[chat_id].transactions.keys():
+            for transaction in user_list[chat_id].transactions[category]:
+                all_transactions.append([str(transaction["Date"]), str(category), str(transaction["Value"])])
+                date = str(transaction["Date"])
+                value = str(transaction["Value"])
+                spend_total_str += "{}. Category: {} Date: {} Value: {} \n".format(count, category, date, value)
+                count += 1
+        bot.send_message(chat_id, spend_total_str)
 
+        bot.register_next_step_handler(msg, edit_list2)
     else:
         bot.reply_to(chat_id, "No data found")
 
 
-def edit2(message):
-    """
-    Receives the transaction to be edited, and then asks the user what they want to edit. The function 'edit3' is called next.
-
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
-    """
+def edit_list2(message):
     chat_id = str(message.chat.id)
-    info = message.text
-    date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
-    info = info.split(',')
-    info_date = re.search(date_format, info[0].strip())
-    info_category = info[1].strip()
-    info_value = info[2].strip()
-    if info_date is None:
-        bot.reply_to(message, "The date is incorrect")
-        return
+    choice = int(message.text)
+    # print(user_list[chat_id].transactions.items())
+
+    # print(another_temp)
+    temp = all_transactions[choice - 1]
+    # print(temp)
+
+    info_date = datetime.strptime(temp[0].split(" ")[0], "%Y-%m-%d")
+    info_category = temp[1]
+    info_value = temp[2]
+
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.row_width = 2
     choices = ['Date', 'Category', 'Cost']
@@ -347,9 +354,8 @@ def edit2(message):
         markup.add(c)
 
     for transaction in user_list[chat_id].transactions[info_category]:
-        if transaction["Date"].strftime("%d") == info_date.group(1) and transaction["Date"].strftime(
-                "%m") == info_date.group(2) and transaction["Date"].strftime("%Y") == info_date.group(3):
-            if str(int(transaction["Value"])) == info_value:
+        if transaction["Date"].date() == info_date.date():
+            if str(transaction["Value"]) == info_value:
                 user_list[chat_id].store_edit_transaction(transaction, info_category)
                 choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
                 bot.register_next_step_handler(choice, edit3)
@@ -466,8 +472,10 @@ def handle_budget_document_csv(message):
             for category in user_list[chat_id].spend_categories:
                 buttons.add(telebot.types.InlineKeyboardButton(category, callback_data="{},{},{},{}".format(category,
                                                                                                             row["date"],
-                                                                                                            row["debit"],
-                                                                                                            row["description"])))
+                                                                                                            row[
+                                                                                                                "debit"],
+                                                                                                            row[
+                                                                                                                "description"])))
             bot.send_message(chat_id, text, reply_markup=buttons)
 
     except Exception as e:
