@@ -154,9 +154,9 @@ def post_amount_input(message):
     """
     global user_list
     global option
-    dateFormat = '%d-%m-%Y'
+    dateFormat = '%m/%d/%Y'
     timeFormat = '%H:%M'
-    monthFormat = '%m-%Y'
+    monthFormat = '%m/%Y'
     try:
         chat_id = str(message.chat.id)
         amount_entered = message.text
@@ -244,7 +244,7 @@ def display_total(message):
     :type: object
     :return: None
     """
-    dateFormat = '%d/%m/%Y'
+    dateFormat = '%m/%d/%Y'
     timeFormat = '%H:%M'
     monthFormat = '%m/%Y'
     try:
@@ -270,7 +270,7 @@ def display_total(message):
                             dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
             total_spendings = "Here are your total spendings for the date {} \n".format(
-                datetime.today().strftime("%d-%m-%Y"))
+                datetime.today().strftime("%m/%d/%Y"))
             total_spendings += query_result
             total_spendings += "Total Value {}".format(total_value)
             bot.send_message(chat_id, total_spendings)
@@ -451,11 +451,11 @@ def command_delete(message):
     :return: None
     """
     global user_list
-    dateFormat = '%d-%b-%Y'
-    monthFormat = '%b-%Y'
+    dateFormat = '%m/%d/%Y'
+    monthFormat = '%m/%Y'
     chat_id = str(message.chat.id)
     if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
-        curr_day = datetime.now()
+        curr_day = datetime.today()
         prompt = f"Enter the day, month, or All\n"
         prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
         prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
@@ -476,9 +476,9 @@ def process_delete_argument(message):
     :return: None
     """
     global user_list
-    dateFormat = '%d-%b-%Y'
+    dateFormat = '%m/%d/%Y'
     timeFormat = '%H:%M'
-    monthFormat = '%b-%Y'
+    monthFormat = '%m/%Y'
     text = message.text
     chat_id = str(message.chat.id)
 
@@ -511,7 +511,7 @@ def process_delete_argument(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add("Yes")
         markup.add("No")
-        response_str += "\nReply YES or NO"
+        response_str += "\nReply Yes or No"
         response = bot.reply_to(message, response_str, reply_markup=markup)
         bot.register_next_step_handler(response, handle_confirmation, records_to_delete)
 

@@ -181,9 +181,9 @@ class User:
         :return: matched_dates which is the array of records for that day or month
         :rtype: array
         """
-        dateFormat = '%d-%b-%Y'
+        dateFormat = '%m/%d/%Y'
         timeFormat = '%H:%M'
-        monthFormat = '%b-%Y'
+        monthFormat = '%m/%Y'
         user_history = self.transactions
         if date == "all":
             return user_history
@@ -217,7 +217,7 @@ class User:
 
         for category in transaction:
             for record in transaction[category]:
-                final_str += f'{category}, {record["Date"].date()}, {record["Value"]}\n'
+                final_str += f'{category}, {record["Date"].strftime("%m/%d/%Y")}, {record["Value"]}\n'
 
         return final_str
 
