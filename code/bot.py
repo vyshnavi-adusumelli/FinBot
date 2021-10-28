@@ -184,7 +184,9 @@ def post_amount_input(message):
 
 
     except Exception as e:
-        bot.reply_to(message, 'Oh no. ' + str(e))
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(e))
 
 
 @bot.message_handler(commands=['history'])
@@ -212,7 +214,7 @@ def show_history(message):
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
             bot.send_message(chat_id, spend_history_str + spend_total_str)
     except Exception as e:
-        print(e)
+        logger.error(str(e), exc_info=True)
         bot.reply_to(message, "Oops!" + str(e))
 
 
@@ -231,12 +233,18 @@ def command_display(message):
     if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
         bot.send_message(chat_id, "Oops! Looks like you do not have any spending records!")
     else:
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        markup.row_width = 2
-        for mode in user_list[chat_id].spend_display_option:
-            markup.add(mode)
-        msg = bot.reply_to(message, 'Please select a category to see the total expense', reply_markup=markup)
-        bot.register_next_step_handler(msg, display_total)
+        try:
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.row_width = 2
+            for mode in user_list[chat_id].spend_display_option:
+                markup.add(mode)
+            msg = bot.reply_to(message, 'Please select a category to see the total expense', reply_markup=markup)
+            bot.register_next_step_handler(msg, display_total)
+
+        except Exception as e:
+            print("Exception occurred : ")
+            logger.error(str(e), exc_info=True)
+            bot.reply_to(message, 'Oops! - \nError : ' + str(e))
 
 
 def display_total(message):
@@ -296,6 +304,8 @@ def display_total(message):
             total_spendings += "Budget for the month {}".format(str(budget_value))
             bot.send_message(chat_id, total_spendings)
     except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
         bot.reply_to(message, str(e))
 
 
