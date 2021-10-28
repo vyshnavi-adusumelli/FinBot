@@ -104,15 +104,22 @@ def command_add(message):
     global option
     chat_id = str(message.chat.id)
     option.pop(chat_id, None)
-    if chat_id not in user_list.keys():
-        user_list[chat_id] = User(chat_id)
-    spend_categories = user_list[chat_id].spend_categories
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.row_width = 2
-    for c in spend_categories:
-        markup.add(c)
-    msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
-    bot.register_next_step_handler(msg, post_category_selection)
+    try:
+        if chat_id not in user_list.keys():
+            user_list[chat_id] = User(chat_id)
+        spend_categories = user_list[chat_id].spend_categories
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+        for c in spend_categories:
+            markup.add(c)
+        msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
+        bot.register_next_step_handler(msg, post_category_selection)
+
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(e))
+
 
 
 def post_category_selection(message):
@@ -474,17 +481,24 @@ def command_delete(message):
     dateFormat = '%d-%b-%Y'
     monthFormat = '%b-%Y'
     chat_id = str(message.chat.id)
-    if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
-        curr_day = datetime.now()
-        prompt = f"Enter the day, month, or All\n"
-        prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
-        prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
-        reply_message = bot.reply_to(message, prompt)
-        bot.register_next_step_handler(reply_message, process_delete_argument)
-    else:
-        delete_history_text = "No records to be deleted. Start adding your expenses to keep track of your " \
-                              "spendings! "
-        bot.send_message(chat_id, delete_history_text)
+    try:
+        if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
+            curr_day = datetime.now()
+            prompt = f"Enter the day, month, or All\n"
+            prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
+            prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+            reply_message = bot.reply_to(message, prompt)
+            bot.register_next_step_handler(reply_message, process_delete_argument)
+        else:
+            delete_history_text = "No records to be deleted. Start adding your expenses to keep track of your " \
+                                  "spendings! "
+            bot.send_message(chat_id, delete_history_text)
+
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(e))
+
 
 
 def process_delete_argument(message):
