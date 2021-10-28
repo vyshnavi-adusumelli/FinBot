@@ -329,13 +329,18 @@ def edit1(message):
     global option
     chat_id = str(message.chat.id)
 
-    if chat_id in list(user_list.keys()):
-        msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
-                                    "01/03/2021,Transport,25)")
-        bot.register_next_step_handler(msg, edit2)
+    try:
+        if chat_id in list(user_list.keys()):
+            msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
+                                        "01/03/2021,Transport,25)")
+            bot.register_next_step_handler(msg, edit2)
 
-    else:
-        bot.reply_to(chat_id, "No data found")
+        else:
+            bot.reply_to(chat_id, "No data found")
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)")
 
 
 def edit2(message):
