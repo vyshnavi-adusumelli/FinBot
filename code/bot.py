@@ -7,6 +7,8 @@ import json
 import logging
 import re
 import os
+import sys
+
 import telebot
 import time
 from telebot import types
@@ -16,7 +18,7 @@ import pickle
 
 from user import User
 
-api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
+api_token = "INSERT API KEY HERE"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -31,7 +33,7 @@ bot = telebot.TeleBot(api_token)
 telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
-
+logger = logging.getLogger()
 
 @bot.message_handler(commands=['start', 'menu'])
 def start_and_menu_command(m):
@@ -49,6 +51,7 @@ def start_and_menu_command(m):
         text_intro += "/" + c + ": "
         text_intro += commands[c] + "\n\n"
     bot.send_message(chat_id, text_intro)
+
 
 @bot.message_handler(commands=['budget'])
 def command_budget(message):
@@ -326,28 +329,35 @@ def edit2(message):
     :type: object
     :return: None
     """
+
     chat_id = str(message.chat.id)
     info = message.text
     info = info.split(',')
-    info_date = datetime.strptime(info[0].strip(), "%m/%d/%Y")
-    info_category = info[1].strip()
-    info_value = info[2].strip()
-    if info_date is None:
-        bot.reply_to(message, "The date is incorrect")
-        return
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.row_width = 2
-    choices = ['Date', 'Category', 'Cost']
-    for c in choices:
-        markup.add(c)
+    try:
+        info_date = datetime.strptime(info[0].strip(), "%m/%d/%Y")
+        info_category = info[1].strip()
+        info_value = info[2].strip()
+        if info_date is None:
+            bot.reply_to(message, "The date is incorrect")
+            return
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+        choices = ['Date', 'Category', 'Cost']
+        for c in choices:
+            markup.add(c)
 
-    for transaction in user_list[chat_id].transactions[info_category]:
-        if transaction["Date"].date() == info_date.date():
-            if str(int(transaction["Value"])) == info_value:
-                user_list[chat_id].store_edit_transaction(transaction, info_category)
-                choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
-                bot.register_next_step_handler(choice, edit3)
-                break
+        for transaction in user_list[chat_id].transactions[info_category]:
+            if transaction["Date"].date() == info_date.date():
+                if str(int(transaction["Value"])) == info_value:
+                    user_list[chat_id].store_edit_transaction(transaction, info_category)
+                    choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
+                    bot.register_next_step_handler(choice, edit3)
+                    break
+
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)")
 
 
 def edit3(message):
@@ -558,6 +568,9 @@ if __name__ == '__main__':
     try:
         user_list = get_users()
         bot.polling(none_stop=True)
-    except Exception:
+    except Exception as e:
+        #Connection will be timed out with the set time interval - 3
         time.sleep(3)
-        print("Connection Timeout")
+        print("Exception occurred while processing : ")
+        logger.error(str(e), exc_info=True)
+
