@@ -201,21 +201,25 @@ def show_history(message):
     try:
         chat_id = str(message.chat.id)
         spend_total_str = ""
+        count = 0
         if chat_id not in list(user_list.keys()):
             raise Exception("Sorry! No spending records found!")
         spend_history_str = "Here is your spending history : \nDATE, CATEGORY, AMOUNT\n----------------------\n"
         if len(user_list[chat_id].transactions) == 0:
-            spend_total_str = "Sorry! No spending records found!"
+            raise Exception("Sorry! No spending records found!")
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
+                    count = count + 1
                     date = transaction["Date"].strftime("%m/%d/%y")
                     value = str(transaction["Value"])
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
+            if count == 0:
+                raise Exception("Sorry! No spending records found!")
             bot.send_message(chat_id, spend_history_str + spend_total_str)
     except Exception as e:
         print(e)
-        bot.reply_to(message, "Oops!" + str(e))
+        bot.reply_to(message, str(e))
 
 
 @bot.message_handler(commands=['display'])
