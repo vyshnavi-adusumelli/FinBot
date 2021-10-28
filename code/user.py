@@ -6,6 +6,7 @@ File contains functions that stores and retreives data from the .pickle file and
 import os
 import pickle
 import re
+from calendar import monthrange
 from datetime import datetime
 
 
@@ -20,6 +21,16 @@ class User:
         self.edit_transactions = {}
         self.edit_category = {}
         self.monthly_budget = 0
+
+
+        self.CURRENT_DATE = None
+        self.MIN_DATE = None
+        self.MAX_DATE = None
+
+        # m_names.extend(month_names)
+        self.MONTH_NAMES = ['-']
+        self.MONTH_NAMES.extend(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'])
+        self.DAYS_NAMES = ['Mon', 'Tu', 'Wed', 'Th', 'Fr', 'Sat', 'Sun']
 
 
         for category in self.spend_categories:
@@ -258,3 +269,29 @@ class User:
                 if transaction["Date"].strftime("%m") == date.strftime("%m"):
                     total_value += transaction["Value"]
         return total_value
+
+    def _inc_month(self):
+        last_day = self.CURRENT_DATE.replace(day=monthrange(self.CURRENT_DATE.year, self.CURRENT_DATE.month)[1])
+        self.CURRENT_DATE = last_day + datetime.timedelta(days=1)
+
+    def _dec_month(self):
+        first_day = self.CURRENT_DATE.replace(day=1)
+        prev_month_lastday = first_day - datetime.timedelta(days=1)
+        self.CURRENT_DATE = prev_month_lastday.replace(day=1)
+
+    def create_calendar(self, base_date, min_date, max_date):
+        """
+        Default language is English
+        :param chat_id: chat id
+        :param base_date: a datetime.date object.
+        :param min_date: a datetime.date object.
+        :param max_date: a datetime.date object.
+        :param month_names: 12-element list for month names. If none, then English names will be used
+        :param days_names: 7-element list fo2r month names. If none, then English names will be used
+        :param db_name:
+        """
+
+        self.CURRENT_DATE = datetime(year=base_date.year, month=base_date.month, day=base_date.day)
+        self.MIN_DATE = datetime(year=min_date.year, month=min_date.month, day=min_date.day)
+        self.MAX_DATE = datetime(year=max_date.year, month=max_date.month, day=max_date.day)
+

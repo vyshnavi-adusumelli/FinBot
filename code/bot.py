@@ -7,6 +7,8 @@ import json
 import logging
 import re
 import os
+from calendar import monthrange
+
 import telebot
 import time
 from telebot import types
@@ -17,6 +19,7 @@ import pickle
 from user import User
 
 api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
+api_token = os.environ['API_TOKEN']  # "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -31,6 +34,106 @@ bot = telebot.TeleBot(api_token)
 telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
+
+# for the calendar widget
+min_date = datetime.today()
+max_date = datetime.today()
+curr_date = datetime.today()
+
+
+@bot.message_handler(commands=['calendar'])
+def calendar_test(msg: types.Message):
+    global curr_date, min_date, max_date
+    curr_date = datetime.today()
+    min_date  = datetime(year=2018, month=11, day=1)
+    max_date = datetime.today()
+    markup = create_calendar()
+    bot.send_message(msg.from_user.id, text='Enter the date', reply_markup=markup)
+
+
+def create_calendar():
+    kb = types.InlineKeyboardMarkup()
+
+    # creating the headers
+    header = create_header()
+    kb.row(*header)
+    weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+    rows = [types.InlineKeyboardButton(w, callback_data="none") for w in weekdays]
+    kb.row(*rows)
+
+    # create the days
+    m = monthrange(curr_date.year, curr_date.month)
+    # for each day in the total days
+    # for the first day, figure out how many ' ' to append
+    row = []
+    if m[0] != 6:
+        row = [types.InlineKeyboardButton(" ", callback_data="none") for _ in range(m[0] + 1)]
+    for day in range(1, m[1] + 1):
+        # if it is on a sunday, start a new row
+        if curr_date.replace(day=day).weekday() == 6:
+            kb.row(*row)
+            row = []
+        row.append(types.InlineKeyboardButton(day, callback_data=str(day)))
+    # finish out the last row
+    if len(row) != 7:
+        for _ in range(7 - len(row)):
+            row.append(types.InlineKeyboardButton(" ", callback_data="none"))
+
+    kb.row(*row)
+    return kb
+
+
+def create_header():
+    # get the month name
+    row = [(types.InlineKeyboardButton(curr_date.strftime("%B"), callback_data="none"))]
+    if curr_date > min_date:
+        # if we should be able to go back a month
+        row.append(types.InlineKeyboardButton('<', callback_data="prev"))
+    else:
+        # append a blank
+        row.append(types.InlineKeyboardButton(' ', callback_data="none"))
+
+    if curr_date < max_date:
+        # if we should be able to go forward
+        row.append(types.InlineKeyboardButton('>', callback_data="next"))
+    else:
+        # append a blank
+        row.append(types.InlineKeyboardButton(' ', callback_data="none"))
+    return row
+
+
+def is_callback(query):
+    return query.data != "none"
+
+
+@bot.callback_query_handler(func=is_callback)
+def calendar_callback_handler(q: types.CallbackQuery):
+    return_data = handler_callback(q.data)
+    if return_data is None:
+        calendar = create_calendar()
+        bot.edit_message_reply_markup(chat_id=q.from_user.id, message_id=q.message.message_id,
+                                      reply_markup=calendar)
+    else:
+        picked_data = return_data
+        bot.edit_message_text(text=picked_data, chat_id=q.from_user.id, message_id=q.message.message_id)
+
+def handler_callback(callback):
+    """
+    A method for handling callbacks
+    :param chat_id: chat id of user
+    :param callback: callback from telebot.types.CallbackQuery
+    :return: datetime.date object if some date was picked else None
+    """
+    global curr_date
+    if callback == "prev" and curr_date.replace(day=1) >= min_date.replace(day=1):
+        curr_date = curr_date.replace(month=curr_date.month-1)
+        return None
+    if callback == "next" and curr_date.replace(day=1) <= max_date.replace(day=1):
+        curr_date = curr_date.replace(month=curr_date.month+1)
+        return None
+
+    if callback.isnumeric():
+        return curr_date.replace(day=int(callback))
 
 
 @bot.message_handler(commands=['start', 'menu'])
