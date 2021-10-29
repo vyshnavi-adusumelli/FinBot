@@ -13,7 +13,8 @@ class BaseCase(unittest.TestCase):
         Creates a new user
         """
         # os.chdir("test")
-        os.mkdir("data")
+        if not os.path.exists("data"):
+            os.mkdir("data")
         # Creates a an empty file
         with open('data/1.pickle', 'w') as fp:
             pass
