@@ -36,9 +36,9 @@ class TestSaveUser(BaseCase):
         # with no history, call save_user
         self.user.save_user(1)
         # assert the pickle exists
-        assert os.path.exists('../data/1.pickle')
+        assert os.path.exists('data/1.pickle')
 
-        with open("../data/1.pickle", "rb") as f:
+        with open("data/1.pickle", "rb") as f:
             new_user = pickle.load(f)
         # assert they are equal
         assert new_user is not None
@@ -60,9 +60,9 @@ class TestSaveUser(BaseCase):
         # with history, call save_user
         self.user.save_user(1)
         # assert the pickle exists
-        assert os.path.exists('../data/1.pickle')
+        assert os.path.exists('data/1.pickle')
 
-        with open("../data/1.pickle", "rb") as f:
+        with open("data/1.pickle", "rb") as f:
             new_user = pickle.load(f)
         # assert they are equal
         assert new_user is not None
