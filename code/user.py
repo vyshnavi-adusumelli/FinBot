@@ -4,6 +4,7 @@ File contains functions that stores and retreives data from the .pickle file and
 
 """
 import os
+import pathlib
 import pickle
 import re
 from datetime import datetime
@@ -37,9 +38,11 @@ class User:
         :type: string
         :return: None
         """
+        
         try:
-            data_dir = "../data"
-            with open("{}/{}.pickle".format(data_dir, userid), "wb") as f:
+            data_dir = "data"
+            abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
+            with open(abspath, "wb") as f:
                 pickle.dump(self, f)
 
         except Exception as e:

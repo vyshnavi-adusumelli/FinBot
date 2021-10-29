@@ -12,7 +12,14 @@ class BaseCase(unittest.TestCase):
         """
         Creates a new user
         """
-        os.chdir("test")
+        # os.chdir("test")
+        if not os.path.exists("data"):
+            os.mkdir("data")
+        # Creates a an empty file
+        with open('data/1.pickle', 'w') as fp:
+            pass
+
+        print(os.getcwd())
         self.user = User("1")
         self.expected_list = self.create_transaction()
 
@@ -20,9 +27,9 @@ class BaseCase(unittest.TestCase):
         """
         Removes the user pickle
         """
-        os.chdir("..")
-        if os.path.exists("../data/1.pickle"):
-            os.remove("../data/1.pickle")
+        # os.chdir("..")
+        if os.path.exists("data/1.pickle"):
+            os.remove("data/1.pickle")
 
     def create_transaction(self):
         """

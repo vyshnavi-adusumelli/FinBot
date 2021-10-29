@@ -3,6 +3,7 @@ File contains bot message handlers and their associated functions
 """
 import json
 import logging
+import pathlib
 import re
 import os
 import sys
@@ -615,7 +616,8 @@ def get_users():
             user = re.match("(.+)\.pickle", file)
             if user:
                 user = user.group(1)
-                with open("{0}/{1}".format(data_dir, file), "rb") as f:
+                abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
+                with open(abspath, "rb") as f:
                     users[user] = pickle.load(f)
     return users
 
