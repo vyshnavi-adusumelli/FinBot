@@ -10,6 +10,8 @@ from datetime import datetime
 import logging
 
 logger = logging.getLogger()
+import pandas
+import pandas as pd
 
 class User:
 
@@ -21,10 +23,11 @@ class User:
         self.edit_transactions = {}
         self.edit_category = {}
         self.monthly_budget = 0
-
+        self.rules = {}
 
         for category in self.spend_categories:
             self.transactions[category] = []
+            self.rules[category] = []
 
     def save_user(self, userid):
         """
@@ -168,7 +171,6 @@ class User:
             for category in self.spend_categories:
                 self.transactions[category] = []
 
-
     def validate_date_format(self, text, date_format):
         """
         Converts the inputted date to the inputted date format
@@ -221,7 +223,6 @@ class User:
                 if record_date == date:
                     matched_dates[category].append(record)
         return matched_dates
-
 
     def display_transaction(self, transaction):
         """
@@ -279,3 +280,23 @@ class User:
                 if transaction["Date"].strftime("%m") == date.strftime("%m"):
                     total_value += transaction["Value"]
         return total_value
+
+    def read_budget_csv(self, file, userid):
+        df = pd.read_csv(file)
+        df.columns = df.columns.str.lower()
+        df = df[["date", "description", "debit"]]
+        df = df.dropna()
+        df = df.loc[df["debit"] != 0]
+        for index, row in df.iterrows():
+            for category in self.rules.keys():
+                if row["description"] in self.rules[category]:
+                    date = datetime.strptime(row["date"], "%m/%d/%y")
+                    value = float(row["debit"])
+                    self.add_transaction(date, category, value, userid)
+                    df = df.drop(index)
+        return df
+
+    def create_rules_and_add_unknown_spending(self, category, description, date, value, userid):
+        self.rules[category].append(description)
+        self.add_transaction(date, category, value, userid)
+        self.save_user(userid)
