@@ -6,16 +6,20 @@ import logging
 import pathlib
 import re
 import os
+import sys
+
 import telebot
 import time
 from telebot import types
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import pickle
+import pandas
 
 from user import User
 
-api_token = "2070500964:AAGNgu08ApbYMs5x6o8haEEXvPOemghPtFA"
+
+api_token = "INSERT API KEY HERE"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -30,6 +34,9 @@ bot = telebot.TeleBot(api_token)
 telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
+
+logger = logging.getLogger()
+all_transactions = []
 
 
 @bot.message_handler(commands=['start', 'menu'])
@@ -48,6 +55,7 @@ def start_and_menu_command(m):
         text_intro += commands[c] + "\n\n"
     bot.send_message(chat_id, text_intro)
 
+
 @bot.message_handler(commands=['budget'])
 def command_budget(message):
     """
@@ -64,6 +72,7 @@ def command_budget(message):
         user_list[chat_id] = User(chat_id)
     message = bot.send_message(chat_id, 'How much is your monthly budget? \n(Enter numeric values only)')
     bot.register_next_step_handler(message, post_budget_input)
+
 
 def post_budget_input(message):
     """
@@ -84,6 +93,7 @@ def post_budget_input(message):
     except Exception as e:
         bot.reply_to(message, 'Oh no. ' + str(e))
 
+
 @bot.message_handler(commands=['add'])
 def command_add(message):
     """
@@ -96,15 +106,22 @@ def command_add(message):
     global option
     chat_id = str(message.chat.id)
     option.pop(chat_id, None)
-    if chat_id not in user_list.keys():
-        user_list[chat_id] = User(chat_id)
-    spend_categories = user_list[chat_id].spend_categories
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.row_width = 2
-    for c in spend_categories:
-        markup.add(c)
-    msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
-    bot.register_next_step_handler(msg, post_category_selection)
+    try:
+        if chat_id not in user_list.keys():
+            user_list[chat_id] = User(chat_id)
+        spend_categories = user_list[chat_id].spend_categories
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+        for c in spend_categories:
+            markup.add(c)
+        msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
+        bot.register_next_step_handler(msg, post_category_selection)
+
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(e))
+
 
 
 def post_category_selection(message):
@@ -167,14 +184,16 @@ def post_amount_input(message):
         if total_value > user_list[chat_id].monthly_budget:
             bot.send_message(chat_id, text="*You have gone over the monthly budget*",
                              parse_mode='Markdown')
-        elif total_value >= 0.8*user_list[chat_id].monthly_budget:
+        elif total_value >= 0.8 * user_list[chat_id].monthly_budget:
             bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
-                         parse_mode='Markdown')
+                             parse_mode='Markdown')
         bot.send_message(chat_id, add_message)
 
 
     except Exception as e:
-        bot.reply_to(message, 'Oh no. ' + str(e))
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(e))
 
 
 @bot.message_handler(commands=['history'])
@@ -188,21 +207,26 @@ def show_history(message):
     try:
         chat_id = str(message.chat.id)
         spend_total_str = ""
+        count = 0
         if chat_id not in list(user_list.keys()):
             raise Exception("Sorry! No spending records found!")
         spend_history_str = "Here is your spending history : \nDATE, CATEGORY, AMOUNT\n----------------------\n"
         if len(user_list[chat_id].transactions) == 0:
-            spend_total_str = "Sorry! No spending records found!"
+            raise Exception("Sorry! No spending records found!")
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
-                    date = str(transaction["Date"])
+                    count = count + 1
+                    date = transaction["Date"].strftime("%m/%d/%y")
                     value = str(transaction["Value"])
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
+            if count == 0:
+                raise Exception("Sorry! No spending records found!")
             bot.send_message(chat_id, spend_history_str + spend_total_str)
     except Exception as e:
-        print(e)
+        logger.error(str(e), exc_info=True)
         bot.reply_to(message, "Oops!" + str(e))
+
 
 
 @bot.message_handler(commands=['display'])
@@ -219,12 +243,18 @@ def command_display(message):
     if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
         bot.send_message(chat_id, "Oops! Looks like you do not have any spending records!")
     else:
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        markup.row_width = 2
-        for mode in user_list[chat_id].spend_display_option:
-            markup.add(mode)
-        msg = bot.reply_to(message, 'Please select a category to see the total expense', reply_markup=markup)
-        bot.register_next_step_handler(msg, display_total)
+        try:
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.row_width = 2
+            for mode in user_list[chat_id].spend_display_option:
+                markup.add(mode)
+            msg = bot.reply_to(message, 'Please select a category to see the total expense', reply_markup=markup)
+            bot.register_next_step_handler(msg, display_total)
+
+        except Exception as e:
+            print("Exception occurred : ")
+            logger.error(str(e), exc_info=True)
+            bot.reply_to(message, 'Oops! - \nError : ' + str(e))
 
 
 def display_total(message):
@@ -283,6 +313,8 @@ def display_total(message):
             total_spendings += "Budget for the month {}".format(str(budget_value))
             bot.send_message(chat_id, total_spendings)
     except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
         bot.reply_to(message, str(e))
 
 
@@ -297,32 +329,35 @@ def edit1(message):
     global user_list
     global option
     chat_id = str(message.chat.id)
+    global all_transactions
 
-    if chat_id in list(user_list.keys()):
-        msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
-                                    "01/03/2021,Transport,25)")
-        bot.register_next_step_handler(msg, edit2)
+    try:
+        if chat_id in list(user_list.keys()):
+            msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
+                                        "01/03/2021,Transport,25)")
+            bot.register_next_step_handler(msg, edit2)
 
-    else:
-        bot.reply_to(chat_id, "No data found")
+        else:
+            bot.reply_to(chat_id, "No data found")
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)")
 
 
-def edit2(message):
-    """
-    Receives the transaction to be edited, and then asks the user what they want to edit. The function 'edit3' is called next.
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
-    """
+def edit_list2(message):
     chat_id = str(message.chat.id)
-    info = message.text
-    info = info.split(',')
-    info_date = datetime.strptime(info[0].strip(), "%m/%d/%Y")
-    info_category = info[1].strip()
-    info_value = info[2].strip()
-    if info_date is None:
-        bot.reply_to(message, "The date is incorrect")
-        return
+    choice = int(message.text)
+    # print(user_list[chat_id].transactions.items())
+
+    # print(another_temp)
+    temp = all_transactions[choice - 1]
+    # print(temp)
+
+    info_date = datetime.strptime(temp[0].split(" ")[0], "%Y-%m-%d")
+    info_category = temp[1]
+    info_value = temp[2]
+    
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.row_width = 2
     choices = ['Date', 'Category', 'Cost']
@@ -331,7 +366,7 @@ def edit2(message):
 
     for transaction in user_list[chat_id].transactions[info_category]:
         if transaction["Date"].date() == info_date.date():
-            if str(int(transaction["Value"])) == info_value:
+            if str(transaction["Value"]) == info_value:
                 user_list[chat_id].store_edit_transaction(transaction, info_category)
                 choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
                 bot.register_next_step_handler(choice, edit3)
@@ -425,6 +460,51 @@ def edit_cost(message):
         return
 
 
+@bot.message_handler(content_types=['document'])
+def handle_budget_document_csv(message):
+    global user_list
+    global option
+    try:
+        chat_id = str(message.chat.id)
+        file_info = bot.get_file(message.document.file_id)
+        download_file = bot.download_file(file_info.file_path)
+        with open("../data/{}_spending.csv".format(chat_id), mode="wb") as f:
+            f.write(download_file)
+        unknown_spending = user_list[chat_id].read_budget_csv("../data/{}_spending.csv".format(chat_id), chat_id)
+        for index, row in unknown_spending.iterrows():
+            text = "How do you want to categorize the following transaction \n"
+            text += "Date: {}. Description: {}. Debit: {}. \n".format(row["date"], row["description"], row["debit"])
+            buttons = telebot.types.InlineKeyboardMarkup(row_width=3)
+            for category in user_list[chat_id].spend_categories:
+                buttons.add(telebot.types.InlineKeyboardButton(category, callback_data="{},{},{},{}".format(category,
+                                                                                                            row["date"],
+                                                                                                            row[
+                                                                                                                "debit"],
+                                                                                                            row[
+                                                                                                                "description"])))
+            bot.send_message(chat_id, text, reply_markup=buttons)
+
+    except Exception as e:
+        print(e)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def csv_callback(call):
+    global user_list
+    global option
+    try:
+        data = call.data.split(",")
+        category = data[0]
+        date = datetime.strptime(data[1], "%m/%d/%y")
+        debit = float(data[2])
+        description = data[3]
+        chat_id = str(call.from_user.id)
+        user_list[chat_id].create_rules_and_add_unknown_spending(category, description, date, debit, chat_id)
+        bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+    except Exception as e:
+        print(e)
+
+
 @bot.message_handler(commands=['delete'])
 def command_delete(message):
     """
@@ -437,17 +517,24 @@ def command_delete(message):
     dateFormat = '%d-%b-%Y'
     monthFormat = '%b-%Y'
     chat_id = str(message.chat.id)
-    if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
-        curr_day = datetime.now()
-        prompt = f"Enter the day, month, or All\n"
-        prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
-        prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
-        reply_message = bot.reply_to(message, prompt)
-        bot.register_next_step_handler(reply_message, process_delete_argument)
-    else:
-        delete_history_text = "No records to be deleted. Start adding your expenses to keep track of your " \
-                              "spendings! "
-        bot.send_message(chat_id, delete_history_text)
+    try:
+        if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
+            curr_day = datetime.now()
+            prompt = f"Enter the day, month, or All\n"
+            prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
+            prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+            reply_message = bot.reply_to(message, prompt)
+            bot.register_next_step_handler(reply_message, process_delete_argument)
+        else:
+            delete_history_text = "No records to be deleted. Start adding your expenses to keep track of your " \
+                                  "spendings! "
+            bot.send_message(chat_id, delete_history_text)
+
+    except Exception as e:
+        print("Exception occurred : ")
+        logger.error(str(e), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(e))
+
 
 
 def process_delete_argument(message):
@@ -539,6 +626,9 @@ if __name__ == '__main__':
     try:
         user_list = get_users()
         bot.polling(none_stop=True)
-    except Exception:
+    except Exception as e:
+        #Connection will be timed out with the set time interval - 3
         time.sleep(3)
-        print("Connection Timeout")
+        print("Exception occurred while processing : ")
+        logger.error(str(e), exc_info=True)
+
