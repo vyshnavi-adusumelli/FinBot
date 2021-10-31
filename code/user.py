@@ -2,11 +2,15 @@
 File contains functions that stores and retreives data from the .pickle file and also handles validations
 """
 import os
+import pathlib
 import pickle
 import re
 from datetime import datetime
+import logging
 
-
+logger = logging.getLogger()
+import pandas
+import pandas as pd
 
 class User:
 
@@ -18,10 +22,11 @@ class User:
         self.edit_transactions = {}
         self.edit_category = {}
         self.monthly_budget = 0
-
+        self.rules = {}
 
         for category in self.spend_categories:
             self.transactions[category] = []
+            self.rules[category] = []
 
     def save_user(self, userid):
         """
@@ -30,9 +35,15 @@ class User:
         :type: string
         :return: None
         """
-        data_dir = "../data"
-        with open("{}/{}.pickle".format(data_dir, userid), "wb") as f:
-            pickle.dump(self, f)
+
+        try:
+            data_dir = "data"
+            abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
+            with open(abspath, "wb") as f:
+                pickle.dump(self, f)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def validate_entered_amount(self, amount_entered):
         """
@@ -63,8 +74,12 @@ class User:
         :type: string
         :return: None
         """
-        self.transactions[category].append({"Date": date, "Value": value})
-        self.save_user(userid)
+        try:
+            self.transactions[category].append({"Date": date, "Value": value})
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
@@ -75,9 +90,12 @@ class User:
         :type: string
         :return: None
         """
+        try:
+            self.edit_transactions = existing_transaction
+            self.edit_category = edit_category
 
-        self.edit_transactions = existing_transaction
-        self.edit_category = edit_category
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def edit_transaction_date(self, new_date):
         """
@@ -88,10 +106,9 @@ class User:
         :rtype: dict
         """
 
-        new_date_object = datetime.strptime(new_date, "%d/%m/%Y")
         for transaction in self.transactions[self.edit_category]:
             if transaction == self.edit_transactions:
-                transaction["Date"] = new_date_object
+                transaction["Date"] = new_date
                 break
         return transaction
 
@@ -103,6 +120,7 @@ class User:
         :return: True
         :rtype: bool
         """
+
         self.transactions[self.edit_category].remove(self.edit_transactions)
         self.transactions[new_category].append(self.edit_transactions)
         return True
@@ -135,13 +153,16 @@ class User:
         if records is not None and self.transactions != records:
             # delete only the records specified
             for category in records:
-                for record in records[record]:
-                    self.transactions[category].remove(record)
+                for record in records[category]:
+                    try:
+                        self.transactions[category].remove(record)
+                    except Exception as e:
+                        print("Exception occurred : ")
+                        logger.error(str(e), exc_info=True)
         else:
             self.transactions = {}
             for category in self.spend_categories:
                 self.transactions[category] = []
-
 
     def validate_date_format(self, text, date_format):
         """
@@ -196,7 +217,6 @@ class User:
                     matched_dates[category].append(record)
         return matched_dates
 
-
     def display_transaction(self, transaction):
         """
         Helper function to turn the dictionary into a user-readable string
@@ -231,8 +251,12 @@ class User:
         :param userid:
         :return:
         """
-        self.monthly_budget = amount
-        self.save_user(userid)
+        try:
+            self.monthly_budget = amount
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
 
     def monthly_total(self):
         """
@@ -247,3 +271,23 @@ class User:
                 if transaction["Date"].strftime("%m") == date.strftime("%m"):
                     total_value += transaction["Value"]
         return total_value
+
+    def read_budget_csv(self, file, userid):
+        df = pd.read_csv(file)
+        df.columns = df.columns.str.lower()
+        df = df[["date", "description", "debit"]]
+        df = df.dropna()
+        df = df.loc[df["debit"] != 0]
+        for index, row in df.iterrows():
+            for category in self.rules.keys():
+                if row["description"] in self.rules[category]:
+                    date = datetime.strptime(row["date"], "%m/%d/%y")
+                    value = float(row["debit"])
+                    self.add_transaction(date, category, value, userid)
+                    df = df.drop(index)
+        return df
+
+    def create_rules_and_add_unknown_spending(self, category, description, date, value, userid):
+        self.rules[category].append(description)
+        self.add_transaction(date, category, value, userid)
+        self.save_user(userid)
