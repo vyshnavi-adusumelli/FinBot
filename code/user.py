@@ -1,23 +1,21 @@
 """
 File contains functions that stores and retreives data from the .pickle file and also handles validations
 """
-import os
+import logging
 import pathlib
 import pickle
 import re
 from datetime import datetime
-import logging
+import pandas as pd
 
 logger = logging.getLogger()
-import pandas
-import pandas as pd
+
 
 class User:
 
     def __init__(self, userid):
         self.spend_categories = ['Food', 'Groceries', 'Utilities', 'Transport', 'Shopping', 'Miscellaneous']
         self.spend_display_option = ['Day', 'Month']
-        self.save_user(userid)
         self.transactions = {}
         self.edit_transactions = {}
         self.edit_category = {}
@@ -27,6 +25,7 @@ class User:
         for category in self.spend_categories:
             self.transactions[category] = []
             self.rules[category] = []
+        self.save_user(userid)
 
     def save_user(self, userid):
         """
@@ -105,7 +104,7 @@ class User:
         :return: transactions dict
         :rtype: dict
         """
-
+        transaction = None
         for transaction in self.transactions[self.edit_category]:
             if transaction == self.edit_transactions:
                 transaction["Date"] = new_date
@@ -133,7 +132,7 @@ class User:
         :return: transactions dict
         :rtype: dict
         """
-
+        transaction = None
         for transaction in self.transactions[self.edit_category]:
             if transaction == self.edit_transactions:
                 transaction["Value"] = new_value
@@ -182,7 +181,7 @@ class User:
             pass
         return date
 
-    def get_records_by_date(self, date: datetime.date, chat_id: int, is_month: bool):
+    def get_records_by_date(self, date: datetime.date, is_month: bool):
         """
         Given a date and chat_id returns all records that match the filter
         If is_month is true, only matches year and month, not day
@@ -193,9 +192,6 @@ class User:
         :return: matched_dates which is the array of records for that day or month
         :rtype: array
         """
-        dateFormat = '%d-%b-%Y'
-        timeFormat = '%H:%M'
-        monthFormat = '%b-%Y'
         user_history = self.transactions
         if date == "all":
             return user_history
@@ -228,7 +224,7 @@ class User:
 
         for category in transaction:
             for record in transaction[category]:
-                final_str += f'{category}, {record["Date"].date()}, {record["Value"]}\n'
+                final_str += f'{category}, {record["Date"].date()}, {record["Value"]:.2f}\n'
 
         return final_str
 
@@ -264,7 +260,6 @@ class User:
         :return: total amount for the month
         """
         date = datetime.today()
-        query_result = ""
         total_value = 0
         for category in self.spend_categories:
             for transaction in self.transactions[category]:
