@@ -16,7 +16,6 @@ class User:
     def __init__(self, userid):
         self.spend_categories = ['Food', 'Groceries', 'Utilities', 'Transport', 'Shopping', 'Miscellaneous']
         self.spend_display_option = ['Day', 'Month']
-        self.save_user(userid)
         self.transactions = {}
         self.edit_transactions = {}
         self.edit_category = {}
@@ -26,6 +25,7 @@ class User:
         for category in self.spend_categories:
             self.transactions[category] = []
             self.rules[category] = []
+        self.save_user(userid)
 
     def save_user(self, userid):
         """
