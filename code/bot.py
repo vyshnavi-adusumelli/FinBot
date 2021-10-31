@@ -16,7 +16,7 @@ from datetime import datetime
 import pickle
 import pandas
 
-from user import User
+from code.user import User
 
 
 api_token = os.environ['API_TOKEN']#"INSERT API KEY HERE"

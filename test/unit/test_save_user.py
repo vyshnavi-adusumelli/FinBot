@@ -2,6 +2,7 @@
 Test for the save_user method
 """
 import os
+import pathlib
 import pickle
 
 from BaseCase import BaseCase
@@ -36,9 +37,10 @@ class TestSaveUser(BaseCase):
         # with no history, call save_user
         self.user.save_user(1)
         # assert the pickle exists
-        assert os.path.exists('data/1.pickle')
+        abspath = pathlib.Path("../data/1.pickle").absolute()
+        assert os.path.exists(abspath)
 
-        with open("data/1.pickle", "rb") as f:
+        with open(abspath, "rb") as f:
             new_user = pickle.load(f)
         # assert they are equal
         assert new_user is not None
@@ -60,9 +62,9 @@ class TestSaveUser(BaseCase):
         # with history, call save_user
         self.user.save_user(1)
         # assert the pickle exists
-        assert os.path.exists('data/1.pickle')
-
-        with open("data/1.pickle", "rb") as f:
+        abspath = pathlib.Path("../data/1.pickle").absolute()
+        assert os.path.exists(abspath)
+        with open(abspath, "rb") as f:
             new_user = pickle.load(f)
         # assert they are equal
         assert new_user is not None
