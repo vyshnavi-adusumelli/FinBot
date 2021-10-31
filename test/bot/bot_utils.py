@@ -27,7 +27,7 @@ class BotTest(unittest.TestCase):
         Creates a new user and ensures no data was left over
         :return: None
         """
-        abspath = pathlib.Path("../data").absolute()
+        abspath = pathlib.Path("data").absolute()
         if not os.path.exists(abspath):
             os.mkdir(abspath)
         reload(code.bot)
@@ -43,7 +43,7 @@ class BotTest(unittest.TestCase):
     def tearDown(self) -> None:
         # Clearing out next step handlers
         self.bot.next_step_backend.handlers = {}
-        path = f"../data/{CHAT_ID}.pickle"
+        path = f"data/{CHAT_ID}.pickle"
         abspath = pathlib.Path(path).absolute()
         if os.path.exists(abspath):
             os.remove(path)
