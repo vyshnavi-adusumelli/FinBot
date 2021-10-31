@@ -37,10 +37,10 @@ class TestGetRecordsByDate(BaseCase):
         wrong_date = wrong_date.replace(1, 1, 1)
         # given the user_list
         self.user.transactions = self.expected_list
-        user_history = self.user.get_records_by_date(wrong_date, 1, False)
+        user_history = self.user.get_records_by_date(wrong_date, False)
         # there should be no records
         assert user_history == self.create_transaction()
-        user_history = self.user.get_records_by_date(wrong_date, 1, True)
+        user_history = self.user.get_records_by_date(wrong_date, True)
         # there should be no records
         assert user_history == self.create_transaction()
 
@@ -56,7 +56,7 @@ class TestGetRecordsByDate(BaseCase):
         october = datetime.now()
         # make the date match october 2021
         october = october.replace(year=2021, month=10).date()
-        user_history = self.user.get_records_by_date(october, 1, True)
+        user_history = self.user.get_records_by_date(october, True)
         # the records should match october 2021
         expected_transactions = self.create_transaction()
         # filter everything that is Oct-2021
@@ -76,7 +76,7 @@ class TestGetRecordsByDate(BaseCase):
         october = datetime.now()
         # make the date match october 2021
         october = october.replace(year=2021, month=10, day=1).date()
-        user_history = self.user.get_records_by_date(october, 1, False)
+        user_history = self.user.get_records_by_date(october, False)
         # the records should match october 2021
         expected_transactions = self.create_transaction()
         # filter everything that is Oct-2021
@@ -92,6 +92,6 @@ class TestGetRecordsByDate(BaseCase):
         # given the user_list
         self.user.transactions = self.expected_list
 
-        user_history = self.user.get_records_by_date("all", 1, True)
+        user_history = self.user.get_records_by_date("all", True)
         # there should all
         assert user_history == self.expected_list

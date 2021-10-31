@@ -51,5 +51,6 @@ class TestDisplayTransaction(BaseCase):
                        self.user.spend_categories[1]: [{"Date": date, "Value": 5}]}
         expected_str = f'{self.user.spend_categories[0]}, {date.date()}, 10.00\n' \
                        f'{self.user.spend_categories[0]}, {date.date()}, 15.00\n' \
-                       f'{self.user.spend_categories[1]}, {date.date()}, 5.00'
-        assert self.user.display_transaction(transaction) == expected_str
+                       f'{self.user.spend_categories[1]}, {date.date()}, 5.00\n'
+        ret = self.user.display_transaction(transaction)
+        assert ret == expected_str

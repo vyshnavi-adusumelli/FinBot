@@ -50,8 +50,8 @@ class TestValidateEnteredAmount(BaseCase):
         number, the number is returned
         """
         # given a positive number
-        assert self.user.validate_entered_amount("1") == "1.00"
+        assert self.user.validate_entered_amount("1") == 1.00
         # given a positive number with decimals
-        assert self.user.validate_entered_amount("10.10") == "10.10"
+        assert self.user.validate_entered_amount("10.10") == 10.10
         # given a number with 14 digits
-        assert self.user.validate_entered_amount("1000000000.00") == "1000000000.00"
+        assert self.user.validate_entered_amount("1000000000.00") == 1000000000.00
