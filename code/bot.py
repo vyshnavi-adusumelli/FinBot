@@ -16,10 +16,10 @@ from datetime import datetime
 import pickle
 import pandas
 
-from user import User
+from code.user import User
 
 
-api_token = "INSERT API KEY HERE"
+api_token = os.environ['API_TOKEN']#"INSERT API KEY HERE"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -609,7 +609,7 @@ def get_users():
     :return: users
     :rtype: Dict
     """
-    data_dir = "../data"
+    data_dir = "data"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):

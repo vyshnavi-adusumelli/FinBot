@@ -30,25 +30,27 @@ class BotTest(unittest.TestCase):
         Creates a new user and ensures no data was left over
         :return: None
         """
-        os.chdir("test/bot")
+        if not os.path.exists("data"):
+            os.mkdir("data")
         reload(code.bot)
+        code.bot.api_token = os.environ['API_TOKEN']
         self.bot = code.bot.bot
         self.user = User(str(CHAT_ID))
+        self.user.save_user(str(CHAT_ID))
         # reloads the user list
-        # src.bot.user_list = src.bot.get_users()
+        code.bot.user_list = code.bot.get_users()
         # asserts the current user has no data
         assert self.user.get_number_of_transactions() == 0
 
     def tearDown(self) -> None:
         # Clearing out next step handlers
         self.bot.next_step_backend.handlers = {}
-        path = f"../data/{CHAT_ID}.pickle"
+        path = f"data/{CHAT_ID}.pickle"
         if os.path.isfile(path):
             os.remove(path)
         # verifying all old info was deleted
         self.user = User(CHAT_ID)
         assert self.user.get_number_of_transactions() == 0
-        os.chdir("../..")
 
     def create_record(self, amount: float) -> None:
         """
@@ -60,9 +62,6 @@ class BotTest(unittest.TestCase):
         self.user.save_user(CHAT_ID)
         code.bot.user_list = code.bot.get_users()
         assert CHAT_ID in code.bot.user_list.keys()
-
-
-
 
     def create_text_message(self, text: str) -> types.Message:
         """
