@@ -16,10 +16,10 @@ from datetime import datetime
 import pickle
 import pandas
 
-from user import User
+from code.user import User
 
 
-api_token = "INSERT API KEY HERE"
+api_token = os.environ['API_TOKEN']#"INSERT API KEY HERE"
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -468,9 +468,9 @@ def handle_budget_document_csv(message):
         chat_id = str(message.chat.id)
         file_info = bot.get_file(message.document.file_id)
         download_file = bot.download_file(file_info.file_path)
-        with open("../data/{}_spending.csv".format(chat_id), mode="wb") as f:
+        with open("data/{}_spending.csv".format(chat_id), mode="wb") as f:
             f.write(download_file)
-        unknown_spending = user_list[chat_id].read_budget_csv("../data/{}_spending.csv".format(chat_id), chat_id)
+        unknown_spending = user_list[chat_id].read_budget_csv("data/{}_spending.csv".format(chat_id), chat_id)
         for index, row in unknown_spending.iterrows():
             text = "How do you want to categorize the following transaction \n"
             text += "Date: {}. Description: {}. Debit: {}. \n".format(row["date"], row["description"], row["debit"])
@@ -609,7 +609,7 @@ def get_users():
     :return: users
     :rtype: Dict
     """
-    data_dir = "../data"
+    data_dir = "data"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
@@ -631,4 +631,3 @@ if __name__ == '__main__':
         time.sleep(3)
         print("Exception occurred while processing : ")
         logger.error(str(e), exc_info=True)
-
