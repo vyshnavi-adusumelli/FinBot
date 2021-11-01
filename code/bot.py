@@ -83,7 +83,7 @@ def post_budget_input(message):
         if amount_value == 0:  # cannot be $0 spending
             raise Exception("Budget amount has to be a non-zero number.")
         user_list[chat_id].add_monthly_budget(amount_value, chat_id)
-        bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(str(amount_value)))
+        bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(format(amount_value, '.2f')))
 
     except Exception as ex:
         bot.reply_to(message, 'Oh no. ' + str(ex))
@@ -165,7 +165,7 @@ def post_amount_input(message):
             raise Exception("Spent amount has to be a non-zero number.")
 
         date_of_entry = datetime.today()
-        date_str, category_str, amount_str = str(date_of_entry), str(option[chat_id]), str(amount_value)
+        date_str, category_str, amount_str = date_of_entry.strftime("%m/%d/%Y %H:%M:%S"), str(option[chat_id]), format(amount_value, '.2f')
         user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
         total_value = user_list[chat_id].monthly_total()
         add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
@@ -206,14 +206,15 @@ def show_history(message):
                 for transaction in user_list[chat_id].transactions[category]:
                     count = count + 1
                     date = transaction["Date"].strftime("%m/%d/%y")
-                    value = str(transaction["Value"])
+                    value = format(transaction["Value"], '.2f')
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
             if count == 0:
                 raise Exception("Sorry! No spending records found!")
             bot.send_message(chat_id, spend_history_str + spend_total_str)
+
     except Exception as ex:
         logger.error(str(ex), exc_info=True)
-        bot.reply_to(message, "Oops!" + str(ex))
+        bot.reply_to(message, str(ex))
 
 
 @bot.message_handler(commands=['display'])
@@ -251,7 +252,7 @@ def display_total(message):
     :type: object
     :return: None
     """
-    dateFormat = '%d/%m/%Y'
+    dateFormat = '%m/%d/%Y'
     try:
         chat_id = str(message.chat.id)
         day_week_month = message.text
@@ -275,7 +276,7 @@ def display_total(message):
                             format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
             total_spendings = "Here are your total spendings for the date {} \n".format(
-                datetime.today().strftime("%d-%m-%Y"))
+                datetime.today().strftime("%m/%d/%Y"))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}".format(total_value)
             bot.send_message(chat_id, total_spendings)
@@ -292,7 +293,7 @@ def display_total(message):
                             format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
             total_spendings = "Here are your total spendings for the Month {} \n".format(
-                datetime.today().strftime("%m"))
+                datetime.today().strftime("%B"))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}\n".format(total_value)
             total_spendings += "Budget for the month {}".format(str(budget_value))
@@ -413,7 +414,7 @@ def edit_date(message):
     updated_transaction = user_list[chat_id].edit_transaction_date(user_date)
     user_list[chat_id].save_user(chat_id)
     edit_message = "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-        updated_transaction["Date"], updated_transaction["Value"])
+        updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"), format(updated_transaction["Value"], '.2f'))
     bot.reply_to(message, edit_message)
 
 
@@ -452,7 +453,7 @@ def edit_cost(message):
         user_list[chat_id].save_user(chat_id)
         updated_transaction = user_list[chat_id].edit_transaction_value(new_cost)
         edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"], updated_transaction["Value"])
+            updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"), format(updated_transaction["Value"], '.2f'))
         bot.reply_to(message, edit_message)
 
     else:
