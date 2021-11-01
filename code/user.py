@@ -248,8 +248,9 @@ class User:
         :return: None
         """
         try:
-            self.monthly_budget = amount
-            self.save_user(userid)
+            if amount != 0:
+              self.monthly_budget = amount
+              self.save_user(userid)
 
         except Exception as e:
             logger.error(str(e), exc_info=True)
