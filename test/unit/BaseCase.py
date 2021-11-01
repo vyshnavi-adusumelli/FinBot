@@ -1,4 +1,5 @@
 import os.path
+import pathlib
 import unittest
 
 from code.user import User
@@ -12,7 +13,11 @@ class BaseCase(unittest.TestCase):
         """
         Creates a new user
         """
-        os.chdir("test")
+        # os.chdir("test")
+        abspath = pathlib.Path("data").absolute()
+        if not os.path.exists(abspath):
+            os.mkdir(abspath)
+
         print(os.getcwd())
         self.user = User("1")
         self.expected_list = self.create_transaction()
@@ -21,9 +26,9 @@ class BaseCase(unittest.TestCase):
         """
         Removes the user pickle
         """
-        os.chdir("..")
-        if os.path.exists("../data/1.pickle"):
-            os.remove("../data/1.pickle")
+        abspath = pathlib.Path("data").absolute()
+        if not os.path.exists(abspath):
+            os.mkdir(abspath)
 
     def create_transaction(self):
         """
