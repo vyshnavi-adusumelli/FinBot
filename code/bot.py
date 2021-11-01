@@ -83,7 +83,7 @@ def post_budget_input(message):
         if amount_value == 0:  # cannot be $0 spending
             raise Exception("Budget amount has to be a non-zero number.")
         user_list[chat_id].add_monthly_budget(amount_value, chat_id)
-        bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(str(amount_value)))
+        bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(format(amount_value, '.2f')))
 
     except Exception as ex:
         bot.reply_to(message, 'Oh no. ' + str(ex))
@@ -165,7 +165,7 @@ def post_amount_input(message):
             raise Exception("Spent amount has to be a non-zero number.")
 
         date_of_entry = datetime.today()
-        date_str, category_str, amount_str = date_of_entry.strftime("%m/%d/%Y %H:%M:%S"), str(option[chat_id]), str(format(amount_value, '.2f'))
+        date_str, category_str, amount_str = date_of_entry.strftime("%m/%d/%Y %H:%M:%S"), str(option[chat_id]), format(amount_value, '.2f')
         user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
         total_value = user_list[chat_id].monthly_total()
         add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
@@ -206,7 +206,7 @@ def show_history(message):
                 for transaction in user_list[chat_id].transactions[category]:
                     count = count + 1
                     date = transaction["Date"].strftime("%m/%d/%y")
-                    value = str(format(transaction["Value"], '.2f'))
+                    value = format(transaction["Value"], '.2f')
                     spend_total_str += "Category: {} Date: {} Value: {} \n".format(category, date, value)
             if count == 0:
                 raise Exception("Sorry! No spending records found!")
