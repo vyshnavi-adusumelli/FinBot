@@ -81,8 +81,8 @@ def post_budget_input(message):
         chat_id = str(message.chat.id)
         amount_entered = message.text
         amount_value = user_list[chat_id].validate_entered_amount(amount_entered)  # validate
-        if amount_value < 0:  # cannot be less than $0 spending
-            raise Exception("Budget amount has to be a non-negative number.")
+        if amount_value == 0:  # cannot be $0 spending
+            raise Exception("Budget amount has to be a positive number.")
         user_list[chat_id].add_monthly_budget(amount_value, chat_id)
         bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(str(amount_value)))
 
