@@ -63,7 +63,8 @@ def command_budget(message):
     option.pop(chat_id, None)
     if chat_id not in user_list.keys():
         user_list[chat_id] = User(chat_id)
-    message = bot.send_message(chat_id, 'How much is your monthly budget? \n(Enter numeric values only)')
+    bot.send_message(chat_id, 'Your current monthly budget is {}'.format(user_list[chat_id].monthly_budget))
+    message = bot.send_message(chat_id, 'Enter an amount to update your monthly budget. \n(Enter numeric values only)')
     bot.register_next_step_handler(message, post_budget_input)
 
 
@@ -81,7 +82,7 @@ def post_budget_input(message):
         amount_entered = message.text
         amount_value = user_list[chat_id].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Budget amount has to be a non-zero number.")
+            raise Exception("Budget amount has to be a positive number.")
         user_list[chat_id].add_monthly_budget(amount_value, chat_id)
         bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(format(amount_value, '.2f')))
 
@@ -157,6 +158,9 @@ def post_amount_input(message):
     :type: object
     :return: None
     """
+
+    global user_list
+    global option
     try:
         chat_id = str(message.chat.id)
         amount_entered = message.text
@@ -171,11 +175,12 @@ def post_amount_input(message):
         add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
             amount_str, category_str, date_str)
 
-        if total_value > user_list[chat_id].monthly_budget:
-            bot.send_message(chat_id, text="*You have gone over the monthly budget*",
-                             parse_mode='Markdown')
-        elif total_value >= 0.8 * user_list[chat_id].monthly_budget:
-            bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
+        if user_list[chat_id].monthly_budget > 0:
+            if total_value > user_list[chat_id].monthly_budget:
+                bot.send_message(chat_id, text="*You have gone over the monthly budget*",
+                                 parse_mode='Markdown')
+            elif total_value >= 0.8*user_list[chat_id].monthly_budget:
+                bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
                              parse_mode='Markdown')
         bot.send_message(chat_id, add_message)
     except Exception as ex:
@@ -198,7 +203,7 @@ def show_history(message):
         count = 0
         if chat_id not in list(user_list.keys()):
             raise Exception("Sorry! No spending records found!")
-        spend_history_str = "Here is your spending history : \nDATE, CATEGORY, AMOUNT\n----------------------\n"
+        spend_history_str = "Here is your spending history : \nCATEGORY, DATE, AMOUNT\n----------------------\n"
         if len(user_list[chat_id].transactions) == 0:
             raise Exception("Sorry! No spending records found!")
         else:
@@ -316,8 +321,8 @@ def edit1(message):
 
     try:
         if chat_id in list(user_list.keys()):
-            msg = bot.reply_to(message, "Please enter the date, category and value of the transaction you made (Eg: "
-                                        "01/03/2021,Transport,25)")
+            msg = bot.reply_to(message, "Please enter the date (in mm/dd/yyyy format), category and "
+                                        "value of the transaction you made (Eg: 01/03/2021,Transport,25)")
             bot.register_next_step_handler(msg, edit_list2)
 
         else:
@@ -524,6 +529,7 @@ def command_delete(message):
     :type: object
     :return: None
     """
+    global user_list
     dateFormat = '%d-%b-%Y'
     monthFormat = '%b-%Y'
     chat_id = str(message.chat.id)
@@ -554,6 +560,7 @@ def process_delete_argument(message):
     :type: object
     :return: None
     """
+    global user_list
     dateFormat = '%d-%b-%Y'
     monthFormat = '%b-%Y'
     text = message.text
@@ -588,7 +595,7 @@ def process_delete_argument(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add("Yes")
         markup.add("No")
-        response_str += "\nReply YES or NO"
+        response_str += "\nReply Yes or No"
         response = bot.reply_to(message, response_str, reply_markup=markup)
         bot.register_next_step_handler(response, handle_confirmation, records_to_delete)
 
