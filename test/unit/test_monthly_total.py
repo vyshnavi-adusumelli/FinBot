@@ -3,7 +3,7 @@ Tests the monthly_total_method
 """
 
 from BaseCase import BaseCase
-
+from datetime import datetime
 
 class TestMonthlyTotal(BaseCase):
     """

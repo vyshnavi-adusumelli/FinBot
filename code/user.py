@@ -249,8 +249,8 @@ class User:
         """
         try:
             if amount != 0:
-              self.monthly_budget = amount
-              self.save_user(userid)
+                self.monthly_budget = amount
+                self.save_user(userid)
 
         except Exception as e:
             logger.error(str(e), exc_info=True)
