@@ -67,14 +67,24 @@ The below instructions can be followed in order to set-up this bot at your end i
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
 
 
+## Version 1.0.0
 
+### Contact Us
+   E-mail: 
+   
+### Team Members
+- Ashley King
+- Manoj Kumar
+- Rakesh Muppala
+- Sayali Parab
+- Ashwin Das
+- Renji Joseph Sabu
 
+## Version 1.0
 
-
-<hr>
-<p>--------------------------------------------------------------------------------------------------</p>
-<p>Title:'Track My Dollar'</p>
-<p>Version: '1.0'</p>
-<p>Description: 'An easy to use Telegram Bot to track everyday expenses'</p>
-<p>Authors:'Dev, Prakruthi, Radhika, Rohan, Sunidhi'</p>
-<p>--------------------------------------------------------------------------------------------------</p>
+### Team Members
+- Dev 
+- Prakruthi 
+- Radhika
+- Rohan
+- Sunidhi
