@@ -71,7 +71,10 @@ def post_budget_input(message):
     """
     Receives the amount entered by the user and then adds it to the monthly_budget attribute of the user object. An
     error is displayed if the entered amount is zero. Else, a message is shown that the budget has been added. :param
-    message: telebot.types.Message object representing the message object :type: object :return: None
+    message: telebot.types.Message object representing the message object.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     try:
         chat_id = str(message.chat.id)
@@ -91,7 +94,10 @@ def command_add(message):
     """
     Handles the command 'add'. Lists the categories from which the user can select. The function
     'post_category_selection' is called next. :param message: telebot.types.Message object representing the message
-    object :type: object :return: None
+    object
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     chat_id = str(message.chat.id)
     option.pop(chat_id, None)
@@ -116,8 +122,10 @@ def post_category_selection(message):
     """
     Receives the category selected by the user and then asks for the amount spend. If an invalid category is given,
     an error message is displayed followed by command list. IF the category given is valid, 'post_amount_input' is
-    called next. :param message: telebot.types.Message object representing the message object :type: object :return:
-    None
+    called next.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     chat_id = str(message.chat.id)
     try:
@@ -213,7 +221,10 @@ def command_display(message):
     """
     Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
     transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
-    next. :param message: telebot.types.Message object representing the message object :type: object :return: None
+    next.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     chat_id = str(message.chat.id)
     if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
@@ -295,7 +306,7 @@ def display_total(message):
 @bot.message_handler(commands=['edit'])
 def edit1(message):
     """
-    Handles the command 'edit' and then displays a message explaining the format. The function 'edit2' is called next.
+    Handles the command 'edit' and then displays a message explaining the format. The function 'edit_list2' is called next.
     :param message: telebot.types.Message object representing the message object
     :type: object
     :return: None
@@ -317,6 +328,12 @@ def edit1(message):
 
 
 def edit_list2(message):
+    """
+    Parses the input from the user message, and finds the appropriate transaction. Asks the user whether they
+    want to update the date, value, or category of the transaction, and then passes control to edit3 function
+    :param message:
+    :return:
+    """
     try:
         chat_id = str(message.chat.id)
         info = message.text
@@ -355,8 +372,10 @@ def edit_list2(message):
 def edit3(message):
     """
     Receives the user's input corresponding to what they want to edit, and then transfers the execution to the
-    function according to the choice. :param message: telebot.types.Message object representing the message object
-    :type: object :return: None
+    function according to the choice.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     choice1 = message.text
     chat_id = str(message.chat.id)
@@ -380,8 +399,10 @@ def edit3(message):
 def edit_date(message):
     """
     This function is called if the user chooses to edit the date of a transaction. This function receives the new
-    date and updates the transaction. :param message: telebot.types.Message object representing the message object
-    :type: object :return: None
+    date and updates the transaction.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     new_date = message.text
     chat_id = str(message.chat.id)
@@ -399,8 +420,10 @@ def edit_date(message):
 def edit_cat(message):
     """
     This function is called if the user chooses to edit the category of a transaction. This function receives the new
-    category and updates the transaction. :param message: telebot.types.Message object representing the message
-    object :type: object :return: None
+    category and updates the transaction.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
     """
     chat_id = str(message.chat.id)
     new_category = message.text.strip()
@@ -439,6 +462,14 @@ def edit_cost(message):
 
 @bot.message_handler(content_types=['document'])
 def handle_budget_document_csv(message):
+    """
+    This function is called if the user inputs a csv file that contains their budget in a csv format with column names
+    date, description, and debit. The function reads the csv file and then for transactions that the bot does not
+    know how to categorize, it sends a message to the user asking how they would like for that transaction to be categorized.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
     try:
         chat_id = str(message.chat.id)
         file_info = bot.get_file(message.document.file_id)
@@ -461,7 +492,14 @@ def handle_budget_document_csv(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def csv_callback(call):
-
+    """
+        This function is used to handle the callback with the data received from the user pressing a category option
+        for the transactions that the bot read from the csv file but did not know how to categorize.The callback object
+        contains the category the user choose for that particular transaction.
+        :param call: telegram.CallbackQuery representing the callback object
+        :type: object
+        :return: None
+        """
     try:
         data = call.data.split(",")
         category = data[0]
@@ -576,7 +614,7 @@ def get_users():
     """
     Reads data and returns user list as a Dict
     :return: users
-    :rtype: Dict
+    :rtype: dict
     """
     data_dir = "data"
     users = {}
