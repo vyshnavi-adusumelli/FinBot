@@ -33,3 +33,5 @@ class TestAddMonthlyBudget(BaseCase):
         assert self.user.monthly_budget == amount_valid
 
 
+if __name__ == '__main__':
+    unittest.main()
