@@ -158,9 +158,6 @@ def post_amount_input(message):
     :type: object
     :return: None
     """
-
-    global user_list
-    global option
     try:
         chat_id = str(message.chat.id)
         amount_entered = message.text
@@ -529,7 +526,6 @@ def command_delete(message):
     :type: object
     :return: None
     """
-    global user_list
     dateFormat = '%d-%b-%Y'
     monthFormat = '%b-%Y'
     chat_id = str(message.chat.id)
@@ -560,7 +556,6 @@ def process_delete_argument(message):
     :type: object
     :return: None
     """
-    global user_list
     dateFormat = '%d-%b-%Y'
     monthFormat = '%b-%Y'
     text = message.text
