@@ -225,7 +225,7 @@ def show_history(message):
             bot.send_message(chat_id, spend_history_str + spend_total_str)
     except Exception as e:
         logger.error(str(e), exc_info=True)
-        bot.reply_to(message, "Oops!" + str(e))
+        bot.reply_to(message, str(e))
 
 
 
