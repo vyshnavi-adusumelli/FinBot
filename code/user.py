@@ -243,8 +243,9 @@ class User:
         :param userid:
         :return:
         """
-        self.monthly_budget = amount
-        self.save_user(userid)
+        if amount != 0:
+            self.monthly_budget = amount
+            self.save_user(userid)
 
     def monthly_total(self):
         """
