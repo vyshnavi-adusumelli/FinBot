@@ -65,7 +65,8 @@ def command_budget(message):
     option.pop(chat_id, None)
     if chat_id not in user_list.keys():
         user_list[chat_id] = User(chat_id)
-    message = bot.send_message(chat_id, 'How much is your monthly budget? \n(Enter numeric values only)')
+    bot.send_message(chat_id, 'Your current monthly budget is {}'.format(user_list[chat_id].monthly_budget))
+    message = bot.send_message(chat_id, 'Enter an amount to update your monthly budget. \n(Enter numeric values only)')
     bot.register_next_step_handler(message, post_budget_input)
 
 def post_budget_input(message):
@@ -80,8 +81,8 @@ def post_budget_input(message):
         chat_id = str(message.chat.id)
         amount_entered = message.text
         amount_value = user_list[chat_id].validate_entered_amount(amount_entered)  # validate
-        if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Budget amount has to be a non-zero number.")
+        if amount_value < 0:  # cannot be less than $0 spending
+            raise Exception("Budget amount has to be a non-negative number.")
         user_list[chat_id].add_monthly_budget(amount_value, chat_id)
         bot.send_message(chat_id, 'The budget for this month has been set as ${}'.format(str(amount_value)))
 
@@ -172,12 +173,13 @@ def post_amount_input(message):
         add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
             amount_str, category_str, str(date_to_print), total_value)
 
-        if total_value > user_list[chat_id].monthly_budget:
-            bot.send_message(chat_id, text="*You have gone over the monthly budget*",
+        if user_list[chat_id].monthly_budget > 0:
+            if total_value > user_list[chat_id].monthly_budget:
+                bot.send_message(chat_id, text="*You have gone over the monthly budget*",
+                                 parse_mode='Markdown')
+            elif total_value >= 0.8*user_list[chat_id].monthly_budget:
+                bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
                              parse_mode='Markdown')
-        elif total_value >= 0.8*user_list[chat_id].monthly_budget:
-            bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
-                         parse_mode='Markdown')
         bot.send_message(chat_id, add_message)
 
 
