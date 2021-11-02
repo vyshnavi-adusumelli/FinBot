@@ -59,6 +59,5 @@ jobs:
           API_TOKEN: ${{ secrets.API_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: |
-          python -m pytest -v test/
-          pytest --cov=./ --cov-report=xml
+          python -m pytest -v --cov=./ --cov-report=xml test/
         
