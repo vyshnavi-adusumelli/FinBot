@@ -18,6 +18,7 @@ setup(
     ],
     license='MIT',
     install_requires=[
-        'pyTelegramBotAPI==4.1.0'
+        'pyTelegramBotAPI==4.1.0',
+        'pandas==1.3.4'
     ]
 )

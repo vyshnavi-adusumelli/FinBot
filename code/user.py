@@ -1,5 +1,5 @@
 """
-File contains functions that stores and retreives data from the .pickle file and also handles validations
+File contains functions that stores and retrieves data from the .pickle file and also handles validations
 """
 import logging
 import pathlib
@@ -256,11 +256,12 @@ class User:
         Given amount and userid, edit the budget of the current user
         :param amount: budget amount
         :param userid:
-        :return:
+        :return: None
         """
         try:
-            self.monthly_budget = amount
-            self.save_user(userid)
+            if amount != 0:
+                self.monthly_budget = amount
+                self.save_user(userid)
 
         except Exception as e:
             logger.error(str(e), exc_info=True)
@@ -268,7 +269,8 @@ class User:
     def monthly_total(self):
         """
         Calculates total expenditure for the current month
-        :return: total amount for the month
+        :return: total_value - rounded amount if valid, else 0.
+        :rtype: float
         """
         date = datetime.today()
         total_value = 0
@@ -281,6 +283,15 @@ class User:
 
 
     def read_budget_csv(self, file, userid):
+        """
+        This function reads the csv file passed to the bot by the user into a Pandas Dataframe.
+        It goes through each transaction, and checks if it knows how to categorize that transaction. If it does,
+        it will add the transaction to the user history.
+        :param file: csv file sent to the telegram bot
+        :param userid: chat id of the conversation
+        :return: df pandas dataframe that contains all of the transactions that the bot could not categorize by itself
+        :rtype: Dataframe
+        """
         df = pd.read_csv(file)
         df.columns = df.columns.str.lower()
         df = df[["date", "description", "debit"]]
@@ -296,6 +307,21 @@ class User:
         return df
 
     def create_rules_and_add_unknown_spending(self, category, description, date, value, userid):
+        """
+        This function is used to remember how an user categorized a certain transaction, so that the next time
+        the bot sees the transaction the bot will be able to categorize it automatically.
+        :param category: category of the transaction
+        :type: string
+        :param description:
+        :type: string
+        :param date:
+        :type: Datetime object
+        :param value:
+        :type: float
+        :param userid:
+        :type: string
+        :return: None
+        """
         self.rules[category].append(description)
         self.add_transaction(date, category, value, userid)
         self.save_user(userid)
