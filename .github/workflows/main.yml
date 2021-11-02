@@ -60,4 +60,6 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: |
           python -m pytest -v --cov=test/ --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
         
