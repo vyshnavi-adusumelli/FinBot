@@ -48,7 +48,7 @@ class TestDelete(BotTest):
         assert self.bot.worker_pool.exception_info is None
 
         # send the current day
-        dateFormat = '%d-%b-%Y'
+        dateFormat = '%m/%d/%Y'
         tr = self.user.transactions[self.user.spend_categories[0]][0]
         date = tr['Date'].strftime(dateFormat)
         msg = self.create_text_message(date)
