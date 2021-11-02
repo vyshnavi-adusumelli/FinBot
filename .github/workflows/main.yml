@@ -48,4 +48,6 @@ jobs:
           pip install pytest
         # Run the tests. I'm using pytest and the file is in the tests directory.
       - name: Run tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
         run: python -m pytest -v test/
