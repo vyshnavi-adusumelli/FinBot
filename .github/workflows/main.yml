@@ -52,7 +52,7 @@ jobs:
           pip install pylint
       - name: Run pylint
         run: |
-          pylint code/
+          pylint -r y code/
       - name: Run tests
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
