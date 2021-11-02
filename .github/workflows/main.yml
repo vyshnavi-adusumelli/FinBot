@@ -52,3 +52,9 @@ jobs:
           API_TOKEN: ${{ secrets.API_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python -m pytest -v test/
+      - name: Install pylint
+        run: |
+          pip install pylint
+      - name: Run pylint
+        run: |
+          pylint code/
