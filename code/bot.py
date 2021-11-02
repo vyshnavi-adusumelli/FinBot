@@ -644,7 +644,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://mydollarbot.com/' + api_token)
+    bot.set_webhook(url='https://mydollarbot.herokuapp.com/' + api_token)
     return "!", 200
 
 
