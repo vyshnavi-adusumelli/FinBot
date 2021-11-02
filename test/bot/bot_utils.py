@@ -1,7 +1,7 @@
 """
 Util functions for bot tests
 """
-
+import logging
 import os
 import pathlib
 import unittest
@@ -14,6 +14,7 @@ import code.bot
 from code.user import User
 
 CHAT_ID = os.environ['CHAT_ID'] if 'CHAT_ID' in os.environ else 1
+# logging.log(CHAT_ID)
 TOKEN = os.environ['API_TOKEN'] if 'API_TOKEN' in os.environ else 0
 
 
@@ -35,6 +36,7 @@ class BotTest(unittest.TestCase):
         self.bot = code.bot.bot
         self.user = User(str(CHAT_ID))
         self.user.save_user(str(CHAT_ID))
+        self.chat_id = CHAT_ID
         # reloads the user list
         code.bot.user_list = code.bot.get_users()
         # asserts the current user has no data
