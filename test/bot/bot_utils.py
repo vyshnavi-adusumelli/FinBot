@@ -14,7 +14,6 @@ import code.bot
 from code.user import User
 
 CHAT_ID = os.environ['CHAT_ID'] if 'CHAT_ID' in os.environ else 1
-# logging.log(CHAT_ID)
 TOKEN = os.environ['API_TOKEN'] if 'API_TOKEN' in os.environ else 0
 
 

@@ -5,7 +5,6 @@ import logging
 import pathlib
 import pickle
 import re
-from calendar import monthrange
 from datetime import datetime
 import pandas as pd
 
@@ -23,14 +22,11 @@ class User:
         self.monthly_budget = 0
         self.rules = {}
 
-        self.CURRENT_DATE = None
-        self.MIN_DATE = None
-        self.MAX_DATE = None
-
-        # m_names.extend(month_names)
-        self.MONTH_NAMES = ['-']
-        self.MONTH_NAMES.extend(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'])
-        self.DAYS_NAMES = ['Mon', 'Tu', 'Wed', 'Th', 'Fr', 'Sat', 'Sun']
+        # for the calendar widget
+        self.max_date = datetime.today()
+        self.curr_date = datetime.today()
+        self.min_date = datetime.today()
+        self.min_date = self.min_date.replace(year=self.min_date.year - 1)
 
 
         for category in self.spend_categories:

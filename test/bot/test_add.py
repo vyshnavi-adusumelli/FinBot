@@ -30,7 +30,7 @@ class TestAdd(BotTest):
         assert self.bot.worker_pool.exception_info is None
 
         # send the calendar date
-        query = self.create_callback_query("2021/11/01", msg)
+        query = self.create_callback_query("2021,11,01", msg)
         self.bot.process_new_callback_query([query])
         time.sleep(3)
 
@@ -145,7 +145,7 @@ class TestAdd(BotTest):
         assert self.bot.worker_pool.exception_info is None
 
         # send the calendar date
-        query = self.create_callback_query("2021/11/01", msg)
+        query = self.create_callback_query("2021,11,01", msg)
         self.bot.process_new_callback_query([query])
         time.sleep(3)
 
@@ -192,7 +192,7 @@ class TestAdd(BotTest):
         assert self.bot.worker_pool.exception_info is None
 
         # send the calendar date
-        query = self.create_callback_query("2021/11/01", msg)
+        query = self.create_callback_query("2021,11,01", msg)
         self.bot.process_new_callback_query([query])
         time.sleep(3)
 

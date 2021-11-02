@@ -4,7 +4,6 @@ File contains bot message handlers and their associated functions
 import logging
 import os
 from calendar import monthrange
-import logging
 import pathlib
 import pickle
 import re
@@ -33,11 +32,6 @@ telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
 all_transactions = []
-
-# for the calendar widget
-min_date = datetime.today()
-max_date = datetime.today()
-curr_date = datetime.today()
 
 logger = logging.getLogger()
 
@@ -110,37 +104,43 @@ def command_add(message):
     """
     chat_id = str(message.chat.id)
     option.pop(chat_id, None)
-    global min_date
-
+    if chat_id not in user_list.keys():
+        user_list[chat_id] = User(chat_id)
+    user = user_list[chat_id]
     try:
-        min_date = datetime(year=2010, month=1, day=1)
-        markup = get_calendar_buttons()
-        bot.send_message(chat_id, "Enter a date: or type in the format of mm/dd/yyyy", reply_markup=markup)
+        markup = get_calendar_buttons(user)
+        bot.send_message(chat_id, "Click the date of purchase:", reply_markup=markup)
     except Exception as ex:
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, 'Processing Failed - \nError : ' + str(ex))
 
 
-def is_callback(query):
-    return query.data != "none" and "," not in query.data
+def is_add_callback(query):
+    return query.data != "none" and "/" not in query.data
 
 
-@bot.callback_query_handler(func=is_callback, filter=None)
+@bot.callback_query_handler(func=is_add_callback, filter=None)
 def post_date_selection(message):
     chat_id = str(message.message.chat.id)
     option.pop(chat_id, None)
 
     try:
+        if chat_id not in user_list.keys():
+            user_list[chat_id] = User(chat_id)
+        user = user_list[chat_id]
         # if they want to go back/forward a month
-        date_to_add = handler_callback(message.data)
+        date_to_add = handler_callback(message.data, user)
         if date_to_add is None:
             # just edit the calendar
             bot.edit_message_reply_markup(chat_id=message.from_user.id, message_id=message.message.message_id,
-                                          reply_markup=get_calendar_buttons())
+                                          reply_markup=get_calendar_buttons(user))
             return
-        if chat_id not in user_list.keys():
-            user_list[chat_id] = User(chat_id)
+        if date_to_add == -1:
+            # invalid date
+            fmt_min, fmt_max = user.min_date.strftime("%m/%d/%Y"), user.max_date.strftime("%m/%d/%Y")
+            bot.send_message(chat_id, "Enter a date between {} and {}".format(fmt_min, fmt_max))
+            return
         spend_categories = user_list[chat_id].spend_categories
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.row_width = 2
@@ -160,6 +160,7 @@ def post_category_selection(message, date_to_add):
     an error message is displayed followed by command list. IF the category given is valid, 'post_amount_input' is
     called next.
     :param message: telebot.types.Message object representing the message object
+    :param date_to_add: the date of the purchase
     :type: object
     :return: None
     """
@@ -200,7 +201,8 @@ def post_amount_input(message, date_of_entry):
         if amount_value == 0:  # cannot be $0 spending
             raise Exception("Spent amount has to be a non-zero number.")
 
-        date_str, category_str, amount_str = date_of_entry.strftime("%m/%d/%Y %H:%M:%S"), str(option[chat_id]), format(amount_value, '.2f')
+        date_str, category_str, amount_str = date_of_entry.strftime("%m/%d/%Y %H:%M:%S"), str(option[chat_id]), format(
+            amount_value, '.2f')
         user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
         total_value = user_list[chat_id].monthly_total()
         add_message = 'The following expenditure has been recorded: You have spent ${} for {} on {}'.format(
@@ -210,9 +212,9 @@ def post_amount_input(message, date_of_entry):
             if total_value > user_list[chat_id].monthly_budget:
                 bot.send_message(chat_id, text="*You have gone over the monthly budget*",
                                  parse_mode='Markdown')
-            elif total_value >= 0.8*user_list[chat_id].monthly_budget:
+            elif total_value >= 0.8 * user_list[chat_id].monthly_budget:
                 bot.send_message(chat_id, text="*You have used 80% of the monthly budget.*",
-                             parse_mode='Markdown')
+                                 parse_mode='Markdown')
         bot.send_message(chat_id, add_message)
     except Exception as ex:
         print("Exception occurred : ")
@@ -308,7 +310,7 @@ def display_total(message):
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%d") == query.strftime("%d"):
-                        query_result += "Category {} Date {} Value {:.2f} \n".\
+                        query_result += "Category {} Date {} Value {:.2f} \n". \
                             format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
             total_spendings = "Here are your total spendings for the date {} \n".format(
@@ -325,7 +327,7 @@ def display_total(message):
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%m") == query.strftime("%m"):
-                        query_result += "Category {} Date {} Value {:.2f} \n".\
+                        query_result += "Category {} Date {} Value {:.2f} \n". \
                             format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
             total_spendings = "Here are your total spendings for the Month {} \n".format(
@@ -524,7 +526,9 @@ def handle_budget_document_csv(message):
             bot.send_message(chat_id, text, reply_markup=buttons)
 
     except Exception as ex:
-        print(ex)
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, "Processing Failed - Error: " + str(ex))
 
 
 def is_csv_callback(query):
@@ -551,7 +555,9 @@ def csv_callback(call):
         user_list[chat_id].create_rules_and_add_unknown_spending(category, description, date, debit, chat_id)
         bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
     except Exception as ex:
-        print(ex)
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.send_message(call.message.chat_id, "Processing Failed - Error: " + str(ex))
 
 
 @bot.message_handler(commands=['delete'])
@@ -564,8 +570,8 @@ def command_delete(message):
     :type: object
     :return: None
     """
-    dateFormat = '%d-%b-%Y'
-    monthFormat = '%b-%Y'
+    dateFormat = '%m/%d/%Y'
+    monthFormat = '%m/%Y'
     chat_id = str(message.chat.id)
     try:
         if chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0:
@@ -594,8 +600,8 @@ def process_delete_argument(message):
     :type: object
     :return: None
     """
-    dateFormat = '%d-%b-%Y'
-    monthFormat = '%b-%Y'
+    dateFormat = '%m/%d/%Y'
+    monthFormat = '%m/%Y'
     text = message.text
     chat_id = str(message.chat.id)
 
@@ -651,18 +657,18 @@ def handle_confirmation(message, records_to_delete):
         bot.send_message(message.chat.id, "No records deleted")
 
 
-def get_calendar_buttons():
+def get_calendar_buttons(user):
     kb = types.InlineKeyboardMarkup()
 
     # creating the headers
-    header = create_header()
+    header = create_header(user)
     kb.row(*header)
     weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
     rows = [types.InlineKeyboardButton(w, callback_data="none") for w in weekdays]
     kb.row(*rows)
 
     # create the days
-    m = monthrange(curr_date.year, curr_date.month)
+    m = monthrange(user.curr_date.year, user.curr_date.month)
     # for each day in the total days
     # for the first day, figure out how many ' ' to append
     row = []
@@ -670,10 +676,11 @@ def get_calendar_buttons():
         row = [types.InlineKeyboardButton(" ", callback_data="none") for _ in range(m[0] + 1)]
     for day in range(1, m[1] + 1):
         # if it is on a sunday, start a new row
-        if curr_date.replace(day=day).weekday() == 6:
+        if user.curr_date.replace(day=day).weekday() == 6:
             kb.row(*row)
             row = []
-        row.append(types.InlineKeyboardButton(day, callback_data='{}/{}/{}'.format(curr_date.year, curr_date.month, day)))
+        row.append(
+            types.InlineKeyboardButton(day, callback_data='{},{},{}'.format(user.curr_date.year, user.curr_date.month, day)))
     # finish out the last row
     if len(row) != 7:
         for _ in range(7 - len(row)):
@@ -683,17 +690,17 @@ def get_calendar_buttons():
     return kb
 
 
-def create_header():
+def create_header(user):
     # get the month name
-    row = [(types.InlineKeyboardButton(curr_date.strftime("%B"), callback_data="none"))]
-    if curr_date > min_date:
+    row = [(types.InlineKeyboardButton(user.curr_date.strftime("%B"), callback_data="none"))]
+    if user.curr_date > user.min_date:
         # if we should be able to go back a month
         row.append(types.InlineKeyboardButton('<', callback_data="prev"))
     else:
         # append a blank
         row.append(types.InlineKeyboardButton(' ', callback_data="none"))
 
-    if curr_date < max_date:
+    if user.curr_date < user.max_date:
         # if we should be able to go forward
         row.append(types.InlineKeyboardButton('>', callback_data="next"))
     else:
@@ -702,34 +709,27 @@ def create_header():
     return row
 
 
-def calendar_callback_handler(q: types.CallbackQuery):
-    return_data = handler_callback(q.data)
-    if return_data is None:
-        calendar = get_calendar_buttons()
-        bot.edit_message_reply_markup(chat_id=q.from_user.id, message_id=q.message.message_id,
-                                      reply_markup=calendar)
-    else:
-        picked_data = return_data
-        bot.edit_message_text(text=picked_data, chat_id=q.from_user.id, message_id=q.message.message_id)
-
-
-def handler_callback(callback):
+def handler_callback(callback, user):
     """
     A method for handling callbacks
     :param chat_id: chat id of user
     :param callback: callback from telebot.types.CallbackQuery
     :return: datetime.date object if some date was picked else None
     """
-    global curr_date
-    if callback == "prev" and curr_date.replace(day=1) >= min_date.replace(day=1):
-        curr_date = curr_date.replace(month=curr_date.month-1)
+
+    if callback == "prev" and user.curr_date.replace(day=1) >= user.min_date.replace(day=1):
+        user.curr_date = user.curr_date.replace(month=user.curr_date.month - 1)
         return None
-    if callback == "next" and curr_date.replace(day=1) <= max_date.replace(day=1):
-        curr_date = curr_date.replace(month=curr_date.month+1)
+    if callback == "next" and user.curr_date.replace(day=1) <= user.max_date.replace(day=1):
+        user.curr_date = user.curr_date.replace(month=user.curr_date.month + 1)
         return None
 
     if callback != "none":
-        return datetime.strptime(callback, "%Y/%m/%d")
+        entered_date = datetime.strptime(callback, "%Y,%m,%d")
+        if user.min_date <= entered_date <= user.max_date:
+            return entered_date
+        return -1
+
 
 def get_users():
     """

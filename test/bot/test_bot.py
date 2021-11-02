@@ -24,7 +24,6 @@ class TestCommands(BotTest):
         number_of_commands = 7
         # assert there is the right number of commands
         assert len(bot_commands) == number_of_commands
-        assert self.chat_id == "2097361428"
 
     def test_commands(self) -> None:
         """
