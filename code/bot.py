@@ -8,10 +8,9 @@ import pickle
 import re
 import time
 from datetime import datetime
-
 import telebot
 from telebot import types
-
+from flask import Flask, request
 from code.user import User
 
 api_token = os.environ['API_TOKEN']  # "INSERT API KEY HERE"
@@ -32,6 +31,7 @@ option = {}
 
 logger = logging.getLogger()
 all_transactions = []
+server = Flask(__name__)
 
 
 @bot.message_handler(commands=['start', 'menu'])
@@ -620,8 +620,9 @@ def get_users():
     :rtype: dict
     """
     data_dir = "data"
+    abspath = pathlib.Path(data_dir).absolute()
     users = {}
-    for file in os.listdir(data_dir):
+    for file in os.listdir(abspath):
         if file.endswith(".pickle"):
             user = re.match(r"(.+)\.pickle", file)
             if user:
@@ -632,10 +633,24 @@ def get_users():
     return users
 
 
+@server.route('/' + api_token, methods=['POST'])
+def getMessage():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
+
+
+@server.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url='https://mydollarbot.com/' + api_token)
+    return "!", 200
+
+
 if __name__ == '__main__':
     try:
-        user_list = get_users()
-        bot.polling(none_stop=True)
+        server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
     except Exception as e:
         # Connection will be timed out with the set time interval - 3
         time.sleep(3)
