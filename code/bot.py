@@ -567,7 +567,7 @@ def csv_callback(call):
 def category_add(message):
     """
     Handles the command 'categoryAdd' and then displays a message prompting the user to enter the category name.
-    The function 'new_category' is called next.
+    The function 'receive_new_category' is called next.
     :param message: telebot.types.Message object representing the message object
     :type: object
     :return: None
@@ -579,7 +579,7 @@ def category_add(message):
         if chat_id not in user_list.keys():
             user_list[chat_id] = User(chat_id)
         category = bot.reply_to(message, "Enter category name")
-        bot.register_next_step_handler(category, new_category)
+        bot.register_next_step_handler(category, receive_new_category)
 
     except Exception as ex:
         print("Exception occurred : ")
@@ -587,7 +587,7 @@ def category_add(message):
         bot.reply_to(message, 'Oh no. ' + str(ex))
 
 
-def new_category(message):
+def receive_new_category(message):
     """
     This function receives the category name that user inputs and then calls user.add_category which appends the category to the existing category list.
     :param message: telebot.types.Message object representing the message object
@@ -654,7 +654,7 @@ def category_delete(message):
         for c in spend_categories:
             markup.add(c)
         msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
-        bot.register_next_step_handler(msg, category_delete_2)
+        bot.register_next_step_handler(msg, receive_delete_category)
 
     except Exception as ex:
         print("Exception occurred : ")
@@ -662,7 +662,7 @@ def category_delete(message):
         bot.reply_to(message, 'Processing Failed - \nError : ' + str(ex))
 
 
-def category_delete_2(message):
+def receive_delete_category(message):
     """
     Checks whether the selected category can be deleted and calls user.delete_category if the category can be deleted.
     :param message: telebot.types.Message object representing the message object
