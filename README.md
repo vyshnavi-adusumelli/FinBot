@@ -1,4 +1,4 @@
-# TrackMyDollar
+# :money_with_wings: TrackMyDollar
 <hr>
 <p align="center">
 <a><img width=500 
@@ -36,8 +36,7 @@ With simple commands, this bot allows you to:
 
 ## Table of contents
 
-- [TrackMyDollar](#trackmydollar)
-  * [About TrackMyDollar](#about-trackmydollar)
+- [:money_with_wings: TrackMyDollar](#money_with_wings-trackmydollar)
 - [:star: Whats New](#star-whats-new)
 - [:rocket: Installation Guide](#rocket-installation-guide)
 - [:information_desk_person: Samples](#information_desk_person-samples)
