@@ -7,7 +7,7 @@ import pickle
 import re
 from datetime import datetime
 import pandas as pd
-
+import matplotlib.pyplot as plt
 logger = logging.getLogger()
 
 
@@ -43,7 +43,7 @@ class User:
         """
 
         try:
-            data_dir = "data"
+            data_dir = "../data"
             abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
             with open(abspath, "wb") as f:
                 pickle.dump(self, f)
@@ -321,3 +321,19 @@ class User:
         self.rules[category].append(description)
         self.add_transaction(date, category, value, userid)
         self.save_user(userid)
+
+    def create_chart(self, userid):
+        labels = []
+        totals = []
+        for category in self.spend_categories:
+            total = 0
+            for transaction in self.transactions[category]:
+                total = total + transaction["Value"]
+            if total != 0:
+                labels.append(category)
+                totals.append(total)
+        plt.switch_backend("Agg")
+        plt.pie(totals, labels=labels)
+        plt.title("Your Expenditure Report")
+        plt.savefig("../data/{}_chart.png".format(userid))
+        return "../data/{}_chart.png".format(userid)
