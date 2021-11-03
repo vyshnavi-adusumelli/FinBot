@@ -18,11 +18,12 @@ class TestCommands(BotTest):
         Tests that the correct number of commands are present
         :return:
         """
-        bot_commands = self.bot.message_handlers
-        number_of_commands = 8
+        # for all commands
+        bot_commands = [hand for hand in self.bot.message_handlers
+                        if "commands" in hand['filters']]
+        number_of_commands = 7
         # assert there is the right number of commands
         assert len(bot_commands) == number_of_commands
-        assert self.chat_id == "2097361428"
 
     def test_commands(self) -> None:
         """

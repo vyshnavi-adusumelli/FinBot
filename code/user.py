@@ -22,6 +22,13 @@ class User:
         self.monthly_budget = 0
         self.rules = {}
 
+        # for the calendar widget
+        self.max_date = datetime.today()
+        self.curr_date = datetime.today()
+        self.min_date = datetime.today()
+        self.min_date = self.min_date.replace(year=self.min_date.year - 1)
+
+
         for category in self.spend_categories:
             self.transactions[category] = []
             self.rules[category] = []
@@ -268,6 +275,8 @@ class User:
                 if transaction["Date"].strftime("%m") == date.strftime("%m"):
                     total_value += transaction["Value"]
         return total_value
+
+
 
     def read_budget_csv(self, file, userid):
         """
