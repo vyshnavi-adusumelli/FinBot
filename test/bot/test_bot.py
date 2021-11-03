@@ -42,10 +42,10 @@ class TestCommands(BotTest):
                          {'function': code_lib.show_history, 'commands': ["history"]},
                          {'function': code_lib.command_display, 'commands': ["display"]},
                          {'function': code_lib.edit1, 'commands': ["edit"]},
-                         {'function': code_lib.command_delete, 'commands': ["delete"]},
                          {'function': code_lib.category_add, 'commands': ["categoryAdd"]},
                          {'function': code_lib.category_list, 'commands': ["categoryList"]},
-                         {'function': code_lib.category_delete, 'commands': ["categoryDelete"]}]
+                         {'function': code_lib.category_delete, 'commands': ["categoryDelete"]},
+                         {'function': code_lib.command_delete, 'commands': ["delete"]}]
         # assert each function and command matches
         for actual_func, expected_func in zip(bot_commands, actual_titles):
             assert actual_func['filters']['commands'] == expected_func['commands']
