@@ -21,7 +21,7 @@ class TestCommands(BotTest):
         # for all commands
         bot_commands = [hand for hand in self.bot.message_handlers
                         if "commands" in hand['filters']]
-        number_of_commands = 8
+        number_of_commands = 11
         # assert there is the right number of commands
         assert len(bot_commands) == number_of_commands
 
@@ -42,6 +42,9 @@ class TestCommands(BotTest):
                          {'function': code_lib.show_history, 'commands': ["history"]},
                          {'function': code_lib.command_display, 'commands': ["display"]},
                          {'function': code_lib.edit1, 'commands': ["edit"]},
+                         {'function': code_lib.category_add, 'commands': ["categoryAdd"]},
+                         {'function': code_lib.category_list, 'commands': ["categoryList"]},
+                         {'function': code_lib.category_delete, 'commands': ["categoryDelete"]},
                          {'function': code_lib.command_delete, 'commands': ["delete"]}]
         # assert each function and command matches
         for actual_func, expected_func in zip(bot_commands, actual_titles):

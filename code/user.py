@@ -28,7 +28,6 @@ class User:
         self.min_date = datetime.today()
         self.min_date = self.min_date.replace(year=self.min_date.year - 1)
 
-
         for category in self.spend_categories:
             self.transactions[category] = []
             self.rules[category] = []
@@ -276,8 +275,6 @@ class User:
                     total_value += transaction["Value"]
         return total_value
 
-
-
     def read_budget_csv(self, file, userid):
         """
         This function reads the csv file passed to the bot by the user into a Pandas Dataframe.
@@ -344,3 +341,39 @@ class User:
         plt.title("Your Expenditure Report")
         plt.savefig("data/{}_chart.png".format(userid))
         return "data/{}_chart.png".format(userid)
+
+    def add_category(self, new_category, userid):
+        """
+        Stores the category to category list.
+        :param new_category: name of the new category
+        :type: string
+        :param userid: userid string which is also the file name
+        :type: string
+        :return: None
+        """
+        try:
+            self.spend_categories.append(new_category)
+            self.transactions[new_category] = []
+            self.rules[new_category] = []
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
+
+    def delete_category(self, category, userid):
+        """
+        Removes the category from category list.
+        :param category: name of the category to be removed
+        :type: string
+        :param userid: userid string which is also the file name
+        :type: string
+        :return: None
+        """
+        try:
+            self.spend_categories.remove(category)
+            self.transactions.pop(category, None)
+            self.rules.pop(category, None)
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)
