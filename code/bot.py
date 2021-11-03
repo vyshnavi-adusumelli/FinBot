@@ -664,7 +664,7 @@ def category_delete(message):
 
 def category_delete_2(message):
     """
-    Handles the command 'categoryDelete'. Lists all categories from which the user can choose a category to delete.
+    Checks whether the selected category can be deleted and calls user.delete_category if the category can be deleted.
     :param message: telebot.types.Message object representing the message object
     :type: object
     :return: None
