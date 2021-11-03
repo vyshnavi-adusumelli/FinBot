@@ -18,3 +18,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "my-dollar-bot" #Must be unique in Heroku
           heroku_email: "mydollarbot@gmail.com"
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
