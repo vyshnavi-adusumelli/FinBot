@@ -36,6 +36,7 @@ class User:
     def save_user(self, userid):
         """
         Saves data to .pickle file
+
         :param userid: userid string which is also the file name
         :type: string
         :return: None
@@ -53,6 +54,7 @@ class User:
     def validate_entered_amount(self, amount_entered):
         """
         Validates that an entered amount is greater than zero and also rounds it to 2 decimal places.
+
         :param amount_entered: entered amount
         :type: float
         :return: rounded amount if valid, else 0.
@@ -69,6 +71,7 @@ class User:
     def add_transaction(self, date, category, value, userid):
         """
         Stores the transaction to file.
+
         :param date: date string of the transaction
         :type: string
         :param category: category of the transaction
@@ -89,6 +92,7 @@ class User:
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
         Assigns the transaction and category to be edited.
+
         :param existing_transaction: the transaction which the user chose to edit
         :type: string
         :param edit_category: the existing category of the transaction
@@ -105,6 +109,7 @@ class User:
     def edit_transaction_date(self, new_date):
         """
         Returns the edited transaction with the new date.
+
         :param new_date: the new date of the transaction.
         :type: string
         :return: transactions dict
@@ -120,6 +125,7 @@ class User:
     def edit_transaction_category(self, new_category):
         """
         Updates the edited transaction with the new category.
+
         :param new_category: the new category of the transaction.
         :type: string
         :return: True
@@ -133,6 +139,7 @@ class User:
     def edit_transaction_value(self, new_value):
         """
         Returns the edited transaction with the new value.
+
         :param new_value: the new value of the transaction.
         :type: string
         :return: transactions dict
@@ -148,6 +155,7 @@ class User:
     def deleteHistory(self, records=None):
         """
         Deletes transactions
+
         :param records: list of records to delete.
         :type: array
         :return: None
@@ -172,6 +180,7 @@ class User:
     def validate_date_format(self, text, date_format):
         """
         Converts the inputted date to the inputted date format
+
         :param text has the date which is to be converted
         :type: string
         :param date_format has the format to which the conversion should be done
@@ -191,6 +200,7 @@ class User:
         """
         Given a date and chat_id returns all records that match the filter
         If is_month is true, only matches year and month, not day
+
         :param date: date for filtering records
         :type: datetime.date
         :param is_month: this parameter is true if records for a month are taken
@@ -222,6 +232,7 @@ class User:
     def display_transaction(self, transaction):
         """
         Helper function to turn the dictionary into a user-readable string
+
         :param transaction: dictionary of category, and each value is a dictionary of transactions of that category
         :return: final_str, which is the transactions stringifies
         :rtype: string
@@ -238,6 +249,7 @@ class User:
         """
         Helper function to get the total number of transactions across
         all categories
+
         :return: number of transactions
         :rtype: int
         """
@@ -249,6 +261,7 @@ class User:
     def add_monthly_budget(self, amount, userid):
         """
         Given amount and userid, edit the budget of the current user
+
         :param amount: budget amount
         :param userid:
         :return: None
@@ -264,6 +277,7 @@ class User:
     def monthly_total(self):
         """
         Calculates total expenditure for the current month
+
         :return: total_value - rounded amount if valid, else 0.
         :rtype: float
         """
@@ -280,6 +294,7 @@ class User:
         This function reads the csv file passed to the bot by the user into a Pandas Dataframe.
         It goes through each transaction, and checks if it knows how to categorize that transaction. If it does,
         it will add the transaction to the user history.
+
         :param file: csv file sent to the telegram bot
         :param userid: chat id of the conversation
         :return: df pandas dataframe that contains all of the transactions that the bot could not categorize by itself
@@ -303,6 +318,7 @@ class User:
         """
         This function is used to remember how an user categorized a certain transaction, so that the next time
         the bot sees the transaction the bot will be able to categorize it automatically.
+
         :param category: category of the transaction
         :type: string
         :param description:
@@ -324,6 +340,7 @@ class User:
         This is used to create the matplotlib piechart of all the transactions and
         their categories. If a category does not have any transactions, then it is not
         included in the piechart
+
         :param userid:
         :return: filepath to the image created by matplotlib
         """
@@ -345,6 +362,7 @@ class User:
     def add_category(self, new_category, userid):
         """
         Stores the category to category list.
+
         :param new_category: name of the new category
         :type: string
         :param userid: userid string which is also the file name
@@ -363,6 +381,7 @@ class User:
     def delete_category(self, category, userid):
         """
         Removes the category from category list.
+
         :param category: name of the category to be removed
         :type: string
         :param userid: userid string which is also the file name
