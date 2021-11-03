@@ -206,6 +206,7 @@ def post_amount_input(message, date_of_entry):
     Receives the amount entered by the user and then adds to transaction history. An error is displayed if the entered
      amount is zero. Else, a message is shown that the transaction has been added.
 
+    :param date_of_entry: user entered date
     :param message: telebot.types.Message object representing the message object
     :type: object
     :return: None
