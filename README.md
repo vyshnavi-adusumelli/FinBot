@@ -40,13 +40,13 @@ With simple commands, this bot allows you to:
   * [About TrackMyDollar](#about-trackmydollar)
 - [:star: Whats New](#star-whats-new)
 - [:rocket: Installation Guide](#rocket-installation-guide)
-- [:information_desk_person: Samples](#information-desk-person-samples)
+- [:information_desk_person: Samples](#information_desk_person-samples)
     + [Budget](#budget)
     + [Add](#add)
     + [Delete](#delete)
     + [Edit](#edit)
-- [:grey_question: Documentation](#grey-question-documentation)
-- [:raising_hand: Team Members](#raising-hand-team-members)
+- [:grey_question: Documentation](#grey_question-documentation)
+- [:raising_hand: Team Members](#raising_hand-team-members)
 - [:calling: Support](#calling-support)
 
 
