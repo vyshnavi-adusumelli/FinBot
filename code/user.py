@@ -323,6 +323,13 @@ class User:
         self.save_user(userid)
 
     def create_chart(self, userid):
+        """
+        This is used to create the matplotlib piechart of all the transactions and
+        their categories. If a category does not have any transactions, then it is not
+        included in the piechart
+        :param userid:
+        :return: filepath to the image created by matplotlib
+        """
         labels = []
         totals = []
         for category in self.spend_categories:

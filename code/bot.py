@@ -692,6 +692,12 @@ def get_calendar_buttons(user):
 
 @bot.message_handler(commands=['chart'])
 def get_chart(message):
+    """
+    Handles the chart command. When the user runs this command the bot will create a piechart
+    of all the transactions and their categories and post that to the chat
+    :param message:
+    :return: None
+    """
     chat_id = str(message.chat.id)
     chart_file = user_list[chat_id].create_chart(chat_id)
     with open(chart_file, "rb") as f:
