@@ -25,7 +25,8 @@ commands = {
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
     'budget': 'Set budget for the month',
-    'categoriesAdd': 'Add new custom categories'
+    'categoryAdd': 'Add new custom categories',
+    'categoryList': 'List all categories'
 }
 
 bot = telebot.TeleBot(api_token)
@@ -561,10 +562,10 @@ def csv_callback(call):
         bot.send_message(call.message.chat_id, "Processing Failed - Error: " + str(ex))
 
 
-@bot.message_handler(commands=['categoriesAdd'])
+@bot.message_handler(commands=['categoryAdd'])
 def category_add(message):
     """
-    Handles the command 'categories/add' and then displays a message prompting the user to enter the category name.
+    Handles the command 'categoryAdd' and then displays a message prompting the user to enter the category name.
     The function 'new_category' is called next.
     :param message: telebot.types.Message object representing the message object
     :type: object
@@ -599,6 +600,28 @@ def new_category(message):
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, 'Oh no. ' + str(ex))
+
+
+@bot.message_handler(commands=['categoryList'])
+def category_list(message):
+    """
+    Handles the command 'categoryList'. Lists all categories.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        chat_id = str(message.chat.id)
+        if len(user_list[chat_id].transactions.keys()) == 0:
+            raise Exception("Sorry! No categories found!")
+        category_list_str = "Here is your category list : \n"
+        for index, category in enumerate(user_list[chat_id].transactions.keys()):
+            category_list_str += '{}. {}'.format(index+1, category+"\n")
+        bot.send_message(chat_id, category_list_str)
+
+    except Exception as ex:
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, str(ex))
 
 
 @bot.message_handler(commands=['delete'])
