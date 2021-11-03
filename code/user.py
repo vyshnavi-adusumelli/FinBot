@@ -321,3 +321,21 @@ class User:
         self.rules[category].append(description)
         self.add_transaction(date, category, value, userid)
         self.save_user(userid)
+
+    def add_category(self, new_category, userid):
+        """
+        Stores the category to file.
+        :param new_category: name of the new category
+        :type: string
+        :param userid: userid string which is also the file name
+        :type: string
+        :return: None
+        """
+        try:
+            self.spend_categories.append(new_category)
+            self.transactions[new_category] = []
+            self.rules[new_category] = []
+            self.save_user(userid)
+
+        except Exception as e:
+            logger.error(str(e), exc_info=True)

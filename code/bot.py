@@ -24,7 +24,8 @@ commands = {
     'history': 'Display spending history',
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
-    'budget': 'Set budget for the month'
+    'budget': 'Set budget for the month',
+    'categoriesAdd': 'Add new custom categories'
 }
 
 bot = telebot.TeleBot(api_token)
@@ -558,6 +559,46 @@ def csv_callback(call):
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.send_message(call.message.chat_id, "Processing Failed - Error: " + str(ex))
+
+
+@bot.message_handler(commands=['categoriesAdd'])
+def category_add(message):
+    """
+    Handles the command 'categories/add' and then displays a message prompting the user to enter the category name.
+    The function 'new_category' is called next.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+
+    try:
+        category = bot.reply_to(message, "Enter category name")
+        bot.register_next_step_handler(category, new_category)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, 'Oh no. ' + str(ex))
+
+
+def new_category(message):
+    """
+    This function receives the category name that user inputs and then calls user.add_category which appends the category to the existing category list.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        category = message.text.strip()
+        chat_id = str(message.chat.id)
+        if category == "":  # category cannot be empty
+            raise Exception("Category name cannot be empty")
+        user_list[chat_id].add_category(category, chat_id)
+        bot.send_message(chat_id, '{} has been added as a new category'.format(category))
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, 'Oh no. ' + str(ex))
 
 
 @bot.message_handler(commands=['delete'])
