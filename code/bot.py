@@ -904,7 +904,7 @@ def handler_callback(callback, user):
     """
     A method for handling callbacks
 
-    :param chat_id: chat id of user
+    :param user: user object
     :param callback: callback from telebot.types.CallbackQuery
     :return: datetime.date object if some date was picked else None
     """
