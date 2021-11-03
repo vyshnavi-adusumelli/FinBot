@@ -25,8 +25,9 @@ commands = {
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
     'budget': 'Set budget for the month',
-    'categoryAdd': 'Add new custom categories',
-    'categoryList': 'List all categories'
+    'categoryAdd': 'Add a new custom category',
+    'categoryList': 'List all categories',
+    'categoryDelete': 'Delete a category'
 }
 
 bot = telebot.TeleBot(api_token)
