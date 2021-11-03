@@ -16,5 +16,5 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "mydollarbot-beta" #Must be unique in Heroku
-          heroku_email: "ashwindasr@gmail.com"
+          heroku_app_name: "my-dollar-bot" #Must be unique in Heroku
+          heroku_email: "mydollarbot@gmail.com"
