@@ -24,7 +24,10 @@ commands = {
     'history': 'Display spending history',
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
-    'budget': 'Set budget for the month'
+    'budget': 'Set budget for the month',
+    'categoryAdd': 'Add a new custom category',
+    'categoryList': 'List all categories',
+    'categoryDelete': 'Delete a category'
 }
 
 bot = telebot.TeleBot(api_token)
@@ -569,6 +572,126 @@ def csv_callback(call):
         logger.error(str(ex), exc_info=True)
         bot.send_message(call.message.chat_id, "Processing Failed - Error: " + str(ex))
 
+
+@bot.message_handler(commands=['categoryAdd'])
+def category_add(message):
+    """
+    Handles the command 'categoryAdd' and then displays a message prompting the user to enter the category name.
+    The function 'receive_new_category' is called next.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+
+    try:
+        chat_id = str(message.chat.id)
+        option.pop(chat_id, None)
+        if chat_id not in user_list.keys():
+            user_list[chat_id] = User(chat_id)
+        category = bot.reply_to(message, "Enter category name")
+        bot.register_next_step_handler(category, receive_new_category)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, 'Oh no. ' + str(ex))
+
+
+def receive_new_category(message):
+    """
+    This function receives the category name that user inputs and then calls user.add_category which appends the category to the existing category list.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        category = message.text.strip()
+        chat_id = str(message.chat.id)
+        if category == "":  # category cannot be empty
+            raise Exception("Category name cannot be empty")
+        if category in user_list[chat_id].transactions:
+            raise Exception("Category already exists!")
+        user_list[chat_id].add_category(category, chat_id)
+        bot.send_message(chat_id, '{} has been added as a new category'.format(category))
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, 'Oh no. ' + str(ex))
+
+
+@bot.message_handler(commands=['categoryList'])
+def category_list(message):
+    """
+    Handles the command 'categoryList'. Lists all categories.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        chat_id = str(message.chat.id)
+        option.pop(chat_id, None)
+        if chat_id not in user_list.keys():
+            user_list[chat_id] = User(chat_id)
+        chat_id = str(message.chat.id)
+        if len(user_list[chat_id].transactions.keys()) == 0:
+            raise Exception("Sorry! No categories found!")
+        category_list_str = "Here is your category list : \n"
+        for index, category in enumerate(user_list[chat_id].transactions.keys()):
+            category_list_str += '{}. {}'.format(index+1, category+"\n")
+        bot.send_message(chat_id, category_list_str)
+
+    except Exception as ex:
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, str(ex))
+
+
+@bot.message_handler(commands=['categoryDelete'])
+def category_delete(message):
+    """
+    Handles the command 'categoryDelete'. Lists all categories from which the user can choose a category to delete.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        chat_id = str(message.chat.id)
+        option.pop(chat_id, None)
+        if chat_id not in user_list.keys():
+            user_list[chat_id] = User(chat_id)
+        spend_categories = user_list[chat_id].spend_categories
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+        for c in spend_categories:
+            markup.add(c)
+        msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
+        bot.register_next_step_handler(msg, receive_delete_category)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, 'Processing Failed - \nError : ' + str(ex))
+
+
+def receive_delete_category(message):
+    """
+    Checks whether the selected category can be deleted and calls user.delete_category if the category can be deleted.
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        chat_id = str(message.chat.id)
+        category = message.text.strip()
+        if category not in user_list[chat_id].transactions:
+            raise Exception("Oops! Category does not exist!")
+        if len(user_list[chat_id].transactions[category]) != 0:
+            raise Exception("Sorry! This category has transactions. Delete those transactions to proceed.")
+        user_list[chat_id].delete_category(category, chat_id)
+        bot.reply_to(message, '{} has been removed from category list'.format(category))
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, str(ex))
 
 @bot.message_handler(commands=['delete'])
 def command_delete(message):
