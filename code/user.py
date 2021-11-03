@@ -43,7 +43,7 @@ class User:
         """
 
         try:
-            data_dir = "../data"
+            data_dir = "data"
             abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
             with open(abspath, "wb") as f:
                 pickle.dump(self, f)
@@ -335,5 +335,5 @@ class User:
         plt.switch_backend("Agg")
         plt.pie(totals, labels=labels)
         plt.title("Your Expenditure Report")
-        plt.savefig("../data/{}_chart.png".format(userid))
-        return "../data/{}_chart.png".format(userid)
+        plt.savefig("data/{}_chart.png".format(userid))
+        return "data/{}_chart.png".format(userid)
