@@ -44,6 +44,8 @@ With simple commands, this bot allows you to:
     + [Add](#add)
     + [Delete](#delete)
     + [Edit](#edit)
+    + [Adding a CSV file](#adding-transactions-from-csv-and-displaying-chart)
+    + [Visualization](#adding-transactions-from-csv-and-displaying-chart)
 - [:grey_question: Documentation](#grey_question-documentation)
 - [:raising_hand: Team Members](#raising_hand-team-members)
 - [:calling: Support](#calling-support)
@@ -168,7 +170,7 @@ Oh no! I entered a transaction but entered the wrong category!
 3. Specify what part of the transaction to edit (either date, category, or value)
 4. Enter in a new value
 
-## Adding transactions from CSV and displaying chart
+### Adding transactions from CSV and displaying chart
 
 I want to add transactions from a CSV my bank gave me, and visalize my spendings
 
@@ -178,13 +180,13 @@ I want to add transactions from a CSV my bank gave me, and visalize my spendings
 1. Drag the .csv file into the telegram chat, and press send
 2. For each transaction, classify the category
    1. The application will remember these mappings
-3. Enter the `/chat` command
+3. Enter the `/chart` command
 
 
 # :grey_question: Documentation
 
 
-Thorough documentation of all methods and classes can be found HERE
+Thorough documentation of all methods and classes can be found at [Github Pages](https://mtkumar123.github.io/MyDollarBot/)
 
 
 
