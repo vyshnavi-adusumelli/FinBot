@@ -25,7 +25,7 @@ commands = {
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
     'budget': 'Set budget for the month',
-    'chart': 'See your expenditure in a pie chart'
+    'chart': 'See your expenditure in a pie chart',
     'categoryAdd': 'Add a new custom category',
     'categoryList': 'List all categories',
     'categoryDelete': 'Delete a category'
