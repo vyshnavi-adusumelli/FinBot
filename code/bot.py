@@ -16,7 +16,7 @@ from telebot import types
 from code.user import User
 
 
-api_token = os.environ['API_TOKEN']  # "INSERT API KEY HERE"
+api_token = os.environ['API_TOKEN']
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new spending',
@@ -25,6 +25,7 @@ commands = {
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
     'budget': 'Set budget for the month',
+    'chart': 'See your expenditure in a pie chart'
     'categoryAdd': 'Add a new custom category',
     'categoryList': 'List all categories',
     'categoryDelete': 'Delete a category'
@@ -827,6 +828,19 @@ def get_calendar_buttons(user):
     kb.row(*row)
     return kb
 
+@bot.message_handler(commands=['chart'])
+def get_chart(message):
+    """
+    Handles the chart command. When the user runs this command the bot will create a piechart
+    of all the transactions and their categories and post that to the chat
+    :param message:
+    :return: None
+    """
+    chat_id = str(message.chat.id)
+    chart_file = user_list[chat_id].create_chart(chat_id)
+    with open(chart_file, "rb") as f:
+        bot.send_photo(chat_id, f)
+    bot.send_photo(chat_id, chart_file)
 
 def create_header(user):
     """

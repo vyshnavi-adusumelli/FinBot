@@ -21,7 +21,7 @@ class TestCommands(BotTest):
         # for all commands
         bot_commands = [hand for hand in self.bot.message_handlers
                         if "commands" in hand['filters']]
-        number_of_commands = 10
+        number_of_commands = 11
         # assert there is the right number of commands
         assert len(bot_commands) == number_of_commands
 

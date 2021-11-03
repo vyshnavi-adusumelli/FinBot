@@ -7,7 +7,7 @@ import pickle
 import re
 from datetime import datetime
 import pandas as pd
-
+import matplotlib.pyplot as plt
 logger = logging.getLogger()
 
 
@@ -318,6 +318,29 @@ class User:
         self.rules[category].append(description)
         self.add_transaction(date, category, value, userid)
         self.save_user(userid)
+
+    def create_chart(self, userid):
+        """
+        This is used to create the matplotlib piechart of all the transactions and
+        their categories. If a category does not have any transactions, then it is not
+        included in the piechart
+        :param userid:
+        :return: filepath to the image created by matplotlib
+        """
+        labels = []
+        totals = []
+        for category in self.spend_categories:
+            total = 0
+            for transaction in self.transactions[category]:
+                total = total + transaction["Value"]
+            if total != 0:
+                labels.append(category)
+                totals.append(total)
+        plt.switch_backend("Agg")
+        plt.pie(totals, labels=labels)
+        plt.title("Your Expenditure Report")
+        plt.savefig("data/{}_chart.png".format(userid))
+        return "data/{}_chart.png".format(userid)
 
     def add_category(self, new_category, userid):
         """
