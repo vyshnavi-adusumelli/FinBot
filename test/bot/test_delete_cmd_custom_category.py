@@ -37,5 +37,18 @@ class TestDeleteCustomCategory(BotTest):
         # there should not be any exceptions
         assert self.bot.worker_pool.exception_info is None
 
+        # send the custom category
+        reply = self.create_text_message(custom_category)
+        self.bot.process_new_messages([reply])
+        time.sleep(3)
+
+        #delete the newly created custom category
+        chat_id = str(reply.chat.id)
+        content = bot.user_list[chat_id].transactions
+        categories = []
+        for category in content:
+            categories.append(category)
+        assert custom_category not in categories
+
 if __name__ == '__main__':
     unittest.main()
