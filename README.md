@@ -62,7 +62,7 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 - A calendar functionality was added so the user can specify what day a transaction was added.
 - The user can now add custom categories instead of using the default categories.
-- The bot is now hosted on heroku, so users do not have to run the python file locally.
+- The bot server is now hosted on heroku, so users do not have to run the python file locally. Check out production bot here: https://t.me/mydollarbotprod_bot
 - Visualizations can be seen using the chart command, which generates a pie chart based on user spending.
 - More thorough documentation can be found on the GitHub pages.
 
