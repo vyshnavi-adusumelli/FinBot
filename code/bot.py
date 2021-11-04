@@ -591,7 +591,7 @@ def csv_callback(call):
     except Exception as ex:
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
-        bot.send_message(call.message.chat_id, "Processing Failed - Error: " + str(ex))
+        bot.send_message(chat_id=call.from_user.id, "Processing Failed - Error: " + str(ex))
 
 
 @bot.message_handler(commands=['categoryAdd'])
