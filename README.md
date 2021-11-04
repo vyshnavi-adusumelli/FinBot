@@ -11,10 +11,10 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/mtkumar123/MyDollarBot)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5590961.svg)](https://doi.org/10.5281/zenodo.5590961)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
-[![Build Status](https://app.travis-ci.com/mtkumar123/MyDollarBot.svg?branch=main)](https://app.travis-ci.com/mtkumar123/MyDollarBot)
 [![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
 ![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
+[![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
 
 <hr>
 
