@@ -101,7 +101,10 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 # :rocket: Installation Guide
 
+## For users
+No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 
+## 💻For developers 
 1. Install Python, atleast Python3
 
 2. Clone this repository to your local system at a suitable directory/location of your choice
