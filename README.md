@@ -54,6 +54,16 @@ With simple commands, this bot allows you to:
 
 # :star: Whats New
 
+### Version 1.0.2
+
+#### New Features:
+
+- A calendar functionality was added so the user can specify what day a transaction was added.
+- The user can now add custom categories instead of using the default categories.
+- The bot is now hosted on heroku, so users do not have to run the python file locally.
+- Visualizations can be seen using the chart command, which generates a pie chart based on user spending.
+- More thorough documentation can be found on the GitHub pages.
+
 ### Version 1.0.1
 
 #### New Features:
