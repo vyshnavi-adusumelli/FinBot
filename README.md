@@ -62,7 +62,7 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 - A calendar functionality was added so the user can specify what day a transaction was added.
 - The user can now add custom categories instead of using the default categories.
-- The bot is now hosted on heroku, so users do not have to run the python file locally.
+- The bot server is now hosted on heroku, so users do not have to run the python file locally. Check out production bot here: https://t.me/mydollarbotprod_bot
 - Visualizations can be seen using the chart command, which generates a pie chart based on user spending.
 - More thorough documentation can be found on the GitHub pages.
 
@@ -101,7 +101,10 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 # :rocket: Installation Guide
 
+## 😃For users
+No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 
+## 💻For developers 
 1. Install Python, atleast Python3
 
 2. Clone this repository to your local system at a suitable directory/location of your choice
@@ -128,10 +131,12 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 ```
 10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. Navigate to the directory containing the "code.py" file and run the following command:
 ```
-  python bot/code.py
+  python code/bot.py
 ```
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
+
+For more info on deployment(Heroku), check out the doc [here](https://github.com/mtkumar123/MyDollarBot/blob/main/CONTRIBUTING.md#more-tips-for-developers)
 
 
 

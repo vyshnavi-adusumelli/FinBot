@@ -65,3 +65,37 @@ Write corresponding test cases to ensure it is not breaking the existing system.
 Create pull request and request for the code review. Once the request is approved, merge to main.
 
 Any suggestions to improve the bot is appreciated. Please add it to the TO-DO list.
+
+## More tips for developers
+### Heroku deployment
+The bot is deployed on [Heroku](https://www.heroku.com/), a website used to host source code and apps.
+
+Quoted directly from their page:
+
+"Heroku is a platform as a service (PaaS) that enables developers to build, run, and operate applications entirely in the cloud."
+
+
+#### Why this is useful
+
+Before, users had to download source code, insert their API key from telegram, and then run the python file. 
+This can lead to both user error and error within the source code. By deploying it on heroku, you ensure that
+the code is available anywhere, at anytime, without having to download files.
+
+
+#### How we created the bot
+
+1. A heroku account was created with the shared mydollarbot@gmail.com credentials
+2. A new app was created called my_dollar_bot. 
+3. Within github, we added a [new action](.github/workflows/deploy.yml) to deploy to the heroku bot
+4. For every push, the source code is deployed to heroku, and python code/bot.py is executed, starting the bot
+
+This way, if users want to use the bot without developing, they can simply use this bot instead of having to run the
+application locally.
+
+#### How to develop the heroku bot server
+
+- Follow steps 1-3 above, except replace with your own email. Install Heroku cli [here](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).
+- Within github, add a secret for the heroku api key.
+- Create a new CI/CD pipeline (refer our yaml file [here](.github/workflows/deploy.yml)) and set up github actions.
+- Create a new Procfile and add `worker: python code/bot.py`. Refer ours [here](https://github.com/mtkumar123/MyDollarBot/blob/main/Procfile)
+- Within your heroku dashboard, you can view logs for the bot to understand well the deployment is running. You can also run the command `heroku logs` or `heroku logs -t`
