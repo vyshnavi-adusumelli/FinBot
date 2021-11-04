@@ -85,7 +85,7 @@ the code is available anywhere, at anytime, without having to download files.
 #### How we created the bot
 
 1. A heroku account was created with the shared mydollarbot@gmail.com credentials
-2. A new app was created called my_dollar_bot
+2. A new app was created called my_dollar_bot. 
 3. Within github, we added a [new action](.github/workflows/deploy.yml) to deploy to the heroku bot
 4. For every push, the source code is deployed to heroku, and python code/bot.py is executed, starting the bot
 
@@ -94,7 +94,7 @@ application locally.
 
 #### How to develop the heroku bot
 
-- Follow steps 1-3 above, except replace with your own email
+- Follow steps 1-3 above, except replace with your own email. Install Heroku cli [here](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).
 - Within github, add a secret for the heroku api key
-- Create a new CI/CD pipeline (refer our yaml file [here](.github/workflows/deploy.yml) and set up github actions.
+- Create a new CI/CD pipeline (refer our yaml file [here](.github/workflows/deploy.yml)) and set up github actions.
 - Within your heroku dashboard, you can view logs for the bot to understand well the deployment is running. You can also run the command `heroku logs` or `heroku logs -t`
