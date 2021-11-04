@@ -101,7 +101,7 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 # :rocket: Installation Guide
 
-## For users
+## 😃For users
 No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 
 ## 💻For developers 
@@ -135,6 +135,8 @@ No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 ```
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
+
+For more info on deployment(Heroku), check out the doc [here](https://github.com/mtkumar123/MyDollarBot/blob/main/CONTRIBUTING.md#more-tips-for-developers)
 
 
 
