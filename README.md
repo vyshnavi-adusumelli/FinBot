@@ -131,7 +131,7 @@ No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 ```
 10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. Navigate to the directory containing the "code.py" file and run the following command:
 ```
-  python bot/code.py
+  python code/bot.py
 ```
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
