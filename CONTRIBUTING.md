@@ -92,9 +92,10 @@ the code is available anywhere, at anytime, without having to download files.
 This way, if users want to use the bot without developing, they can simply use this bot instead of having to run the
 application locally.
 
-#### How to develop the heroku bot
+#### How to develop the heroku bot server
 
 - Follow steps 1-3 above, except replace with your own email. Install Heroku cli [here](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).
-- Within github, add a secret for the heroku api key
+- Within github, add a secret for the heroku api key.
 - Create a new CI/CD pipeline (refer our yaml file [here](.github/workflows/deploy.yml)) and set up github actions.
+- Create a new Procfile and add `worker: python code/bot.py`. Refer ours [here](https://github.com/mtkumar123/MyDollarBot/blob/main/Procfile)
 - Within your heroku dashboard, you can view logs for the bot to understand well the deployment is running. You can also run the command `heroku logs` or `heroku logs -t`
