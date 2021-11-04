@@ -133,6 +133,10 @@ No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 ```
   python code/bot.py
 ```
+If you get the error `ModuleNotFoundError: No module named 'code.user'; 'code' is not a package`, add the absolute path to the main project folder to python path `export PYTHONPATH="${PYTHONPATH}:/path/to/your/project/"` and try again. (You'll have to re-add if you close the terminal or add to the environment variables.)
+
+You can also change the code `from code.user import User` to `from user import User` on line 16 of bot.py. The former is for pylint compatablity.
+
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
 
