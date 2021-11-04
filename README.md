@@ -28,6 +28,8 @@ With simple commands, this bot allows you to:
 - Clear/Erase all your records
 - Edit/Change any spending details if you wish to
 
+Check out the bot here: https://t.me/mydollarbotprod_bot
+
 ---
 
 <p align="center"><img width="1000" src="./docs/workflows/add.gif"></p>
