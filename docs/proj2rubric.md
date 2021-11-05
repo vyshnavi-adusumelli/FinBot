@@ -13,7 +13,7 @@
 |.5| .5 | issues are discussed before they are closed | Example https://github.com/mtkumar123/MyDollarBot/issues/61 |
 |.5| .5 | Use of syntax checkers. | Used pylint, and have a pylintrc file |
 |1| 1 | Issues reports: there are many  | https://github.com/mtkumar123/MyDollarBot/issues?q=is%3Aissue+is%3Aclosed|
-|.5| .5 | Use of code formatters. | pylint, and used pylintrc for config of pylint |
+|.5| .5 | Use of code formatters. | pylint, and used pylintrc for config of pylint also used black formatter and added the badge in the repo |
 |.5| .5 | Use of style checkers | pylint, and used pylintrc for config of pylint |
 |.5| .5 | Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. | Multiple gifs found in the readme.md https://github.com/mtkumar123/MyDollarBot/blob/main/README.md|
 |.5| .5 | test cases exist  | all test cases in the test folder. code coverage is 68 percent |
