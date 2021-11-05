@@ -34,7 +34,7 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 ---
 
-<p align="center"><img width="1000" src="./docs/workflows/add.gif"></p>
+<p align="center"><img width="1000" src="./mydollar_tutorial.gif"></p>
 
 ---
 
