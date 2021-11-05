@@ -34,6 +34,8 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 
 ---
 
+A demo is shown below. It is run on a local machine.
+
 <p align="center"><img width="1000" src="./mydollar_tutorial.gif"></p>
 
 ---
