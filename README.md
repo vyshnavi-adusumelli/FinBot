@@ -9,7 +9,7 @@
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
 ![GitHub](https://img.shields.io/badge/Language-Python-blue.svg)
 ![GitHub contributors](https://img.shields.io/github/contributors/mtkumar123/MyDollarBot)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5590961.svg)](https://doi.org/10.5281/zenodo.5590961)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5646619.svg)](https://doi.org/10.5281/zenodo.5646619)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
 ![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
