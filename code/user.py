@@ -8,14 +8,21 @@ import re
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+
 logger = logging.getLogger()
 
 
 class User:
-
     def __init__(self, userid):
-        self.spend_categories = ['Food', 'Groceries', 'Utilities', 'Transport', 'Shopping', 'Miscellaneous']
-        self.spend_display_option = ['Day', 'Month']
+        self.spend_categories = [
+            "Food",
+            "Groceries",
+            "Utilities",
+            "Transport",
+            "Shopping",
+            "Miscellaneous",
+        ]
+        self.spend_display_option = ["Day", "Month"]
         self.transactions = {}
         self.edit_transactions = {}
         self.edit_category = {}
@@ -217,7 +224,7 @@ class User:
             matched_dates[category] = []
         for category in user_history:
             for record in user_history[category]:
-                record_date = record['Date']
+                record_date = record["Date"]
                 # format it to date and time, then only get the day,month,year
                 record_date = record_date.date()
                 if is_month:
@@ -241,7 +248,9 @@ class User:
 
         for category in transaction:
             for record in transaction[category]:
-                final_str += f'{category}, {record["Date"].date()}, {record["Value"]:.2f}\n'
+                final_str += (
+                    f'{category}, {record["Date"].date()}, {record["Value"]:.2f}\n'
+                )
 
         return final_str
 
@@ -314,7 +323,9 @@ class User:
                     df = df.drop(index)
         return df
 
-    def create_rules_and_add_unknown_spending(self, category, description, date, value, userid):
+    def create_rules_and_add_unknown_spending(
+        self, category, description, date, value, userid
+    ):
         """
         This function is used to remember how an user categorized a certain transaction, so that the next time
         the bot sees the transaction the bot will be able to categorize it automatically.

@@ -15,6 +15,8 @@
 ![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
 [![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
+![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
+
 
 <hr>
 
