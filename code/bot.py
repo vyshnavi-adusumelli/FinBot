@@ -991,13 +991,22 @@ def get_chart(message):
     :param message:
     :return: None
     """
+    # Original Code
+    
+    # chat_id = str(message.chat.id)
+    # chart_file = user_list[chat_id].create_chart(chat_id)
+    # with open(chart_file, "rb") as f:
+    #     bot.send_photo(chat_id, f)
+    # bot.send_photo(chat_id, chart_file)
 
+    # Modified Code
     chat_id = str(message.chat.id)
     chart_file = user_list[chat_id].create_chart(chat_id)
-    # Send messages for all visualizations created.
     for cf in chart_file:
         with open(cf, "rb") as f:
             bot.send_photo(chat_id, f)
+            # bot.send_photo(chat_id, cf)
+
 
 
 def create_header(user):

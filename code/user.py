@@ -367,12 +367,14 @@ class User:
                 totals.append(total)
 
         # Pie Chart
+        plt.clf()
         plt.pie(totals, labels=labels)
         plt.title("Your Expenditure Report")
         plt.savefig("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
         charts.append("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
 
         # Bar Graph
+        plt.clf()
         plt.switch_backend("Agg")
         plt.title("Your Expenditure Report")
         plt.bar(labels, totals)
