@@ -357,6 +357,7 @@ class User:
         """
         labels = []
         totals = []
+        charts = []
         for category in self.spend_categories:
             total = 0
             for transaction in self.transactions[category]:
@@ -364,15 +365,23 @@ class User:
             if total != 0:
                 labels.append(category)
                 totals.append(total)
+
+        # Bar Graph
         plt.switch_backend("Agg")
         plt.title("Your Expenditure Report")
         plt.bar(labels, totals)
         plt.xlabel('Categories')
         plt.ylabel('Expenditure')
-        # plt.pie(totals, labels=labels)
         plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_chart.png".format(userid))
-        return "data/{}_chart.png".format(userid)
+        plt.savefig("data/{}_bar_chart.png".format(userid))
+        charts.append("data/{}_bar_chart.png".format(userid))
+
+        # Pie Chart
+        plt.pie(totals, labels=labels)
+        plt.title("Your Expenditure Report")
+        plt.savefig("data/{}_pie_chart.png".format(userid))
+        charts.append("data/{}_pie_chart.png".format(userid))
+        return charts
 
     def add_category(self, new_category, userid):
         """
