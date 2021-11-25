@@ -366,6 +366,12 @@ class User:
                 labels.append(category)
                 totals.append(total)
 
+        # Pie Chart
+        plt.pie(totals, labels=labels)
+        plt.title("Your Expenditure Report")
+        plt.savefig("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
+        charts.append("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
+
         # Bar Graph
         plt.switch_backend("Agg")
         plt.title("Your Expenditure Report")
@@ -373,14 +379,11 @@ class User:
         plt.xlabel('Categories')
         plt.ylabel('Expenditure')
         plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_bar_chart.png".format(userid))
-        charts.append("data/{}_bar_chart.png".format(userid))
+        plt.savefig("data/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
+        charts.append("data/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
 
-        # Pie Chart
-        plt.pie(totals, labels=labels)
-        plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_pie_chart.png".format(userid))
-        charts.append("data/{}_pie_chart.png".format(userid))
+        # Add more visualizations here. Maintain the above format while adding more visualizations. 
+
         return charts
 
     def add_category(self, new_category, userid):
