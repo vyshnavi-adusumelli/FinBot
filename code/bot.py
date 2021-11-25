@@ -1062,7 +1062,7 @@ def get_users():
     :return: users
     :rtype: dict
     """
-    data_dir = "../data"
+    data_dir = "data"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
