@@ -50,7 +50,7 @@ def start_and_menu_command(m):
     """
     chat_id = m.chat.id
     text_intro = (
-        "Welcome to TrackMyDollar - a simple solution to track your expenses! \nHere is a list of available "
+        "Welcome to SlashBot - a simple solution to track your expenses! \nHere is a list of available "
         "commands, please enter a command of your choice so that I can assist you further: \n\n "
     )
     for (
