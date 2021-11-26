@@ -17,8 +17,8 @@
 ![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
 ![Lines of code](https://img.shields.io/tokei/lines/github/secheaper/slashbot?color=9cf)
 ![Version](https://img.shields.io/github/v/release/secheaper/slashbot?color=ff69b4&label=Version)
-![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
+![GitHub issues](https://img.shields.io/github/issues-raw/secheaper/slashbot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/secheaper/slashbot)
 
 <hr>
 
