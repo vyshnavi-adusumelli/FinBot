@@ -1,4 +1,4 @@
-# :money_with_wings: TrackMyDollar
+# :money_with_wings: SlashBot
 <hr>
 <p align="center">
 <a><img width=500 
@@ -22,9 +22,9 @@
 
 <hr>
 
-## About TrackMyDollar
+## About SlashBot
 
-TrackMyDollar is an easy-to-use Telegram Bot that assists you in recording your daily expenses on a local system without any hassle.  
+SlashBot is an easy-to-use Telegram Bot that assists you in recording your daily expenses on a local system without any hassle.  
 With simple commands, this bot allows you to:
 - Add/Record a new spending
 - Show the sum of your expenditure for the current day/month
@@ -44,8 +44,8 @@ A demo is shown below. It is run on a local machine.
 
 ## Table of contents
 
-- [:money_with_wings: TrackMyDollar](#money_with_wings-trackmydollar)
-  - [About TrackMyDollar](#about-trackmydollar)
+- [:money_with_wings: SlashBot](#money_with_wings-slashbot)
+  - [About SlashBot](#about-slashbot)
   - [Table of contents](#table-of-contents)
 - [:star: Whats New](#star-whats-new)
     - [Version 1.0.2](#version-102)
