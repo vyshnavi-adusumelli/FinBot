@@ -8,6 +8,8 @@ import pathlib
 import pickle
 import re
 import time
+import csv
+import io
 from datetime import datetime
 from tabulate import tabulate
 
@@ -329,6 +331,46 @@ def show_history(message):
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, str(ex))
 
+
+@bot.message_handler(commands=["download"])
+def download_history(message):
+    """
+    Handles the command 'download'. Downloads a csv file.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        chat_id = str(message.chat.id)
+        count = 0
+        table = [["Category", "Date", "Amount in $"]]
+        if chat_id not in list(user_list.keys()):
+            raise Exception("Sorry! No spending records found!")
+        if len(user_list[chat_id].transactions) == 0:
+            raise Exception("Sorry! No spending records found!")
+        else:
+            for category in user_list[chat_id].transactions.keys():
+                for transaction in user_list[chat_id].transactions[category]:
+                    count = count + 1
+                    date = transaction["Date"].strftime("%m/%d/%y")
+                    value = format(transaction["Value"], ".2f")
+                    table.append([date, category, "$"+value])
+            if count == 0:
+                raise Exception("Sorry! No spending records found!")
+
+            s = io.StringIO()
+            csv.writer(s).writerows(table)
+            s.seek(0)
+            buf = io.BytesIO()
+            buf.write(s.getvalue().encode())
+            buf.seek(0)
+            buf.name = "history.csv"
+            bot.send_document(chat_id, buf)
+
+    except Exception as ex:
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, str(ex))
 
 @bot.message_handler(commands=["display"])
 def command_display(message):
