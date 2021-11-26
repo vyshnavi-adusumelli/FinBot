@@ -33,6 +33,7 @@ commands = {
 
 DOLLARS_TO_RUPEES = 75.01
 DOLLARS_TO_EUROS = 0.88
+DOLLARS_TO_SWISS_FRANC = 0.92
 
 bot = telebot.TeleBot(api_token)
 telebot.logger.setLevel(logging.INFO)
@@ -308,7 +309,7 @@ def show_history(message):
         chat_id = str(message.chat.id)
         spend_total_str = ""
         count = 0
-        table = [["Category", "Date", "Amount in $", "Amount in Rs.", "Amount in EUR"]]
+        table = [["Category", "Date", "Amount in $", "Amount in Rs.", "Amount in EUR", "Amount in CHF"]]
         if chat_id not in list(user_list.keys()):
             raise Exception("Sorry! No spending records found!")
         if len(user_list[chat_id].transactions) == 0:
@@ -321,7 +322,8 @@ def show_history(message):
                     value = format(transaction["Value"], ".2f")
                     valueInRupees = format((float(transaction["Value"]) * DOLLARS_TO_RUPEES), ".2f")
                     valueInEuros = format((float(transaction["Value"]) * DOLLARS_TO_EUROS), ".2f")
-                    table.append([date, category, "$"+value, "Rs." + str(valueInRupees), str(valueInEuros) + " EUR"])
+                    valueInSwissFranc = format((float(transaction["Value"]) * DOLLARS_TO_SWISS_FRANC), ".2f")
+                    table.append([date, category, "$ " + value, "Rs." + str(valueInRupees), str(valueInEuros) + " EUR", str(valueInSwissFranc) + " CHF"])
             if count == 0:
                 raise Exception("Sorry! No spending records found!")
             spend_total_str="<pre>"+ tabulate(table, headers='firstrow')+"</pre>"
