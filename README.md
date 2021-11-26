@@ -12,13 +12,13 @@
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
-![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
-![Lines of code](https://img.shields.io/tokei/lines/github/secheaper/slashbot?color=9cf)
-![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
 [![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
 ![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
-
+![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
+![Lines of code](https://img.shields.io/tokei/lines/github/secheaper/slashbot?color=9cf)
+![Version](https://img.shields.io/github/v/release/secheaper/slashbot?color=ff69b4&label=Version)
+![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
 
 <hr>
 
