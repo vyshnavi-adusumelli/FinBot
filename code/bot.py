@@ -31,6 +31,7 @@ commands = {
     "categoryAdd": "Add a new custom category",
     "categoryList": "List all categories",
     "categoryDelete": "Delete a category",
+    "download":"Download your history",
 }
 
 DOLLARS_TO_RUPEES = 75.01
