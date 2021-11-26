@@ -314,7 +314,7 @@ def show_history(message):
         chat_id = str(message.chat.id)
         spend_total_str = ""
         count = 0
-        table = [["Category", "Date", "Amount in $", "Amount in Rs.", "Amount in EUR", "Amount in CHF"]]
+        table = [["Category", "Date", "Amount in $", "Amount in Rs."]]
         if chat_id not in list(user_list.keys()):
             raise Exception("Sorry! No spending records found!")
         if len(user_list[chat_id].transactions) == 0:
@@ -325,10 +325,7 @@ def show_history(message):
                     count = count + 1
                     date = transaction["Date"].strftime("%m/%d/%y")
                     value = format(transaction["Value"], ".2f")
-                    valueInRupees = format((float(transaction["Value"]) * DOLLARS_TO_RUPEES), ".2f")
-                    valueInEuros = format((float(transaction["Value"]) * DOLLARS_TO_EUROS), ".2f")
-                    valueInSwissFranc = format((float(transaction["Value"]) * DOLLARS_TO_SWISS_FRANC), ".2f")
-                    table.append([date, category, "$ " + value, "Rs." + str(valueInRupees), str(valueInEuros) + " EUR", str(valueInSwissFranc) + " CHF"])
+                    table.append([date, category, "$ " + value])
             if count == 0:
                 raise Exception("Sorry! No spending records found!")
             spend_total_str="<pre>"+ tabulate(table, headers='firstrow')+"</pre>"
