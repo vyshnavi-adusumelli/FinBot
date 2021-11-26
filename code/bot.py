@@ -1182,7 +1182,7 @@ def display_total_currency(message):
             )
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.row_width = 2
-            choices = ["INR", "EUR"]
+            choices = ["INR", "EUR", "CHF"]
             for c in choices:
                 markup.add(c)
 
@@ -1219,7 +1219,13 @@ def display_total_currency2(message):
         if selection == "EUR":
             completeExpenses = completeSpendings * DOLLARS_TO_EUROS
             completeExpensesMessage = (
-            "The total expenses in INR is Rs. " + str(completeExpenses)
+            "The total expenses in EUR is " + str(completeExpenses) + " EUR"
+        )
+            bot.reply_to(message, completeExpensesMessage)
+        if selection == "CHF":
+            completeExpenses = completeSpendings * DOLLARS_TO_EUROS
+            completeExpensesMessage = (
+            "The total expenses in Swiss Franc is " + str(completeExpenses) + " CHF"
         )
             bot.reply_to(message, completeExpensesMessage)
 
