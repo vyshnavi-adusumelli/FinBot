@@ -1259,7 +1259,7 @@ def display_total_currency(message):
 
 def display_total_currency2(message):
     try:
-        chat_id = str(message.chat.id)
+        # chat_id = str(message.chat.id)
         selection = message.text
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.row_width = 2
