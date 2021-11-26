@@ -1243,7 +1243,7 @@ def display_total_currency(message):
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}\n".format(total_value)
             total_spendings += "Budget for the month {}".format(str(budget_value))
-            global completeSpendings
+            global completeSpendings # pylint: disable=global-statement
             completeSpendings = total_value
             choice = bot.reply_to(
                         message, "Which currency to you want to covert to?", reply_markup=markup
