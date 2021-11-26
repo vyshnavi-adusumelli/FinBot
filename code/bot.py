@@ -32,6 +32,7 @@ commands = {
     "categoryAdd": "Add a new custom category",
     "categoryList": "List all categories",
     "categoryDelete": "Delete a category",
+    "download":"Download your history",
     "displayDifferentCurrency": "Display the sum of expenditures for the current day/month in another currency"
 }
 
