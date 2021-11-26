@@ -1,28 +1,30 @@
-# :money_with_wings: TrackMyDollar
+# :money_with_wings: SlashBot
 <hr>
 <p align="center">
 <a><img width=500 
-  src="https://github.com/deekay2310/MyDollarBot/blob/c56b4afd4fd5bbfffea0d0a4aade58596a5cb678/docs/0001-8711513694_20210926_212845_0000.png" alt="Expense tracking made easy!"></a>
+  src="/docs/workflows/banner.jpg" alt="Expense tracking made easy!"></a>
 </p>
 <hr>
 
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
-![GitHub](https://img.shields.io/badge/Language-Python-blue.svg)
-![GitHub contributors](https://img.shields.io/github/contributors/mtkumar123/MyDollarBot)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5646619.svg)](https://doi.org/10.5281/zenodo.5646619)
+![GitHub](https://img.shields.io/github/languages/top/secheaper/slashbot?color=red&label=Python&logo=Python&logoColor=yellow)
+![GitHub contributors](https://img.shields.io/github/contributors/secheaper/slashbot)
+[![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
-![GitHub issues](https://img.shields.io/github/issues-raw/mtkumar123/MyDollarBot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/mtkumar123/MyDollarBot)
 [![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
 ![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
-
+![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
+![Lines of code](https://img.shields.io/tokei/lines/github/secheaper/slashbot?color=9cf)
+![Version](https://img.shields.io/github/v/release/secheaper/slashbot?color=ff69b4&label=Version)
+![GitHub issues](https://img.shields.io/github/issues-raw/secheaper/slashbot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/secheaper/slashbot)
 
 <hr>
 
-## About TrackMyDollar
+## About SlashBot
 
-TrackMyDollar is an easy-to-use Telegram Bot that assists you in recording your daily expenses on a local system without any hassle.  
+SlashBot is an easy-to-use Telegram Bot that assists you in recording your daily expenses on a local system without any hassle.  
 With simple commands, this bot allows you to:
 - Add/Record a new spending
 - Show the sum of your expenditure for the current day/month
@@ -42,18 +44,33 @@ A demo is shown below. It is run on a local machine.
 
 ## Table of contents
 
-- [:money_with_wings: TrackMyDollar](#money_with_wings-trackmydollar)
+- [:money_with_wings: SlashBot](#money_with_wings-slashbot)
+  - [About SlashBot](#about-slashbot)
+  - [Table of contents](#table-of-contents)
 - [:star: Whats New](#star-whats-new)
+    - [Version 1.0.2](#version-102)
+      - [New Features:](#new-features)
+    - [Version 1.0.1](#version-101)
+      - [New Features:](#new-features-1)
+      - [For Contributors:](#for-contributors)
+    - [Version 1.0.0](#version-100)
+      - [New Features:](#new-features-2)
+      - [For Contributors:](#for-contributors-1)
 - [:rocket: Installation Guide](#rocket-installation-guide)
+  - [😃For users](#for-users)
+  - [💻For developers](#for-developers)
 - [:information_desk_person: Samples](#information_desk_person-samples)
-    + [Budget](#budget)
-    + [Add](#add)
-    + [Delete](#delete)
-    + [Edit](#edit)
-    + [Adding a CSV file](#adding-transactions-from-csv-and-displaying-chart)
-    + [Visualization](#adding-transactions-from-csv-and-displaying-chart)
+    - [Budget](#budget)
+    - [Add](#add)
+    - [Delete](#delete)
+    - [Edit](#edit)
+    - [Adding transactions from CSV and displaying chart](#adding-transactions-from-csv-and-displaying-chart)
 - [:grey_question: Documentation](#grey_question-documentation)
+- [:construction: Road Map](#construction-road-map)
 - [:raising_hand: Team Members](#raising_hand-team-members)
+  - [Version 1.0.0](#version-100-1)
+  - [Version 1.0](#version-10)
+    - [Team Members](#team-members)
 - [:calling: Support](#calling-support)
 
 
