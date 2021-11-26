@@ -29,6 +29,7 @@ commands = {
     "categoryAdd": "Add a new custom category",
     "categoryList": "List all categories",
     "categoryDelete": "Delete a category",
+    "displayDifferentCurrency": "Display the sum of expenditures for the current day/month in another currency"
 }
 
 DOLLARS_TO_RUPEES = 75.01
@@ -40,6 +41,7 @@ telebot.logger.setLevel(logging.INFO)
 user_list = {}
 option = {}
 all_transactions = []
+completeSpendings = 0
 
 logger = logging.getLogger()
 
@@ -1080,6 +1082,154 @@ def get_users():
                 with open(abspath, "rb") as f:
                     users[user] = pickle.load(f)
     return users
+
+
+@bot.message_handler(commands=["displayDifferentCurrency"])
+def command_display_currency(message):
+    """
+    Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
+    transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
+    next.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    chat_id = str(message.chat.id)
+    if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
+        bot.send_message(
+            chat_id, "Oops! Looks like you do not have any spending records!"
+        )
+    else:
+        try:
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.row_width = 2
+            for mode in user_list[chat_id].spend_display_option:
+                markup.add(mode)
+            msg = bot.reply_to(
+                message,
+                "Please select a category to see the total expense",
+                reply_markup=markup,
+            )
+            bot.register_next_step_handler(msg, display_total_currency)
+
+        except Exception as ex:
+            print("Exception occurred : ")
+            logger.error(str(ex), exc_info=True)
+            bot.reply_to(message, "Oops! - \nError : " + str(ex))
+
+def display_total_currency(message):
+    """
+    Receives the input time period and displays the transaction summary for the corresponding time period.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    dateFormat = "%m/%d/%Y"
+    try:
+        chat_id = str(message.chat.id)
+        day_week_month = message.text
+
+        if day_week_month not in user_list[chat_id].spend_display_option:
+            raise Exception(
+                'Sorry I can\'t show spendings for "{}"!'.format(day_week_month)
+            )
+
+        if len(user_list[chat_id].transactions) == 0:
+            raise Exception("Oops! Looks like you do not have any spending records!")
+
+        bot.send_message(chat_id, "Hold on! Calculating...")
+
+        if day_week_month == "Day":
+            query = datetime.today()
+            query_result = ""
+            total_value = 0
+            for category in user_list[chat_id].transactions.keys():
+                for transaction in user_list[chat_id].transactions[category]:
+                    if transaction["Date"].strftime("%d") == query.strftime("%d"):
+                        query_result += "Category {} Date {} Value {:.2f} \n".format(
+                            category,
+                            transaction["Date"].strftime(dateFormat),
+                            transaction["Value"],
+                        )
+                        total_value += transaction["Value"]
+            total_spendings = "Here are your total spendings for the date {} \n".format(
+                datetime.today().strftime("%m/%d/%Y")
+            )
+            total_spendings += query_result
+            total_spendings += "Total Value {:.2f}".format(total_value)
+            bot.send_message(chat_id, total_spendings)
+        elif day_week_month == "Month":
+            query = datetime.today()
+            query_result = ""
+            total_value = 0
+            # print(user_list[chat_id].keys())
+            budget_value = user_list[chat_id].monthly_budget
+            for category in user_list[chat_id].transactions.keys():
+                for transaction in user_list[chat_id].transactions[category]:
+                    if transaction["Date"].strftime("%m") == query.strftime("%m"):
+                        query_result += "Category {} Date {} Value {:.2f} \n".format(
+                            category,
+                            transaction["Date"].strftime(dateFormat),
+                            transaction["Value"],
+                        )
+                        total_value += transaction["Value"]
+            total_spendings = (
+                "Here are your total spendings for the Month {} \n".format(
+                    datetime.today().strftime("%B")
+                )
+            )
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.row_width = 2
+            choices = ["INR", "EUR"]
+            for c in choices:
+                markup.add(c)
+
+            total_spendings += query_result
+            total_spendings += "Total Value {:.2f}\n".format(total_value)
+            total_spendings += "Budget for the month {}".format(str(budget_value))
+            global completeSpendings
+            completeSpendings = total_value
+            choice = bot.reply_to(
+                        message, "Which currency to you want to covert to?", reply_markup=markup
+                    )
+            bot.register_next_step_handler(choice, display_total_currency2)
+            # bot.send_message(chat_id, total_spendings)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, str(ex))
+
+
+def display_total_currency2(message):
+    try:
+        chat_id = str(message.chat.id)
+        selection = message.text
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+        
+        if selection == "INR":
+            completeExpenses = completeSpendings * DOLLARS_TO_RUPEES
+            completeExpensesMessage = (
+            "The total expenses in INR is Rs. " + str(completeExpenses)
+        )
+            bot.reply_to(message, completeExpensesMessage)
+        if selection == "EUR":
+            completeExpenses = completeSpendings * DOLLARS_TO_EUROS
+            completeExpensesMessage = (
+            "The total expenses in INR is Rs. " + str(completeExpenses)
+        )
+            bot.reply_to(message, completeExpensesMessage)
+
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, "Processing Failed - Error: " + str(ex))
+
+
 
 
 if __name__ == "__main__":
