@@ -5,7 +5,7 @@ import logging
 import pathlib
 import pickle
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -30,7 +30,7 @@ class User:
         self.rules = {}
 
         # for the calendar widget
-        self.max_date = datetime.today()
+        self.max_date = datetime.today() + timedelta(days=1)
         self.curr_date = datetime.today()
         self.min_date = datetime.today()
         self.min_date = self.min_date.replace(year=self.min_date.year - 1)
