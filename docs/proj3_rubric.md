@@ -11,13 +11,13 @@
 |.5|.5| Number of commits: by different people  |As seen in [Project Insights](https://github.com/secheaper/slashbot/pulse)|
 |1|1|issues are being closed |Can be seen [here](https://github.com/secheaper/slashbot/issues?q=is%3Aissue+is%3Aclosed)|
 |.5|.5| issues are discussed before they are closed |Can be seen [here](https://github.com/secheaper/slashbot/issues/6)|
-|.5|| Use of syntax checkers. ||
+|.5|.5| Use of syntax checkers. |Present in the [YML](https://github.com/secheaper/slashbot/blob/main/.github/workflows/main.yml)|
 |1|1|Issues reports: there are many|Can be seen [here](https://github.com/secheaper/slashbot/issues?q=)|
-|.5|| Use of code formatters. ||
-|.5|| Use of style checkers ||
+|.5|.5| Use of code formatters. |Present in the [YML](https://github.com/secheaper/slashbot/blob/main/.github/workflows/main.yml)|
+|.5|.5| Use of style checkers |Present in the [YML](https://github.com/secheaper/slashbot/blob/main/.github/workflows/main.yml)|
 |.5|.5| Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. |Present in [Readme](https://github.com/secheaper/slashbot/blob/main/README.md)|
 |.5|.5| test cases exist  |Present in [test](https://github.com/secheaper/slashbot/tree/main/test) folder|
-|.5|  | Use of code coverage  | |
+|.5|.5| Use of code coverage  |Present in [Readme](https://github.com/secheaper/slashbot/blob/main/README.md)|
 |.5|  | other automated analysis tools  |  |
 |.5|  |test cases:.a large proportion of the issues related to handling failing cases. |[Tests](https://github.com/secheaper/slashbot/tree/main/test) folder|
 |.5|  |test cases are routinely executed ||
