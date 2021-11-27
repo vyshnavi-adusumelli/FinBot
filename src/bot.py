@@ -12,12 +12,15 @@ import csv
 import io
 from datetime import datetime
 from tabulate import tabulate
-
+import sys
 import telebot
 from telebot import types
 
-# from code.user import User
-from user import User
+sys.path.append("/..")
+try:
+    from src.user import User
+except:
+    from user import User
 
 api_token = os.environ["API_TOKEN"]
 commands = {
@@ -1123,16 +1126,17 @@ def get_users():
     :return: users
     :rtype: dict
     """
+
     data_dir = "data"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
-            user = re.match(r"(.+)\.pickle", file)
-            if user:
-                user = user.group(1)
+            u = re.match(r"(.+)\.pickle", file)
+            if u:
+                u = u.group(1)
                 abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
                 with open(abspath, "rb") as f:
-                    users[user] = pickle.load(f)
+                    users[u] = pickle.load(f)
     return users
 
 

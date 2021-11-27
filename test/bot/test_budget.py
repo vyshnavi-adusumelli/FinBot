@@ -3,7 +3,7 @@ Tests budget command
 """
 import time
 import unittest
-from code import bot
+from src import bot
 from bot_utils import BotTest
 
 
