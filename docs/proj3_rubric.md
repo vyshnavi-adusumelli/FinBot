@@ -16,10 +16,10 @@
 |.5|| Use of code formatters. ||
 |.5|| Use of style checkers ||
 |.5|.5| Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. |Present in [Readme](https://github.com/secheaper/slashbot/blob/main/README.md)|
-|.5|  | test cases exist  |  |
+|.5|.5| test cases exist  |Present in [test](https://github.com/secheaper/slashbot/tree/main/test) folder|
 |.5|  | Use of code coverage  | |
 |.5|  | other automated analysis tools  |  |
-|.5|  |test cases:.a large proportion of the issues related to handling failing cases. | |
-|.5|  |test cases are routinely executed |  |
+|.5|  |test cases:.a large proportion of the issues related to handling failing cases. |[Tests](https://github.com/secheaper/slashbot/tree/main/test) folder|
+|.5|  |test cases are routinely executed ||
 |1| |Documentation describing how this version improves on the older version| |
 |3|  | This version is a little(1), some(2), much(3) improved on the last version.|Tutor's assessment.| 
