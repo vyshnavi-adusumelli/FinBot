@@ -148,7 +148,7 @@ No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 
 9. Search for "Edit the system environment variables" on your local computer. Click on Environment Variables and create a new System Variable called "API_TOKEN" and paste the token copied in step 8.
 
-10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. Navigate to the directory containing the "code.py" file and run the following command:
+10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. Navigate to the directory containing the "bot.py" file and run the following command:
 ```
   python code/bot.py
 ```
@@ -234,7 +234,16 @@ Our ideas for new features that can be implemented to make this project better c
 
 # :raising_hand: Team Members
 
-## Version 1.0.0
+## VERSION 3.0 (PHASE 3)
+### Team Members
+- Shubham Mankar
+- Pratik Devnani
+- Moksh Jain
+- Rahil Sarvaiya
+- Anushi Keswani
+
+## VERSION 2.0 (PHASE 2)
+### Team Members
 - Ashley King
 - Manoj Kumar
 - Rakesh Muppala
@@ -242,7 +251,7 @@ Our ideas for new features that can be implemented to make this project better c
 - Ashwin Das
 - Renji Joseph Sabu
 
-## Version 1.0
+## Version 1.0 (PHASE 1)
 
 ### Team Members
 - Dev 
