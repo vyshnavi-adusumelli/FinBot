@@ -16,8 +16,8 @@ from tabulate import tabulate
 import telebot
 from telebot import types
 
-from code.user import User
-# from user import User
+# from code.user import User
+from user import User
 
 api_token = os.environ["API_TOKEN"]
 commands = {
