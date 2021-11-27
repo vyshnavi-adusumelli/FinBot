@@ -9,13 +9,13 @@
 |.5|.5| evidence that the members of the team are working across multiple places in the code base |As shown in [Network](https://github.com/secheaper/slashbot/network)|
 |1|1|Docs: what: point descriptions of each class/function (in isolation)|Docstrings are present for each function in [code](https://github.com/secheaper/slashbot/tree/main/code)|
 |.5|.5| Number of commits: by different people  |As seen in [Project Insights](https://github.com/secheaper/slashbot/pulse)|
-|1| |issues are being closed | |
-|.5|  | issues are discussed before they are closed |  |
-|.5|  | Use of syntax checkers. | U|
-|1| | Issues reports: there are many  | |
-|.5|  | Use of code formatters. |  |
-|.5|  | Use of style checkers |  |
-|.5|  | Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. | |
+|1|1|issues are being closed |Can be seen [here](https://github.com/secheaper/slashbot/issues?q=is%3Aissue+is%3Aclosed)|
+|.5|.5| issues are discussed before they are closed |Can be seen [here](https://github.com/secheaper/slashbot/issues/6)|
+|.5|| Use of syntax checkers. ||
+|1|1|Issues reports: there are many|Can be seen [here](https://github.com/secheaper/slashbot/issues?q=)|
+|.5|| Use of code formatters. ||
+|.5|| Use of style checkers ||
+|.5|.5| Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. |Present in [Readme](https://github.com/secheaper/slashbot/blob/main/README.md)|
 |.5|  | test cases exist  |  |
 |.5|  | Use of code coverage  | |
 |.5|  | other automated analysis tools  |  |
