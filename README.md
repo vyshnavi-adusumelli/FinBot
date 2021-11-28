@@ -244,7 +244,7 @@ Our ideas for new features that can be implemented to make this project better c
 
 # :raising_hand: Team Members
 
-## VERSION 3.0 (PHASE 3)
+## PHASE 3
 ### Team Members
 - Shubham Mankar
 - Pratik Devnani
@@ -252,23 +252,7 @@ Our ideas for new features that can be implemented to make this project better c
 - Rahil Sarvaiya
 - Anushi Keswani
 
-## VERSION 2.0 (PHASE 2)
-### Team Members
-- Ashley King
-- Manoj Kumar
-- Rakesh Muppala
-- Sayali Parab
-- Ashwin Das
-- Renji Joseph Sabu
 
-## Version 1.0 (PHASE 1)
-
-### Team Members
-- Dev 
-- Prakruthi 
-- Radhika
-- Rohan
-- Sunidhi
 
 
 # :calling: Support
