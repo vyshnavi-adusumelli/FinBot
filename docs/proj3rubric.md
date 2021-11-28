@@ -4,7 +4,7 @@
 |.5| .5| workload is spread over the whole team (so one team member is often Xtimes more productive than the others...|[Project Insights](https://github.com/secheaper/slashbot/pulse)|
 |.5|.5|Docs: why: docs tell a story, motivate the whole thing, deliver a punchline that makes you want to rush out and use the thing |The [Readme](https://github.com/secheaper/slashbot/blob/main/README.md) has detailed information.|
 |.5|.5|the files CONTRIBUTING.md lists coding standards and lots of tips on how to extend the system without screwing things up|The [contributing.md](https://github.com/secheaper/slashbot/blob/main/CONTRIBUTING.md) is quite detailed.|
-|.5| |Docs: doco generated , format not ugly  | |
+|.5|.5|Docs: doco generated , format not ugly  |Present on [Github Pages](https://mtkumar123.github.io/MyDollarBot/)|
 |.5|.5| evidence that the whole team is using the same tools (e.g. config files in the repo, updated by lots of different people) |The [code](https://github.com/secheaper/slashbot/blob/main/code/bot.py) file being updated by many users. In Github Secrets, we can see that everyone used the same bot with API_TOKEN and CHAT_ID kept as environment variables|
 |.5|.5| evidence that the members of the team are working across multiple places in the code base |As shown in [Network](https://github.com/secheaper/slashbot/network)|
 |1|1|Docs: what: point descriptions of each class/function (in isolation)|Docstrings are present for each function in [code](https://github.com/secheaper/slashbot/tree/main/code)|
