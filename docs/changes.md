@@ -9,6 +9,9 @@ The group has made the below mentioned functional changes to the project improvi
 2. **Display total expenditure in different currencies:** This version lets you convert your total daily or monthly expenditure in a different currency.
 <br> <p align="center"><img width="700" src="./workflows/currencyWorking.gif"></p>
 
+3. **Display Multiple Visualization options:** This version allows you to see your expenses in more than one form of visualization with a template to add more visualizations.
+<br> <p align="center"><img width="700" src="./workflows/multipleVisualizations.gif"></p>
+
 ## Documentation and Testing
 Changes to the documentation were also significant. They are mentioned below.
 1. **README:** The main README has been updated with new information, more bling and new graphics.
