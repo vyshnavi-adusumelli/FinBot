@@ -1,10 +1,10 @@
 # Contributing to TrackMyDollar
 
-Follow the set of guidelines below to contribute to TrackMyDollar!
+Follow the set of guidelines below to contribute to SlashBot!
 
 ## Code of Conduct
 
-By participating, you are expected to uphold this code. Please report unacceptable behavior to psomash@ncsu.edu.
+By participating, you are expected to uphold this code. Please report unacceptable behavior to psomash@ncsu.edu or secheaper@gamil.com.
 
 Prerequistes required before starting this project
 
