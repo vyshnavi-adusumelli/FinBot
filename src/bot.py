@@ -424,13 +424,15 @@ def send_email(message):
             buf.seek(0)
             buf.name = "history.csv"
             # bot.send_document(chat_id, buf)
-            bot.send_message(message.chat.id, "Enter your email id")
+            # category = bot.reply_to(message, "Enter category name")
+            category = bot.send_message(message.chat.id, "Enter your email id")
+            bot.register_next_step_handler(category, acceptEmailId)
 
     except Exception as ex:
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, str(ex))
 
-@bot.message_handler(func=lambda m: True)
+
 def acceptEmailId(message):
     email = message.text
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
