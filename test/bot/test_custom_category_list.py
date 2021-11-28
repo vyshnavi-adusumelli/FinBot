@@ -2,7 +2,7 @@
 from bot_utils import BotTest
 import unittest
 import time
-from code import bot
+from src import bot
 
 
 class TestListCustomCategory(BotTest):

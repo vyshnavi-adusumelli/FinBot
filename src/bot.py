@@ -12,12 +12,20 @@ import csv
 import io
 from datetime import datetime
 from tabulate import tabulate
-
+import sys
 import telebot
 from telebot import types
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
-from code.user import User
-# from user import User
+# sys.path.append("E:\SE\project phase 3\slashbot")
+try:
+    from src.user import User
+except:
+    from user import User
 
 api_token = os.environ["API_TOKEN"]
 commands = {
@@ -33,7 +41,8 @@ commands = {
     "categoryList": "List all categories",
     "categoryDelete": "Delete a category",
     "download":"Download your history",
-    "displayDifferentCurrency": "Display the sum of expenditures for the current day/month in another currency"
+    "displayDifferentCurrency": "Display the sum of expenditures for the current day/month in another currency",
+    "sendEmail":"Send an email with an attachment showing your history"
 }
 
 DOLLARS_TO_RUPEES = 75.01
@@ -60,6 +69,7 @@ def start_and_menu_command(m):
     :return: None
     """
     chat_id = m.chat.id
+    print("*********************CHAT ID***************************", chat_id)
     text_intro = (
         "Welcome to SlashBot - a simple solution to track your expenses! \nHere is a list of available "
         "commands, please enter a command of your choice so that I can assist you further: \n\n "
@@ -379,9 +389,133 @@ def download_history(message):
             buf.name = "history.csv"
             bot.send_document(chat_id, buf)
 
+
     except Exception as ex:
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, str(ex))
+    
+@bot.message_handler(commands=["sendEmail"])
+def send_email(message):
+    """
+    Handles the command 'sendEmail'. Sends and email with the csvFile.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        chat_id = str(message.chat.id)
+        count = 0
+        table = [["Category", "Date", "Amount in $"]]
+        if chat_id not in list(user_list.keys()):
+            raise Exception("Sorry! No spending records found!")
+        if len(user_list[chat_id].transactions) == 0:
+            raise Exception("Sorry! No spending records found!")
+        else:
+            for category in user_list[chat_id].transactions.keys():
+                for transaction in user_list[chat_id].transactions[category]:
+                    count = count + 1
+                    date = transaction["Date"].strftime("%m/%d/%y")
+                    value = format(transaction["Value"], ".2f")
+                    table.append([date, category, "$"+value])
+            if count == 0:
+                raise Exception("Sorry! No spending records found!")
+
+            s = io.StringIO()
+            csv.writer(s).writerows(table)
+            s.seek(0)
+            buf = io.BytesIO()
+            buf.write(s.getvalue().encode())
+            buf.seek(0)
+            buf.name = "history.csv"
+            # bot.send_document(chat_id, buf)
+            # category = bot.reply_to(message, "Enter category name")
+            category = bot.send_message(message.chat.id, "Enter your email id")
+            bot.register_next_step_handler(category, acceptEmailId)
+
+    except Exception as ex:
+        logger.error(str(ex), exc_info=True)
+        bot.reply_to(message, str(ex))
+
+
+def acceptEmailId(message):
+    email = message.text
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    if(re.fullmatch(regex, email)):
+        try:
+            chat_id = str(message.chat.id)
+            count = 0
+            table = [["Category", "Date", "Amount in $"]]
+            if chat_id not in list(user_list.keys()):
+                raise Exception("Sorry! No spending records found!")
+            if len(user_list[chat_id].transactions) == 0:
+                raise Exception("Sorry! No spending records found!")
+            else:
+                for category in user_list[chat_id].transactions.keys():
+                    for transaction in user_list[chat_id].transactions[category]:
+                        count = count + 1
+                        date = transaction["Date"].strftime("%m/%d/%y")
+                        value = format(transaction["Value"], ".2f")
+                        table.append([date, category, "$"+value])
+                if count == 0:
+                    raise Exception("Sorry! No spending records found!")
+
+                with open('history.csv', 'w', newline = '') as file:
+                    writer = csv.writer(file)
+                    writer.writerows(table)
+                # s = io.StringIO()
+                # csv.writer(s).writerows(table)
+                # s.seek(0)
+                # buf = io.StringIO()
+                # buf.write(s.getvalue().encode())
+                # buf.seek(0)
+                # buf.name = "history.csv"
+                # writer = csv.writer(buf, dialect='excel', delimiter = ',')
+                # writer.writerow(u"date", u"category", u"cost")
+
+                # bot.send_document(chat_id, buf)
+                mail_content = '''Hello,
+                This email has an attached copy of your expenditure history.
+                Thank you!
+                '''
+                #The mail addresses and password
+                sender_address = 'secheaper@gmail.com'
+                sender_pass = 'csc510se'
+                receiver_address = email
+                #Setup the MIME
+                message = MIMEMultipart()
+                message['From'] = sender_address
+                message['To'] = receiver_address
+                message['Subject'] = 'Spending History document'
+                #The subject line
+                #The body and the attachments for the mail
+                message.attach(MIMEText(mail_content, 'plain'))
+                attach_file_name = "history.csv"
+                attach_file = open(attach_file_name, 'rb')
+                payload = MIMEBase('application', 'octate-stream')
+                payload.set_payload((attach_file).read())
+                encoders.encode_base64(payload) #encode the attachment
+                #add payload header with filename
+                payload.add_header('Content-Decomposition', 'attachment', filename=attach_file_name)
+                message.attach(payload)
+                #Create SMTP session for sending the mail
+                session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
+                session.starttls() #enable security
+                session.login(sender_address, sender_pass) #login with mail_id and password
+                text = message.as_string()
+                session.sendmail(sender_address, receiver_address, text)
+                session.quit()
+
+                # bot.send_message(message.chat.id, 'Mail Sent')
+
+
+        except Exception as ex:
+            logger.error(str(ex), exc_info=True)
+            bot.reply_to(message, str(ex))
+    else:
+        bot.send_message(message.chat.id, 'incorrect email')
+        
+
 
 @bot.message_handler(commands=["display"])
 def command_display(message):
@@ -1129,16 +1263,17 @@ def get_users():
     :return: users
     :rtype: dict
     """
+
     data_dir = "data"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
-            user = re.match(r"(.+)\.pickle", file)
-            if user:
-                user = user.group(1)
+            u = re.match(r"(.+)\.pickle", file)
+            if u:
+                u = u.group(1)
                 abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
                 with open(abspath, "rb") as f:
-                    users[user] = pickle.load(f)
+                    users[u] = pickle.load(f)
     return users
 
 
