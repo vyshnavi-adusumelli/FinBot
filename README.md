@@ -42,43 +42,6 @@ A demo is shown below. It is run on a local machine.
 
 ---
 
-## Table of contents
-
-- [:money_with_wings: SlashBot](#money_with_wings-slashbot)
-  - [About SlashBot](#about-slashbot)
-  - [Table of contents](#table-of-contents)
-- [:star: Whats New](#star-whats-new)
-    - [Version 1.0.2](#version-102)
-      - [New Features:](#new-features)
-    - [Version 1.0.1](#version-101)
-      - [New Features:](#new-features-1)
-      - [For Contributors:](#for-contributors)
-    - [Version 1.0.0](#version-100)
-      - [New Features:](#new-features-2)
-      - [For Contributors:](#for-contributors-1)
-- [:rocket: Installation Guide](#rocket-installation-guide)
-  - [😃For users](#for-users)
-  - [💻For developers](#for-developers)
-- [:information_desk_person: Samples](#information_desk_person-samples)
-    - [Budget](#budget)
-    - [Add](#add)
-    - [Delete](#delete)
-    - [Edit](#edit)
-    - [Adding transactions from CSV and displaying chart](#adding-transactions-from-csv-and-displaying-chart)
-    - [Download History](#download-history)
-- [:grey_question: Documentation](#grey_question-documentation)
-- [:construction: Road Map](#construction-road-map)
-- [:raising_hand: Team Members](#raising_hand-team-members)
-  - [VERSION 3.0 (PHASE 3)](#version-30-phase-3)
-    - [Team Members](#team-members)
-  - [VERSION 2.0 (PHASE 2)](#version-20-phase-2)
-    - [Team Members](#team-members-1)
-  - [Version 1.0 (PHASE 1)](#version-10-phase-1)
-    - [Team Members](#team-members-2)
-- [:calling: Support](#calling-support)
-
-
-
 # :star: Whats New
 
 ### Version 1.0.2
