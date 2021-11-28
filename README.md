@@ -126,9 +126,6 @@ A demo is shown below. It is run on a local machine.
 
 # :rocket: Installation Guide
 
-## 😃For users
-No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
-
 ## 💻For developers 
 1. Install Python, atleast Python3
 
