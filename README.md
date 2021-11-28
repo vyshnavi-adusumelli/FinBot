@@ -11,7 +11,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/secheaper/slashbot)
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
-[![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
+[![codecov](https://codecov.io/gh/secheaper/slashbot/branch/pratik_testing/graph/badge.svg?token=YCKWZTHO7O)](https://codecov.io/gh/secheaper/slashbot)
 [![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
 ![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
 ![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
@@ -68,9 +68,12 @@ A demo is shown below. It is run on a local machine.
 - [:grey_question: Documentation](#grey_question-documentation)
 - [:construction: Road Map](#construction-road-map)
 - [:raising_hand: Team Members](#raising_hand-team-members)
-  - [Version 1.0.0](#version-100-1)
-  - [Version 1.0](#version-10)
+  - [VERSION 3.0 (PHASE 3)](#version-30-phase-3)
     - [Team Members](#team-members)
+  - [VERSION 2.0 (PHASE 2)](#version-20-phase-2)
+    - [Team Members](#team-members-1)
+  - [Version 1.0 (PHASE 1)](#version-10-phase-1)
+    - [Team Members](#team-members-2)
 - [:calling: Support](#calling-support)
 
 
