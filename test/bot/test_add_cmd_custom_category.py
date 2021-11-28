@@ -21,7 +21,7 @@ class TestAddCustomCategory(BotTest):
         assert msg.chat.id is not None
         assert msg.text == '/categoryAdd'
         # there should be a next step handler
-        assert len(self.bot.next_step_backend.handlers) == 0, \
+        assert len(self.bot.next_step_backend.handlers) == 1, \
             "For the /categoryAdd command, there should be a next step"
         # there should not be any exceptions
         assert self.bot.worker_pool.exception_info is None
