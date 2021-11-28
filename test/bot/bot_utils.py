@@ -10,7 +10,7 @@ from importlib import reload
 
 from telebot import types
 import sys
-sys.path.append("E:\SE\project phase 3\slashbot\src")
+# sys.path.append("E:\SE\project phase 3\slashbot\src")
 import src.bot
 from src.user import User
 
