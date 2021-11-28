@@ -242,16 +242,25 @@ Thorough documentation of all methods and classes can be found at [Github Pages]
 Our ideas for new features that can be implemented to make this project better can be seen in our RoadMap project board.
 [Road Map](https://github.com/mtkumar123/MyDollarBot/projects/4)
 
-# :raising_hand: Team Members
 
-## PHASE 3
-### Team Members
-- Shubham Mankar
-- Pratik Devnani
-- Moksh Jain
-- Rahil Sarvaiya
-- Anushi Keswani
 
+:heart: Acknowledgements
+---
+We would like to thank Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants Xiao Ling, Andre Lustosa, Kewen Peng, Weichen Shi for their support throughout the project. Also thanks to the amazing teams at [Streamlit](https://streamlit.io/), [Huggingface](https://huggingface.co/) and [Shields.io](https://shields.io/) for their amazing projects!
+
+
+:sparkles: Contributors
+---
+
+<table>
+  <tr>
+    <td align="center"><a href="http://www.shubhammankar.com/"><img src="https://avatars.githubusercontent.com/u/29366125?v=4" width="75px;" alt=""/><br /><sub><b>Shubham Mankar</b></sub></a></td>
+    <td align="center"><a href="https://github.com/pratikdevnani"><img src="https://avatars.githubusercontent.com/u/43350493?v=4" width="75px;" alt=""/><br /><sub><b>Pratik Devnani</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/moksh98"><img src="https://avatars.githubusercontent.com/u/29693765?v=4" width="75px;" alt=""/><br /><sub><b>Moksh Jain</b></sub></a><br /></td>
+    <td align="center"><a href="https://rahilsarvaiya.tech/"><img src="https://avatars0.githubusercontent.com/u/32304956?v=4" width="75px;" alt=""/><br /><sub><b>Rahil Sarvaiya</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/annie0467"><img src="https://avatars.githubusercontent.com/u/17164255?v=4" width="75px;" alt=""/><br /><sub><b>Anushi Keswani</b></sub></a><br /></td>
+  </tr>
+</table>
 
 
 
