@@ -18,8 +18,8 @@
 |.5|.5| Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. |Present in [Readme](https://github.com/secheaper/slashbot/blob/main/README.md)|
 |.5|.5| test cases exist  |Present in [test](https://github.com/secheaper/slashbot/tree/main/test) folder|
 |.5|.5| Use of code coverage  |Present in [Readme](https://github.com/secheaper/slashbot/blob/main/README.md)|
-|.5|| other automated analysis tools  |  |
-|.5|  |test cases:.a large proportion of the issues related to handling failing cases. |[Tests](https://github.com/secheaper/slashbot/tree/main/test) folder|
-|.5|  |test cases are routinely executed ||
+|.5|.5| other automated analysis tools  |[Actions](https://github.com/secheaper/slashbot/actions) run automatically on each push to main|
+|.5|.5|test cases:.a large proportion of the issues related to handling failing cases. |[Tests](https://github.com/secheaper/slashbot/tree/main/test) folder|
+|.5|.5|test cases are routinely executed |Github [Actions](https://github.com/secheaper/slashbot/actions)|
 |1|1|Documentation describing how this version improves on the older version|Documented in [changes.md](https://github.com/secheaper/slashbot/blob/main/docs/changes.md)|
 |3|3| This version is a little(1), some(2), much(3) improved on the last version.|Documented in [changes.md](https://github.com/secheaper/slashbot/blob/main/docs/changes.md)| 
