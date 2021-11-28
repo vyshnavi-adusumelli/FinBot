@@ -65,6 +65,7 @@ A demo is shown below. It is run on a local machine.
     - [Delete](#delete)
     - [Edit](#edit)
     - [Adding transactions from CSV and displaying chart](#adding-transactions-from-csv-and-displaying-chart)
+    - [Download History](#download-history)
 - [:grey_question: Documentation](#grey_question-documentation)
 - [:construction: Road Map](#construction-road-map)
 - [:raising_hand: Team Members](#raising_hand-team-members)
@@ -222,6 +223,15 @@ I want to add transactions from a CSV my bank gave me, and visalize my spendings
    1. The application will remember these mappings
 3. Enter the `/chart` command
 
+### Download History
+
+I want a CSV file of all my transactions.
+
+<p align="center"><img width="700" src="./docs/workflows/download.gif"></p>
+
+1. Make sure you have a transaction history.
+2. Enter the `/download` command.
+3. A CSV file will be sent with your history.
 
 # :grey_question: Documentation
 
