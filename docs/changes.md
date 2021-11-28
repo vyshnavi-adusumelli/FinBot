@@ -8,10 +8,6 @@ The team has worked on multiple facets of the project and has made changes to th
   <a href="#functionality">Functionality</a>
   ::
   <a href="#documentation">Documentation</a>
-  ::
-  <a href="#testing">Testing</a>
-  ::
-  <a href="#user-interface">User Interface</a>
 </p>
 
 ---
