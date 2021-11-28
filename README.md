@@ -273,4 +273,4 @@ Our ideas for new features that can be implemented to make this project better c
 
 # :calling: Support
 
-For any support, email us at mydollarbot@gmail.com
+For any support, email us at mydollarbot@gmail.com/secheaper@gmail.com
