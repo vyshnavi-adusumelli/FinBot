@@ -212,6 +212,11 @@ Our ideas for new features that can be implemented to make this project better c
 We would like to thank Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants Xiao Ling, Andre Lustosa, Kewen Peng, Weichen Shi for their support throughout the project. Also thanks to the amazing teams at [Streamlit](https://streamlit.io/), [Huggingface](https://huggingface.co/) and [Shields.io](https://shields.io/) for their amazing projects!
 
 
+:page_facing_up: License
+---
+This project is licensed under the terms of the MIT license. Please check [License]https://github.com/secheaper/slashbot/blob/main/LICENSE for more details.
+
+
 :sparkles: Contributors
 ---
 
