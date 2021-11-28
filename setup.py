@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='MyDollarBot',
+    name='SlashBot',
     version='1.0.0',
     packages=find_packages(),
     description='Telegram bot to manage expenses',
