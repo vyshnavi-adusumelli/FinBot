@@ -289,6 +289,12 @@ def post_amount_input(message, date_of_entry):
                     text="*You have gone over the monthly budget*",
                     parse_mode="Markdown",
                 )
+            elif total_value == user_list[chat_id].monthly_budget:
+                bot.send_message(
+                    chat_id,
+                    text="*You have exhausted your monthly budget. You can check/download history*",
+                    parse_mode="Markdown",
+                )
             elif total_value >= 0.8 * user_list[chat_id].monthly_budget:
                 bot.send_message(
                     chat_id,
