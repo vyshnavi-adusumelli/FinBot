@@ -4,7 +4,7 @@ The team has worked on multiple facets of the project and has made changes to th
 
 ## Functionality
 The group has made the below mentioned functional changes to the project improving on the previous work.
-1. **Download Hisotry:** This version lets you now download your transaction history as a CSV. <br> <p align="center"><img width="700" src="./workflows/download.gif"></p>
+1. **Download History:** This version lets you now download your transaction history as a CSV. <br> <p align="center"><img width="700" src="./workflows/download.gif"></p>
 
 ## Documentation and Testing
 Changes to the documentation were also significant. They are mentioned below.
