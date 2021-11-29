@@ -44,22 +44,12 @@ A demo is shown below. It is run on a local machine.
 
 # :star: Whats New
 
-### Version 1.0.2
+### Release Version 1.2
 
-#### New Features:
+- Visualize your spendings in the form of graphs
+- The User can now see his expenses across various categories in the form of graphs along with pie charts.
+- Just go on adding multiple spendings using /add and type /chart to see the spendings in the form of graphs.
 
-- A calendar functionality was added so the user can specify what day a transaction was added.
-- The user can now add custom categories instead of using the default categories.
-- The bot server is now hosted on heroku, so users do not have to run the python file locally. Check out production bot here: https://t.me/mydollarbotprod_bot
-- Visualizations can be seen using the chart command, which generates a pie chart based on user spending.
-- More thorough documentation can be found on the GitHub pages.
-
-### Version 1.0.1
-
-#### New Features:
-
-- Users are now able to upload a csv file containing transactions with columns “Date”, “Description”,  “Debit”, and “Date. The bot will go through each transaction in the csv file, and for transactions it has already seen before, the bot will automatically classify that transaction into the right category. For transactions, that the bot has not seen before, the bot will request the user to choose the appropriate category for that transaction.
-- Consistent input and output format for all date values, and numeric values of transactions
 
 #### For Contributors:
 
