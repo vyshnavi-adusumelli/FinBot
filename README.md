@@ -214,7 +214,8 @@ I want to send myself an email for the monthly expenditure
 
 1. Make sure you have a transaction history.
 2. Enter the `/sendEmail` command.
-3. You will get an email with the history file as attachment
+3. Type the intended email address
+4. You will get an email with the history file as attachment
 
 # :grey_question: Documentation
 
