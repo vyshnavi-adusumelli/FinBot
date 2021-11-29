@@ -115,7 +115,7 @@ A demo is shown below. It is run on a local machine.
 10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. 
 Make sure you export the PYTHONPATH variable to the main project folder
  ```
- python code/bot.py
+ python src/bot.py
 ```
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
