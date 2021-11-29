@@ -37,7 +37,7 @@ Check out the bot here: https://t.me/mydollarbotprod_bot
 ---
 Sample demos are shown below. They are run on a local machine.
 
-- [Sample Demos](# :information_desk_person: Sample Demos)
+- [:information_desk_person: Sample Demos](#information_desk_person-Sample-Demos)
 
 
 ---
