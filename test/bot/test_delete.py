@@ -4,7 +4,7 @@ Tests delete command
 import time
 import unittest
 from bot_utils import BotTest
-from code import bot
+from src import bot
 
 
 class TestDelete(BotTest):

@@ -3,7 +3,10 @@ Tests add command
 """
 import time
 import unittest
-from code import bot
+import sys
+sys.path.append("E:\SE\project phase 3\slashbot")
+print(sys.path)
+from src import bot
 from bot_utils import BotTest
 
 

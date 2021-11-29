@@ -11,7 +11,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/secheaper/slashbot)
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
-[![codecov](https://codecov.io/gh/mtkumar123/MyDollarBot/branch/main/graph/badge.svg?token=W50WL3ZLMC)](https://codecov.io/gh/mtkumar123/MyDollarBot)
+[![codecov](https://codecov.io/gh/secheaper/slashbot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://codecov.io/gh/secheaper/slashbot)
 [![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
 ![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
 ![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
@@ -41,39 +41,6 @@ A demo is shown below. It is run on a local machine.
 <p align="center"><img width="1000" src="./mydollar_tutorial.gif"></p>
 
 ---
-
-## Table of contents
-
-- [:money_with_wings: SlashBot](#money_with_wings-slashbot)
-  - [About SlashBot](#about-slashbot)
-  - [Table of contents](#table-of-contents)
-- [:star: Whats New](#star-whats-new)
-    - [Version 1.0.2](#version-102)
-      - [New Features:](#new-features)
-    - [Version 1.0.1](#version-101)
-      - [New Features:](#new-features-1)
-      - [For Contributors:](#for-contributors)
-    - [Version 1.0.0](#version-100)
-      - [New Features:](#new-features-2)
-      - [For Contributors:](#for-contributors-1)
-- [:rocket: Installation Guide](#rocket-installation-guide)
-  - [😃For users](#for-users)
-  - [💻For developers](#for-developers)
-- [:information_desk_person: Samples](#information_desk_person-samples)
-    - [Budget](#budget)
-    - [Add](#add)
-    - [Delete](#delete)
-    - [Edit](#edit)
-    - [Adding transactions from CSV and displaying chart](#adding-transactions-from-csv-and-displaying-chart)
-- [:grey_question: Documentation](#grey_question-documentation)
-- [:construction: Road Map](#construction-road-map)
-- [:raising_hand: Team Members](#raising_hand-team-members)
-  - [Version 1.0.0](#version-100-1)
-  - [Version 1.0](#version-10)
-    - [Team Members](#team-members)
-- [:calling: Support](#calling-support)
-
-
 
 # :star: Whats New
 
@@ -122,9 +89,6 @@ A demo is shown below. It is run on a local machine.
 
 # :rocket: Installation Guide
 
-## 😃For users
-No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
-
 ## 💻For developers 
 1. Install Python, atleast Python3
 
@@ -148,19 +112,22 @@ No setup required! Try our production bot here: https://t.me/mydollarbotprod_bot
 
 9. Search for "Edit the system environment variables" on your local computer. Click on Environment Variables and create a new System Variable called "API_TOKEN" and paste the token copied in step 8.
 
-10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. Navigate to the directory containing the "bot.py" file and run the following command:
+10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. 
+Make sure you export the PYTHONPATH variable to the main project folder
+ ```
+ python code/bot.py
 ```
-  python code/bot.py
-```
-If you get the error `ModuleNotFoundError: No module named 'code.user'; 'code' is not a package`, add the absolute path to the main project folder to python path `export PYTHONPATH="${PYTHONPATH}:/path/to/your/project/"` and try again. (You'll have to re-add if you close the terminal or add to the environment variables.)
-
-You can also change the code `from code.user import User` to `from user import User` on line 16 of bot.py. The former is for pylint compatablity.
-
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
 
 For more info on deployment(Heroku), check out the doc [here](https://github.com/mtkumar123/MyDollarBot/blob/main/CONTRIBUTING.md#more-tips-for-developers)
 
+
+## 💻For testing with Pytest
+1. Some modules in testing require CHAT_ID environment variable to be set.
+2. This is the specific ID that is maintained for your chat with the Bot.
+3. While running the bot.py , get this id from line ---- and set it in your system environment variables.
+4. This should ensure effective running of all tests.
 
 
 # :information_desk_person: Samples
@@ -222,6 +189,15 @@ I want to add transactions from a CSV my bank gave me, and visalize my spendings
    1. The application will remember these mappings
 3. Enter the `/chart` command
 
+### Download History
+
+I want a CSV file of all my transactions.
+
+<p align="center"><img width="700" src="./docs/workflows/download.gif"></p>
+
+1. Make sure you have a transaction history.
+2. Enter the `/download` command.
+3. A CSV file will be sent with your history.
 
 # :grey_question: Documentation
 
@@ -232,35 +208,33 @@ Thorough documentation of all methods and classes can be found at [Github Pages]
 Our ideas for new features that can be implemented to make this project better can be seen in our RoadMap project board.
 [Road Map](https://github.com/mtkumar123/MyDollarBot/projects/4)
 
-# :raising_hand: Team Members
 
-## VERSION 3.0 (PHASE 3)
-### Team Members
-- Shubham Mankar
-- Pratik Devnani
-- Moksh Jain
-- Rahil Sarvaiya
-- Anushi Keswani
 
-## VERSION 2.0 (PHASE 2)
-### Team Members
-- Ashley King
-- Manoj Kumar
-- Rakesh Muppala
-- Sayali Parab
-- Ashwin Das
-- Renji Joseph Sabu
+:heart: Acknowledgements
+---
+We would like to thank Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants Xiao Ling, Andre Lustosa, Kewen Peng, Weichen Shi for their support throughout the project.
 
-## Version 1.0 (PHASE 1)
 
-### Team Members
-- Dev 
-- Prakruthi 
-- Radhika
-- Rohan
-- Sunidhi
+:page_facing_up: License
+---
+This project is licensed under the terms of the MIT license. Please check [License](https://github.com/secheaper/slashbot/blob/main/LICENSE) for more details.
+
+
+:sparkles: Contributors
+---
+
+<table>
+  <tr>
+    <td align="center"><a href="http://www.shubhammankar.com/"><img src="https://avatars.githubusercontent.com/u/29366125?v=4" width="75px;" alt=""/><br /><sub><b>Shubham Mankar</b></sub></a></td>
+    <td align="center"><a href="https://github.com/pratikdevnani"><img src="https://avatars.githubusercontent.com/u/43350493?v=4" width="75px;" alt=""/><br /><sub><b>Pratik Devnani</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/moksh98"><img src="https://avatars.githubusercontent.com/u/29693765?v=4" width="75px;" alt=""/><br /><sub><b>Moksh Jain</b></sub></a><br /></td>
+    <td align="center"><a href="https://rahilsarvaiya.tech/"><img src="https://avatars0.githubusercontent.com/u/32304956?v=4" width="75px;" alt=""/><br /><sub><b>Rahil Sarvaiya</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/annie0467"><img src="https://avatars.githubusercontent.com/u/17164255?v=4" width="75px;" alt=""/><br /><sub><b>Anushi Keswani</b></sub></a><br /></td>
+  </tr>
+</table>
+
 
 
 # :calling: Support
 
-For any support, email us at mydollarbot@gmail.com
+For any support, email us at mydollarbot@gmail.com/ secheaper@gmail.com
