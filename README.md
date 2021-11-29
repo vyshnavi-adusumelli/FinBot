@@ -112,19 +112,22 @@ A demo is shown below. It is run on a local machine.
 
 9. Search for "Edit the system environment variables" on your local computer. Click on Environment Variables and create a new System Variable called "API_TOKEN" and paste the token copied in step 8.
 
-10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. Navigate to the directory containing the "bot.py" file and run the following command:
+10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. 
+Make sure you export the PYTHONPATH variable to the main project folder
+ ```
+ python code/bot.py
 ```
-  python code/bot.py
-```
-If you get the error `ModuleNotFoundError: No module named 'code.user'; 'code' is not a package`, add the absolute path to the main project folder to python path `export PYTHONPATH="${PYTHONPATH}:/path/to/your/project/"` and try again. (You'll have to re-add if you close the terminal or add to the environment variables.)
-
-You can also change the code `from code.user import User` to `from user import User` on line 16 of bot.py. The former is for pylint compatablity.
-
 11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
 12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
 
 For more info on deployment(Heroku), check out the doc [here](https://github.com/mtkumar123/MyDollarBot/blob/main/CONTRIBUTING.md#more-tips-for-developers)
 
+
+## 💻For testing with Pytest
+1. Some modules in testing require CHAT_ID environment variable to be set.
+2. This is the specific ID that is maintained for your chat with the Bot.
+3. While running the bot.py , get this id from line ---- and set it in your system environment variables.
+4. This should ensure effective running of all tests.
 
 
 # :information_desk_person: Samples
