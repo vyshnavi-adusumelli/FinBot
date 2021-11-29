@@ -170,6 +170,17 @@ I want a CSV file of all my transactions.
 2. Enter the `/download` command.
 3. A CSV file will be sent with your history.
 
+### See total Expenditure in different currencies
+
+I want to convert my total daily or monthly expenditure in a different currency.
+
+<p align="center"><img width="700" src="./docs/workflows/currencyWorking.gif"></p>
+
+1. Enter the /displayDifferentCurrency command
+2. Choose your currency from the options
+3. You will get the converted price in that currency
+
+
 ### Visualization in the form of graphs
 
 I want to see my spendings in the form of graphs
