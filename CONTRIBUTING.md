@@ -1,4 +1,4 @@
-# Contributing to TrackMyDollar
+# Contributing to SlashBot
 
 Follow the set of guidelines below to contribute to SlashBot!
 
@@ -16,7 +16,7 @@ Prerequistes required before starting this project
  
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for TrackMyDollar.
+This section guides you through submitting a bug report for SlashBot.
 Following these guidelines helps maintainers and the community understand your report, reproduce the behavior and find related reports.
 
 Before Submitting A Bug Report
