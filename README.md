@@ -97,7 +97,7 @@ For more info on deployment(Heroku), check out the doc [here](https://github.com
 ## 💻For testing with Pytest
 1. Some modules in testing require CHAT_ID environment variable to be set.
 2. This is the specific ID that is maintained for your chat with the Bot.
-3. While running the bot.py , get this id from line ---- and set it in your system environment variables.
+3. While running the bot.py , get this id from line 72 and set it in your system environment variables.
 4. This should ensure effective running of all tests.
 
 
@@ -180,7 +180,7 @@ I want to see my spendings in the form of graphs
 2. Enter the `/chart` command.
 3. You will see multiple visualizations for your spending 
 
-### SentEmail 
+### SendEmail 
 
 I want to send myself an email for the monthly expenditure
 
@@ -188,7 +188,7 @@ I want to send myself an email for the monthly expenditure
 <p align="center"><img width="700" src="./docs/workflows/email.gif"></p>
 
 1. Make sure you have a transaction history.
-2. Enter the `/sentEmail` command.
+2. Enter the `/sendEmail` command.
 3. You will get an email with the history file as attachment
 
 # :grey_question: Documentation
