@@ -170,6 +170,16 @@ I want a CSV file of all my transactions.
 2. Enter the `/download` command.
 3. A CSV file will be sent with your history.
 
+### Visualization in the form of graphs
+
+I want to see my spendings in the form of graphs
+
+<br> <p align="center"><img width="700" src="./workflows/multipleVisualizations.gif"></p>
+
+1. Make sure you have a transaction history.
+2. Enter the `/chart` command.
+3. You will see multiple visualizations for your spending 
+
 
 
 # :grey_question: Documentation
