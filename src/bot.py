@@ -21,11 +21,11 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-# sys.path.append("E:\SE\project phase 3\slashbot")
+sys.path.append("C:/NCSU/Sem 1/SE/Project 3/slashbot/")
 try:
     from src.user import User
 except:
-    from user import User
+   from user import User
 
 api_token = os.environ["API_TOKEN"]
 commands = {
