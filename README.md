@@ -31,6 +31,10 @@ With simple commands, this bot allows you to:
 - Display your spending history
 - Clear/Erase all your records
 - Edit/Change any spending details if you wish to
+- Download your expenditure history in the CSV format
+- Visualize your spendings in the form of graphs/pie chart using the /chart option
+- Email the history CSV file to yourself
+- See the total daily/monthly expenditure in different curriencies
 
 Check out the bot here: https://t.me/mydollarbotprod_bot
 
