@@ -51,25 +51,6 @@ A demo is shown below. It is run on a local machine.
 - Just go on adding multiple spendings using /add and type /chart to see the spendings in the form of graphs.
 
 
-#### For Contributors:
-
-- Test cases have been completely written. Test cases in the bot folder are tests for functions in the bot.py, while test cases in the unit folder are for the user.py.
-- Updated the documentation for all functions.
-- Updated Readme.md to reflect current team working on this project.
-
-### Version 1.0.0
-
-#### New Features:
-
-- Users are now able to set a budget expenditure for each category. If users exceed the budget for that category, a message it displayed reminding the user of the budget they had initially set. 
-- Users are now able to delete their entire transaction history, or choose to delete just one transaction
-
-#### For Contributors:
-
-- Code has been refactored, and split into two main python files. Bot.py handles all the bot processing functions, and interacts with the bot handler directly. User.py handles all the backend User processing logic, and creates an object User for each individual user interacting with the bot, to maintain that user’s state. 
-- Data is stored within the user object, and state is saved using a pickle object. 
-- Created CI pipeline using Travis CI, and pylint to check for formatting errors, and code coverage to test for code coverage. 
-
 
 <!-- [comment]: <> (## Demo) -->
 
@@ -188,6 +169,8 @@ I want a CSV file of all my transactions.
 1. Make sure you have a transaction history.
 2. Enter the `/download` command.
 3. A CSV file will be sent with your history.
+
+
 
 # :grey_question: Documentation
 
