@@ -210,7 +210,7 @@ Thorough documentation of all methods and classes can be found at [Github Pages]
 # :construction: Road Map
 
 Our ideas for new features that can be implemented to make this project better can be seen in our RoadMap project board.
-[Road Map](https://github.com/mtkumar123/MyDollarBot/projects/4)
+[Road Map](https://github.com/secheaper/slashbot/projects/1)
 
 
 
