@@ -44,12 +44,21 @@ Sample demos are shown below. They are run on a local machine.
 
 # :star: Whats New
 
-### Release Version 1.2
+
+### Release Version 1.2.0
 
 - Visualize your spendings in the form of graphs
 - The User can now see his expenses across various categories in the form of graphs along with pie charts.
 - Just go on adding multiple spendings using /add and type /chart to see the spendings in the form of graphs.
+- More Badges added in Repository
 
+### Release Version 1.2.1
+
+- See your total daily/monthly expenditure in differet currencies using the /displayDifferentCurrency command
+- Download your spendings history CSV file using the /download command
+- Email the monthly spendings history to yourself using the /sendEmail command
+- User can now get a message when the monthly budget is exhausted.
+- Details for testing requirements added in README.md
 
 
 <!-- [comment]: <> (## Demo) -->
