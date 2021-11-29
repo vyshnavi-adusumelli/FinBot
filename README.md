@@ -177,8 +177,9 @@ I want to convert my total daily or monthly expenditure in a different currency.
 <p align="center"><img width="700" src="./docs/workflows/currencyWorking.gif"></p>
 
 1. Enter the /displayDifferentCurrency command
-2. Choose your currency from the options
-3. You will get the converted price in that currency
+2. Choose from the category of day or month
+3. Next, Choose your currency from the options
+4. You will get the converted price in that currency
 
 
 ### Visualization in the form of graphs
