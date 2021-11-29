@@ -35,10 +35,10 @@ With simple commands, this bot allows you to:
 Check out the bot here: https://t.me/mydollarbotprod_bot
 
 ---
+Sample demos are shown below. They are run on a local machine.
 
-A demo is shown below. It is run on a local machine.
+- [Sample Demos](# :information_desk_person: Sample Demos)
 
-<p align="center"><img width="1000" src="./mydollar_tutorial.gif"></p>
 
 ---
 
@@ -101,7 +101,7 @@ For more info on deployment(Heroku), check out the doc [here](https://github.com
 4. This should ensure effective running of all tests.
 
 
-# :information_desk_person: Samples
+# :information_desk_person: Sample Demos
 
 ### Budget
 
