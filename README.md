@@ -180,7 +180,16 @@ I want to see my spendings in the form of graphs
 2. Enter the `/chart` command.
 3. You will see multiple visualizations for your spending 
 
+### SentEmail 
 
+I want to send myself an email for the monthly expenditure
+
+
+<p align="center"><img width="700" src="./docs/workflows/email.gif"></p>
+
+1. Make sure you have a transaction history.
+2. Enter the `/sentEmail` command.
+3. You will get an email with the history file as attachment
 
 # :grey_question: Documentation
 
