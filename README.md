@@ -174,7 +174,7 @@ I want a CSV file of all my transactions.
 
 I want to see my spendings in the form of graphs
 
-<p align="center"><img width="700" src="./workflows/multipleVisualizations.gif"></p>
+<p align="center"><img width="700" src="./docs/workflows/multipleVisualizations.gif"></p>
 
 1. Make sure you have a transaction history.
 2. Enter the `/chart` command.
