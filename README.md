@@ -21,7 +21,9 @@
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/secheaper/slashbot)
 
 <hr>
+
 ## Demo Video
+
 https://youtu.be/NBihyIU13pw
 
 ## About SlashBot
