@@ -34,7 +34,7 @@ With simple commands, this bot allows you to:
 - Download your expenditure history in the CSV format
 - Visualize your spendings in the form of graphs/pie chart using the /chart option
 - Email the history CSV file to yourself
-- See the total daily/monthly expenditure in different curriencies
+- See the total daily/monthly expenditure in different currencies
 
 Check out the bot here: https://t.me/ncsuBot
 
