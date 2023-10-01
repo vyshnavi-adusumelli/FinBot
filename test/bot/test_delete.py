@@ -4,7 +4,7 @@ Tests delete command
 import time
 import unittest
 from bot_utils import BotTest
-from src import bot
+from src import teleBot
 
 
 class TestDelete(BotTest):
@@ -76,7 +76,7 @@ class TestDelete(BotTest):
 
         # assert the record was deleted
         CHAT_ID = str(msg.chat.id)
-        assert bot.user_list[CHAT_ID].get_number_of_transactions() == 0
+        assert teleBot.user_list[CHAT_ID].get_number_of_transactions() == 0
 
 
 

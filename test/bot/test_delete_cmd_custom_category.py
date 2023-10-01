@@ -2,7 +2,7 @@
 from bot_utils import BotTest
 import unittest
 import time
-from src import bot
+from src import teleBot
 
 
 class TestDeleteCustomCategory(BotTest):
@@ -44,7 +44,7 @@ class TestDeleteCustomCategory(BotTest):
 
         #delete the newly created custom category
         chat_id = str(reply.chat.id)
-        content = bot.user_list[chat_id].transactions
+        content = teleBot.user_list[chat_id].transactions
         categories = []
         for category in content:
             categories.append(category)
