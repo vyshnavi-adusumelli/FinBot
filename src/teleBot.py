@@ -23,9 +23,9 @@ from email import encoders
 
 sys.path.append("C:/NCSU/Sem 1/SE/Project 3/slashbot/")
 try:
-    from src.user import User
+    from src.teleUser import User
 except:
-   from user import User
+   from src.teleUser import User
 
 api_token = os.environ["API_TOKEN"]
 commands = {

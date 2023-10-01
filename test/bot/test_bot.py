@@ -4,7 +4,7 @@ Unit test to check all commands are present
 # import sys
 # sys.path.append("../../..")
 # import src
-import src.bot as code_lib
+import src.teleBot as code_lib
 from bot_utils import BotTest
 
 

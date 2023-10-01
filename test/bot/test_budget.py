@@ -3,7 +3,7 @@ Tests budget command
 """
 import time
 import unittest
-from src import bot
+from src import teleBot
 from bot_utils import BotTest
 
 
@@ -44,8 +44,8 @@ class TestBudget(BotTest):
 
         # assert the budget was added to the user
         chat_id = str(reply.chat.id)
-        assert chat_id in bot.user_list
-        user_budget = bot.user_list[chat_id].monthly_budget
+        assert chat_id in teleBot.user_list
+        user_budget = teleBot.user_list[chat_id].monthly_budget
         assert user_budget == 120.00
 
     def test_budget_command_invalid(self):
@@ -80,6 +80,6 @@ class TestBudget(BotTest):
 
         # assert the budget was not changed for the user
         chat_id = str(reply.chat.id)
-        assert chat_id in bot.user_list
-        user_budget = bot.user_list[chat_id].monthly_budget
+        assert chat_id in teleBot.user_list
+        user_budget = teleBot.user_list[chat_id].monthly_budget
         assert user_budget != -19.00

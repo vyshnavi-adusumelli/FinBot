@@ -2,7 +2,7 @@
 from bot_utils import BotTest
 import unittest
 import time
-from src import bot
+from src import teleBot
 
 
 class TestAddCustomCategory(BotTest):
@@ -43,7 +43,7 @@ class TestAddCustomCategory(BotTest):
 
         # assert the custom category was added to the user
         chat_id = str(reply.chat.id)
-        content = bot.user_list[chat_id].transactions
+        content = teleBot.user_list[chat_id].transactions
         categories = []
         for category in content:
             categories.append(category)
