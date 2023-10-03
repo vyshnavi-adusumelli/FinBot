@@ -13,8 +13,6 @@ import io
 from datetime import datetime
 from tabulate import tabulate
 import sys
-import telebot
-from telebot import types
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -22,7 +20,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
-CHANNEL_ID = "1158122372524691488"
+CHANNEL_ID = os.environ["CHANNEL_ID"]
 
 bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
 user_list = {}
@@ -38,14 +36,22 @@ async def hello(ctx):
     await ctx.send("Hello!")
 
 @bot.command()
-async def add(ctx, x, y):
-    result = int(x) + int(y)
+async def add(ctx, date, category, amount):
+    '''
+    Category should be spelled exactly matching with one of the below:
+    "Food",
+    "Groceries",
+    "Utilities",
+    "Transport",
+    "Shopping",
+    "Miscellaneous",
+
+    Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
+    '''
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
-    user_list[CHANNEL_ID].monthly_budget += result
-    user_list[CHANNEL_ID].save_user(CHANNEL_ID)
-
-    await ctx.send(f"{user_list[CHANNEL_ID].monthly_budget}")
+    user_list[CHANNEL_ID].add_transaction(date,category,amount,CHANNEL_ID)
+    await ctx.send("transaction added!")
 
 def get_users():
     """
