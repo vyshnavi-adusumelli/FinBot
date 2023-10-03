@@ -21,12 +21,11 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-
-BOT_TOKEN = "MTE1ODExOTk0OTYyNjI1NzU0MA.GgY8T6.DVdj9Ohwb8lFOK6JKktCYJPjccaFzqxtmCENP8"
+BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = "1158122372524691488"
 
 bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
-#user_list = {}
+user_list = {}
 
 @bot.event
 async def on_ready():
@@ -43,9 +42,7 @@ async def add(ctx, x, y):
     result = int(x) + int(y)
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
-    print(f"{user_list[CHANNEL_ID].monthly_budget}")
     user_list[CHANNEL_ID].monthly_budget += result
-    print(f"{user_list[CHANNEL_ID].monthly_budget}")
     user_list[CHANNEL_ID].save_user(CHANNEL_ID)
 
     await ctx.send(f"{user_list[CHANNEL_ID].monthly_budget}")
@@ -68,17 +65,11 @@ def get_users():
                 abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
                 with open(abspath, "rb") as f:
                     users[u] = pickle.load(f)
-                    print(f"{users[u]}")
     return users
 
-
 if __name__ == "__main__":
-    global user_list
-    user_list = {}
     try:
         user_list = get_users()
-        print(user_list)
-        print(f"{user_list[str(CHANNEL_ID)].monthly_budget}")
         bot.run(BOT_TOKEN)
     except Exception as e:
         print(f"{e}")
