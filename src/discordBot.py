@@ -1,3 +1,5 @@
+import asyncio
+
 from discord.ext import commands, tasks
 import discord
 from discordUser import User
@@ -48,16 +50,49 @@ class SelectView(discord.ui.View):
         super().__init__()
         self.add_item(Select(categories))
 
-
 @bot.event
 async def on_ready():
     channel = bot.get_channel(int(CHANNEL_ID))
     await channel.send("Hello! Welcome to FinBot - a simple solution to track your expenses! \n\n"
             + "Enter menu command to view all the commands offered by FinBot")
 
+
 @bot.command()
 async def hello(ctx):
     await ctx.send("Hello!")
+
+async def select_date(ctx):
+    await ctx.send("Enter the date (1-31):")
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel
+
+    try:
+        date_message = await bot.wait_for('message', check=check, timeout=60)
+        date = date_message.content.strip()
+
+        await ctx.send("Enter the month (1-12):")
+        month_message = await bot.wait_for('message', check=check, timeout=60)
+        month = month_message.content.strip()
+
+        await ctx.send("Enter the year (e.g., 2023):")
+        year_message = await bot.wait_for('message', check=check, timeout=60)
+        year = year_message.content.strip()
+
+        # Call the next function with the date, month, and year
+        await process_date(ctx, date, month, year)
+    except asyncio.TimeoutError:
+        await ctx.send("You took too long to respond. Please try again.")
+
+async def process_date(ctx, date, month, year):
+    # Process the date, month, and year here
+    # You can perform any necessary calculations or operations
+    # For example, you can convert them to a datetime object
+    try:
+        date_obj = datetime(int(year), int(month), int(date))
+        await ctx.send(f"Selected Date: {date_obj.strftime('%Y-%m-%d')}")
+        await select_category(ctx, bot, date_obj)
+    except ValueError:
+        await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
 @bot.command()
 async def add(ctx):
@@ -75,36 +110,12 @@ async def add(ctx):
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
     try:
-        await select_date(ctx, bot)
+        await select_date(ctx)
 
     except Exception as ex:
         print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Processing Failed - \nError : " + str(ex))
-
-async def select_date(ctx, bot):
-    '''
-    Function to enable date selection via a custom defined calendar widget. This function is invoked from the add command to select the date of
-    expense to be added. This function further invokes select_category function by passing the date, context object and bot object.
-
-    :param ctx - Discord context window
-    :param Bot - Discord Bot object
-    :type: object
-    :return: None
-
-    '''
-
-    # Logic to make the bot wait for user response
-    await ctx.send('Please choose the date')
-
-    # waits for a message response - for now enter 10032023 format ; Needs to be updated with calendar dropdown and date checking logic as in the telebot.py
-    date = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
-
-    # Modify this logic to verify the date selected is in proper format and then proceed with category selection
-    if date:
-        await select_category(ctx, bot, date)
-    else:
-        await ctx.send('Nope enter a valid date')
 
 async def select_category(ctx, bot, date):
     '''
@@ -153,9 +164,11 @@ def get_users():
                     users[u] = pickle.load(f)
     return users
 
+
 if __name__ == "__main__":
     try:
         user_list = get_users()
         bot.run(BOT_TOKEN)
     except Exception as e:
         print(f"{e}")
+
