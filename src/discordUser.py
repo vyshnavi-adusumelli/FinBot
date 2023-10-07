@@ -50,7 +50,7 @@ class User:
         """
 
         try:
-            data_dir = "data"
+            data_dir = "discordData"
             abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
             with open(abspath, "wb") as f:
                 pickle.dump(self, f)
@@ -370,8 +370,8 @@ class User:
         plt.clf()
         plt.pie(totals, labels=labels)
         plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
-        charts.append("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
+        plt.savefig("discordData/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
+        charts.append("discordData/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
 
         # Bar Graph
         plt.clf()
@@ -381,8 +381,8 @@ class User:
         plt.xlabel('Categories')
         plt.ylabel('Expenditure')
         plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
-        charts.append("data/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
+        plt.savefig("discordData/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
+        charts.append("discordData/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
 
         # Add more visualizations here. Maintain the above format while adding more visualizations. 
 
