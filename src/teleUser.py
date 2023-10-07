@@ -50,7 +50,7 @@ class User:
         """
 
         try:
-            data_dir = "discordData"
+            data_dir = "teleData"
             abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
             with open(abspath, "wb") as f:
                 pickle.dump(self, f)
