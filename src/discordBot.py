@@ -149,7 +149,23 @@ async def chart(ctx):
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
 
     try:
-        chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID)
+        await ctx.send("Please enter the start date (YYYY-MM-DD):")
+
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel
+
+        start_date_message = await bot.wait_for('message', check=check, timeout=30)
+        start_date_str = start_date_message.content
+
+        await ctx.send("Please enter the end date (YYYY-MM-DD):")
+
+        end_date_message = await bot.wait_for('message', check=check, timeout=30)
+        end_date_str = end_date_message.content
+
+        start_date_dt = datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date_dt = datetime.strptime(end_date_str, "%Y-%m-%d")
+
+        chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID, start_date_dt, end_date_dt)
         for cf in chart_file:
             with open(cf, "rb") as f:
                 file = discord.File(f)
