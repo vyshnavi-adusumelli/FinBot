@@ -144,6 +144,22 @@ async def select_category(ctx, bot, date):
     #user_list[CHANNEL_ID].add_transaction(date.content, category.content, amount.content,CHANNEL_ID)
     # await ctx.send("transaction added!")
 
+async def chart(ctx):
+    if CHANNEL_ID not in user_list.keys():
+        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+    try:
+        chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID)
+        for cf in chart_file:
+            with open(cf, "rb") as f:
+                file = discord.File(f)
+                await ctx.send(file=file)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Processing Failed - \nError : " + str(ex))
+
 def get_users():
     """
     Reads data and returns user list as a Dict
@@ -152,7 +168,7 @@ def get_users():
     :rtype: dict
     """
 
-    data_dir = "data"
+    data_dir = "discordData"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
