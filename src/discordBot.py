@@ -39,6 +39,43 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send("Hello!")
 
+@bot.command()
+async def budget(ctx):
+    """
+    Handles the commands 'budget'. To set a budget monthly and hence keep a track of the transactions. 
+
+    :param ctx - Discord context window
+    :type: object
+    :return: None
+    """
+    if CHANNEL_ID not in user_list.keys():
+        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    try:
+        await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
+        await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
+        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=15.0)
+    except asyncio.TimeoutError:
+        await ctx.send('You ran out of time to answer!')
+    else:
+        if budget:
+            await post_budget_input(ctx, budget)
+        else:
+            await ctx.send('Nope enter a valid date')
+
+async def post_budget_input(ctx, budget):
+    try:
+        amount_entered = budget.content
+        amount_value = user_list[CHANNEL_ID].validate_entered_amount(
+            amount_entered
+        )  # validate
+        if amount_value == 0:  # cannot be $0 spending
+            raise Exception("Budget amount has to be a positive number.")
+        user_list[CHANNEL_ID].add_monthly_budget(amount_value, CHANNEL_ID)
+        await ctx.send(f"The budget for this month has been set as $ {amount_value}")
+    
+    except Exception as ex:
+        await ctx.send("Oh no! " + str(ex))
+
 async def select_date(ctx):
     await ctx.send("Enter the date (1-31):")
     def check(msg):
