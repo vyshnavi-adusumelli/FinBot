@@ -212,7 +212,6 @@ async def delete(ctx):
             prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
             await ctx.send(prompt)
             delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
-            print(delete_type.content)
             await process_delete_argument(ctx, delete_type.content)
         else:
             delete_history_text = (

@@ -196,6 +196,7 @@ class User:
         :rtype: datetime.dateime
         """
         date = None
+
         # try and parse as Month-Day-Year
         try:
             date = datetime.strptime(text, date_format).date()
