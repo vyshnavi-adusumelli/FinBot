@@ -366,8 +366,7 @@ class User:
                     continue
                 if end_date and transaction_date > end_date:
                     continue
-                total += transaction["Value"]
-                total = total + transaction["Value"]
+                total += int(transaction["Value"])
             if total != 0:
                 labels.append(category)
                 totals.append(total)
