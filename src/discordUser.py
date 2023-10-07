@@ -346,7 +346,7 @@ class User:
         self.add_transaction(date, category, value, userid)
         self.save_user(userid)
 
-    def create_chart(self, userid):
+    def create_chart(self, userid, start_date=None, end_date=None):
         """
         This is used to create the matplotlib piechart of all the transactions and
         their categories. If a category does not have any transactions, then it is not
@@ -361,6 +361,12 @@ class User:
         for category in self.spend_categories:
             total = 0
             for transaction in self.transactions[category]:
+                transaction_date = transaction["Date"]
+                if start_date and transaction_date < start_date:
+                    continue
+                if end_date and transaction_date > end_date:
+                    continue
+                total += transaction["Value"]
                 total = total + transaction["Value"]
             if total != 0:
                 labels.append(category)
