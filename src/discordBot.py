@@ -146,6 +146,7 @@ async def select_amount(ctx, date, selected_category):
     user_list[CHANNEL_ID].add_transaction(date, selected_category, amount.content, CHANNEL_ID)
     await ctx.send("transaction added!")
 
+@bot.command()
 async def chart(ctx):
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
