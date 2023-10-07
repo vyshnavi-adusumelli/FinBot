@@ -53,7 +53,7 @@ async def budget(ctx):
     try:
         await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
         await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
-        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=15.0)
+        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send('You ran out of time to answer!')
     else:
@@ -75,6 +75,11 @@ async def post_budget_input(ctx, budget):
     
     except Exception as ex:
         await ctx.send("Oh no! " + str(ex))
+        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        if budget.content.isnumeric():
+            await post_budget_input(ctx, budget)
+        elif '/' not in budget.content :
+            await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter \\budget command")
 
 async def select_date(ctx):
     await ctx.send("Enter the date (1-31):")
