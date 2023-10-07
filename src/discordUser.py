@@ -199,8 +199,9 @@ class User:
         # try and parse as Month-Day-Year
         try:
             date = datetime.strptime(text, date_format).date()
-        except ValueError:
-            pass
+            
+        except exception as e:
+            print(e)
         return date
 
     def get_records_by_date(self, date: datetime.date, is_month: bool):
@@ -249,7 +250,7 @@ class User:
         for category in transaction:
             for record in transaction[category]:
                 final_str += (
-                    f'{category}, {record["Date"].date()}, {record["Value"]:.2f}\n'
+                    f'\n {category}, {record["Date"].date()}, {record["Value"]:}\n'
                 )
 
         return final_str
