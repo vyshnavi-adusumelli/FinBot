@@ -146,6 +146,39 @@ async def select_amount(ctx, date, selected_category):
     user_list[CHANNEL_ID].add_transaction(date, selected_category, amount.content, CHANNEL_ID)
     await ctx.send("transaction added!")
 
+@bot.command()
+async def chart(ctx):
+    if CHANNEL_ID not in user_list.keys():
+        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+    try:
+        await ctx.send("Please enter the start date (YYYY-MM-DD):")
+
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel
+
+        start_date_message = await bot.wait_for('message', check=check, timeout=30)
+        start_date_str = start_date_message.content
+
+        await ctx.send("Please enter the end date (YYYY-MM-DD):")
+
+        end_date_message = await bot.wait_for('message', check=check, timeout=30)
+        end_date_str = end_date_message.content
+
+        start_date_dt = datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date_dt = datetime.strptime(end_date_str, "%Y-%m-%d")
+
+        chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID, start_date_dt, end_date_dt)
+        for cf in chart_file:
+            with open(cf, "rb") as f:
+                file = discord.File(f)
+                await ctx.send(file=file)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Processing Failed - \nError : " + str(ex))
+
 def get_users():
     """
     Reads data and returns user list as a Dict
@@ -154,7 +187,7 @@ def get_users():
     :rtype: dict
     """
 
-    data_dir = "data"
+    data_dir = "discordData"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
