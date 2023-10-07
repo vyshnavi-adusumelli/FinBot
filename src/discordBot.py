@@ -40,6 +40,48 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send("Hello!")
 
+@bot.command()
+async def budget(ctx):
+    """
+    Handles the commands 'budget'. To set a budget monthly and hence keep a track of the transactions. 
+
+    :param ctx - Discord context window
+    :type: object
+    :return: None
+    """
+    if CHANNEL_ID not in user_list.keys():
+        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    try:
+        await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
+        await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
+        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+    except asyncio.TimeoutError:
+        await ctx.send('You ran out of time to answer!')
+    else:
+        if budget:
+            await post_budget_input(ctx, budget)
+        else:
+            await ctx.send('Nope enter a valid date')
+
+async def post_budget_input(ctx, budget):
+    try:
+        amount_entered = budget.content
+        amount_value = user_list[CHANNEL_ID].validate_entered_amount(
+            amount_entered
+        )  # validate
+        if amount_value == 0:  # cannot be $0 spending
+            raise Exception("Budget amount has to be a positive number.")
+        user_list[CHANNEL_ID].add_monthly_budget(amount_value, CHANNEL_ID)
+        await ctx.send(f"The budget for this month has been set as $ {amount_value}")
+    
+    except Exception as ex:
+        await ctx.send("Oh no! " + str(ex))
+        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        if budget.content.isnumeric():
+            await post_budget_input(ctx, budget)
+        elif '/' not in budget.content :
+            await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter \\budget command")
+
 async def select_date(ctx):
     await ctx.send("Enter the date (1-31):")
     def check(msg):
@@ -192,6 +234,39 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
         logger.error(str(ex), exc_info=True)
         await ctx.send(f"Processing Failed - \nError : " + str(ex))
 
+@bot.command()
+async def chart(ctx):
+    if CHANNEL_ID not in user_list.keys():
+        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+    try:
+        await ctx.send("Please enter the start date (YYYY-MM-DD):")
+
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel
+
+        start_date_message = await bot.wait_for('message', check=check, timeout=30)
+        start_date_str = start_date_message.content
+
+        await ctx.send("Please enter the end date (YYYY-MM-DD):")
+
+        end_date_message = await bot.wait_for('message', check=check, timeout=30)
+        end_date_str = end_date_message.content
+
+        start_date_dt = datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date_dt = datetime.strptime(end_date_str, "%Y-%m-%d")
+
+        chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID, start_date_dt, end_date_dt)
+        for cf in chart_file:
+            with open(cf, "rb") as f:
+                file = discord.File(f)
+                await ctx.send(file=file)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Processing Failed - \nError : " + str(ex))
+
 def get_users():
     """
     Reads data and returns user list as a Dict
@@ -200,7 +275,7 @@ def get_users():
     :rtype: dict
     """
 
-    data_dir = "data"
+    data_dir = "discordData"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
