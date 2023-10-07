@@ -3,6 +3,7 @@ import asyncio
 from discord.ext import commands, tasks
 import discord
 from discordUser import User
+from discord.ui import Select, View
 import logging
 import os
 from calendar import monthrange
@@ -26,29 +27,6 @@ CHANNEL_ID = os.environ["CHANNEL_ID"]
 
 bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
 user_list = {}
-
-'''
-
-Class defining the category dropdown and the callback function
-which deals with the response from the interaction
-
-'''
-class Select(discord.ui.Select):
-    def __init__(self, categories):    
-        select_options = [
-            discord.SelectOption(
-                label=category,
-            ) for category in categories
-        ]
-        super().__init__(placeholder="Select an option",max_values=1,min_values=1,options=select_options)
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content=f"Your choice is {self.values[0]}!",ephemeral=True)
-
-class SelectView(discord.ui.View):
-    def __init__(self, categories):
-        super().__init__()
-        self.add_item(Select(categories))
 
 @bot.event
 async def on_ready():
@@ -90,7 +68,7 @@ async def process_date(ctx, date, month, year):
     try:
         date_obj = datetime(int(year), int(month), int(date))
         await ctx.send(f"Selected Date: {date_obj.strftime('%Y-%m-%d')}")
-        await select_category(ctx, bot, date_obj)
+        await select_category(ctx, date_obj)
     except ValueError:
         await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
@@ -117,10 +95,11 @@ async def add(ctx):
         print(str(ex), exc_info=True)
         await ctx.send("Processing Failed - \nError : " + str(ex))
 
-async def select_category(ctx, bot, date):
+async def select_category(ctx, date):
     '''
     Function to enable category selection via a custom defined category dropdown. This function is invoked from the select_date to 
-    select the category of expense to be added. 
+    select the category of expense to be added. Uses the Select and View classes from discord.ui and a callback to handle the
+    interaction response
 
     :param ctx - Discord context window
     :param Bot - Discord Bot object
@@ -130,19 +109,42 @@ async def select_category(ctx, bot, date):
 
     '''
 
-    spend_categories = list(user_list[CHANNEL_ID].spend_categories)
-    # Logic to make the bot wait for user response
-    await ctx.send('Categories!', view=SelectView(spend_categories))
+    spend_categories = user_list[CHANNEL_ID].spend_categories
+    global selected_category
+    selected_category = ''
+    select_options = [
+        discord.SelectOption(
+                label=category,
+        ) for category in spend_categories
+    ]
+    select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
+    
+    async def my_callback(interaction):
+        await interaction.response.send_message(f'You chose: {select.values[0]}')
+        await asyncio.sleep(0.5)
 
-    #await ctx.send('Please enter the category')
-    #category = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        if select.values[0] not in spend_categories:
+            await ctx.send("Invalid category")   
+            raise Exception(
+                    'Sorry I don\'t recognise this category "{}"!'.format(select.values[0])
+            )
 
-    #await ctx.send('Please enter the amount')
-    #amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        await select_amount(ctx, date, select.values[0])
+   
+    select.callback = my_callback
+    view = View(timeout=90)
+    view.add_item(select)
+  
+    await ctx.send('Please select a category', view=view)
 
-    #print(date.content, category.content, amount.content)
-    #user_list[CHANNEL_ID].add_transaction(date.content, category.content, amount.content,CHANNEL_ID)
-    # await ctx.send("transaction added!")
+async def select_amount(ctx, date, selected_category):
+
+    await ctx.send('Please enter the amount')
+    amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+    
+    user_list[CHANNEL_ID].add_transaction(date, selected_category, amount.content, CHANNEL_ID)
+    await ctx.send("transaction added!")
 
 async def chart(ctx):
     if CHANNEL_ID not in user_list.keys():
