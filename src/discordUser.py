@@ -50,7 +50,7 @@ class User:
         """
 
         try:
-            data_dir = "data"
+            data_dir = "discordData"
             abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
             with open(abspath, "wb") as f:
                 pickle.dump(self, f)
@@ -346,7 +346,7 @@ class User:
         self.add_transaction(date, category, value, userid)
         self.save_user(userid)
 
-    def create_chart(self, userid):
+    def create_chart(self, userid, start_date=None, end_date=None):
         """
         This is used to create the matplotlib piechart of all the transactions and
         their categories. If a category does not have any transactions, then it is not
@@ -361,7 +361,12 @@ class User:
         for category in self.spend_categories:
             total = 0
             for transaction in self.transactions[category]:
-                total = total + transaction["Value"]
+                transaction_date = transaction["Date"]
+                if start_date and transaction_date < start_date:
+                    continue
+                if end_date and transaction_date > end_date:
+                    continue
+                total += int(transaction["Value"])
             if total != 0:
                 labels.append(category)
                 totals.append(total)
@@ -370,8 +375,8 @@ class User:
         plt.clf()
         plt.pie(totals, labels=labels)
         plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
-        charts.append("data/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
+        plt.savefig("discordData/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
+        charts.append("discordData/{}_pie_chart.png".format(userid)) # Ensure that the file name is unique
 
         # Bar Graph
         plt.clf()
@@ -381,8 +386,8 @@ class User:
         plt.xlabel('Categories')
         plt.ylabel('Expenditure')
         plt.title("Your Expenditure Report")
-        plt.savefig("data/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
-        charts.append("data/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
+        plt.savefig("discordData/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
+        charts.append("discordData/{}_bar_chart.png".format(userid)) # Ensure that the file name is unique
 
         # Add more visualizations here. Maintain the above format while adding more visualizations. 
 

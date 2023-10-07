@@ -1264,7 +1264,7 @@ def get_users():
     :rtype: dict
     """
 
-    data_dir = "data"
+    data_dir = "teleData"
     users = {}
     for file in os.listdir(data_dir):
         if file.endswith(".pickle"):
