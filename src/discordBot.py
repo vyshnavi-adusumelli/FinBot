@@ -27,6 +27,7 @@ CHANNEL_ID = os.environ["CHANNEL_ID"]
 
 bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
 user_list = {}
+logger = logging.getLogger()
 
 @bot.event
 async def on_ready():
@@ -117,14 +118,6 @@ async def process_date(ctx, date, month, year):
 @bot.command()
 async def add(ctx):
     '''
-    Category should be spelled exactly matching with one of the below:
-    "Food",
-    "Groceries",
-    "Utilities",
-    "Transport",
-    "Shopping",
-    "Miscellaneous",
-
     Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
     '''
     if CHANNEL_ID not in user_list.keys():
@@ -171,7 +164,7 @@ async def select_category(ctx, date):
                     'Sorry I don\'t recognise this category "{}"!'.format(select.values[0])
             )
 
-        await select_amount(ctx, date, select.values[0])
+        await post_category_selection(ctx, date, select.values[0])
    
     select.callback = my_callback
     view = View(timeout=90)
@@ -179,14 +172,67 @@ async def select_category(ctx, date):
   
     await ctx.send('Please select a category', view=view)
 
-async def select_amount(ctx, date, selected_category):
+async def post_category_selection(ctx, date_to_add,category):
+    """
+    Receives the category selected by the user and then asks for the amount spend. If an invalid category is given,
+    an error message is displayed followed by command list. IF the category given is valid, 'post_amount_input' is
+    called next.
 
-    await ctx.send('Please enter the amount')
-    amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+    :param message: telebot.types.Message object representing the message object
+    :param date_to_add: the date of the purchase
+    :type: object
+    :return: None
+    """
+    try:
+        selected_category = category
+        
+        await ctx.send(f'how much did you spend on {selected_category}')
+        amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
-    
-    user_list[CHANNEL_ID].add_transaction(date, selected_category, amount.content, CHANNEL_ID)
-    await ctx.send("transaction added!")
+        await post_amount_input(ctx, amount.content,selected_category,date_to_add)
+    except Exception as ex:
+        await ctx.send(f"{ex}")
+        
+
+async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
+    """
+    Receives the amount entered by the user and then adds to transaction history. An error is displayed if the entered
+     amount is zero. Else, a message is shown that the transaction has been added.
+
+    :param date_of_entry: user entered date
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        print(amount_entered,selected_category,date_to_add)
+        amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  # cannot be $0 spending
+
+            raise Exception("Spent amount has to be a non-zero number.")
+
+        category_str, amount_str = (
+            selected_category,
+            format(amount_value, ".2f"),
+        )
+        user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
+        total_value = user_list[CHANNEL_ID].monthly_total()
+        add_message = f"The following expenditure has been recorded: You have spent ${amount_entered} for {selected_category} on {date_to_add}"
+
+        if user_list[CHANNEL_ID].monthly_budget > 0:
+            if total_value > user_list[CHANNEL_ID].monthly_budget:
+                await ctx.send("*You have gone over the monthly budget*")
+            elif total_value == user_list[CHANNEL_ID].monthly_budget:
+                await ctx.send("*You have exhausted your monthly budget. You can check/download history*")
+            elif total_value >= 0.8 * user_list[CHANNEL_ID].monthly_budget:
+                await ctx.send("*You have used 80% of the monthly budget*")
+
+        await ctx.send(add_message)
+    except Exception as ex:
+
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        await ctx.send(f"Processing Failed - \nError : " + str(ex))
 
 @bot.command()
 async def chart(ctx):
