@@ -25,8 +25,10 @@ from email import encoders
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
 
-bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
+logger = logging.getLogger()
+bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
+logger = logging.getLogger()
 
 @bot.event
 async def on_ready():
@@ -144,14 +146,6 @@ async def process_date(ctx, date, month, year):
 @bot.command()
 async def add(ctx):
     '''
-    Category should be spelled exactly matching with one of the below:
-    "Food",
-    "Groceries",
-    "Utilities",
-    "Transport",
-    "Shopping",
-    "Miscellaneous",
-
     Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
     '''
     if CHANNEL_ID not in user_list.keys():
@@ -198,7 +192,7 @@ async def select_category(ctx, date):
                     'Sorry I don\'t recognise this category "{}"!'.format(select.values[0])
             )
 
-        await select_amount(ctx, date, select.values[0])
+        await post_category_selection(ctx, date, select.values[0])
    
     select.callback = my_callback
     view = View(timeout=90)
@@ -206,14 +200,169 @@ async def select_category(ctx, date):
   
     await ctx.send('Please select a category', view=view)
 
-async def select_amount(ctx, date, selected_category):
+async def post_category_selection(ctx, date_to_add,category):
+    """
+    Receives the category selected by the user and then asks for the amount spend. If an invalid category is given,
+    an error message is displayed followed by command list. IF the category given is valid, 'post_amount_input' is
+    called next.
 
-    await ctx.send('Please enter the amount')
-    amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+    :param message: telebot.types.Message object representing the message object
+    :param date_to_add: the date of the purchase
+    :type: object
+    :return: None
+    """
+    try:
+        selected_category = category
+        
+        await ctx.send(f'how much did you spend on {selected_category}')
+        amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
-    
-    user_list[CHANNEL_ID].add_transaction(date, selected_category, amount.content, CHANNEL_ID)
-    await ctx.send("transaction added!")
+        await post_amount_input(ctx, amount.content,selected_category,date_to_add)
+    except Exception as ex:
+        await ctx.send(f"{ex}")
+        
+
+async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
+    """
+    Receives the amount entered by the user and then adds to transaction history. An error is displayed if the entered
+     amount is zero. Else, a message is shown that the transaction has been added.
+
+    :param date_of_entry: user entered date
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    try:
+        print(amount_entered,selected_category,date_to_add)
+        amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  # cannot be $0 spending
+
+            raise Exception("Spent amount has to be a non-zero number.")
+
+        category_str, amount_str = (
+            selected_category,
+            format(amount_value, ".2f"),
+        )
+        user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
+        total_value = user_list[CHANNEL_ID].monthly_total()
+        add_message = f"The following expenditure has been recorded: You have spent ${amount_entered} for {selected_category} on {date_to_add}"
+
+        if user_list[CHANNEL_ID].monthly_budget > 0:
+            if total_value > user_list[CHANNEL_ID].monthly_budget:
+                await ctx.send("*You have gone over the monthly budget*")
+            elif total_value == user_list[CHANNEL_ID].monthly_budget:
+                await ctx.send("*You have exhausted your monthly budget. You can check/download history*")
+            elif total_value >= 0.8 * user_list[CHANNEL_ID].monthly_budget:
+                await ctx.send("*You have used 80% of the monthly budget*")
+
+        await ctx.send(add_message)
+    except Exception as ex:
+
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        await ctx.send(f"Processing Failed - \nError : " + str(ex))
+
+@bot.command()
+async def delete(ctx):
+    """
+    Handles the 'delete' command. The user is then given 3 options, 'day', 'month' and 'All" from which they can choose.
+    An error message is displayed if there is no transaction history. If there is transaction history, the execution is
+    passed to the function 'process_delete_argument'.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    dateFormat = "%m-%d-%Y"
+    monthFormat = "%m-%Y"
+    try:
+        if (CHANNEL_ID in user_list
+            and user_list[CHANNEL_ID].get_number_of_transactions() != 0):
+            
+            curr_day = datetime.now()
+            prompt = "Enter the day, month, or All\n"
+            prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
+            prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+            await ctx.send(prompt)
+            delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+            await process_delete_argument(ctx, delete_type.content)
+        else:
+            delete_history_text = (
+                "No records to be deleted. Start adding your expenses to keep track of your "
+                "spendings! "
+            )
+            await ctx.send(delete_history_text)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        await ctx.send("Processing Failed - \nError : " + str(ex))
+
+
+async def process_delete_argument(ctx, delete_type):
+    """
+    This function receives the choice that user inputs for delete and asks for a confirmation. 'handle_confirmation'
+    is called next.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+
+    dateFormat = "%m-%d-%Y"
+    monthFormat = "%m-%Y"
+    text = delete_type #delete_type
+    ctx = ctx
+    date = None
+    is_month = False
+    if text.lower() == "all":
+        date = "all"
+    else:
+        # try and parse as Date-Month-Year
+        if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None:
+            print("date_format check")
+            date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
+            print(date)
+        # try and parse as Month-Year
+        elif user_list[CHANNEL_ID].validate_date_format(text, monthFormat) is not None:
+            print("month_format check")
+            date = user_list[CHANNEL_ID].validate_date_format(text, monthFormat)
+            is_month = True
+
+    if date is None:
+        # if none of the formats worked
+        await ctx.send("error parsing text")
+    else:
+        # get the records either by given day, month, or all records
+        records_to_delete = user_list[CHANNEL_ID].get_records_by_date(date, is_month)
+        # if none of the records match that day
+        if len(records_to_delete) == 0:
+            await ctx.send(f"No transactions within {text}")
+        response_str = "Confirm records to delete\n"
+        response_str += user_list[CHANNEL_ID].display_transaction(records_to_delete)
+        await ctx.send(response_str)
+        response_str = "\nEnter Yes or No"
+        await ctx.send(response_str)
+        response = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        await handle_confirmation(ctx, response.content, records_to_delete)
+
+
+async def handle_confirmation(ctx, message, records_to_delete):
+    """
+    Deletes the transactions in the previously chosen time period if the user chooses 'yes'.
+
+    :param message: telebot.types.Message object representing the message object
+    :param records_to_delete: the records to remove
+    :type: object
+    :return: None
+    """
+
+    if message.lower() == "yes":
+        user_list[CHANNEL_ID].deleteHistory(records_to_delete)
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        await ctx.send("Successfully deleted records")
+    else:
+        await ctx.send("No records deleted")
 
 @bot.command()
 async def chart(ctx):
