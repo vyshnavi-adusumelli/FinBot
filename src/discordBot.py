@@ -34,7 +34,7 @@ logger = logging.getLogger()
 async def on_ready():
     channel = bot.get_channel(int(CHANNEL_ID))
     await channel.send("Hello! Welcome to FinBot - a simple solution to track your expenses! \n\n"
-            + "Enter /menu command to view all the commands offered by FinBot")
+            + "Enter #menu command to view all the commands offered by FinBot")
 
 @bot.command()
 async def menu(ctx):
@@ -52,14 +52,14 @@ async def menu(ctx):
         description="Here is a list of available commands, please enter a command of your choice so that I can assist you further.\n ",
         color = discord.Color.teal()
     )
-    em.add_field(name="**/menu**", value="Displays all commands and their descriptions", inline=False)
-    em.add_field(name="**/add**", value="Record/Add a new spending", inline=False)
-    em.add_field(name="**/display**", value="Show sum of expenditure for the current day/month", inline=False)
-    em.add_field(name="**/history**", value="Display spending history", inline=False)
-    em.add_field(name="**/delete**", value="Clear/Erase all your records", inline=False)
-    em.add_field(name="**/edit**", value="Edit/Change spending details", inline=False)
-    em.add_field(name="**/budget**", value="Set budget for the month", inline=False)
-    em.add_field(name="**/chart**", value="See your expenditure in different charts", inline=False)
+    em.add_field(name="**#menu**", value="Displays all commands and their descriptions", inline=False)
+    em.add_field(name="**#add**", value="Record/Add a new spending", inline=False)
+    em.add_field(name="**#display**", value="Show sum of expenditure for the current day/month", inline=False)
+    em.add_field(name="**#history**", value="Display spending history", inline=False)
+    em.add_field(name="**#delete**", value="Clear/Erase all your records", inline=False)
+    em.add_field(name="**#edit**", value="Edit/Change spending details", inline=False)
+    em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
+    em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
     
     
     await ctx.send(embed=em)
@@ -107,8 +107,8 @@ async def post_budget_input(ctx, budget):
         budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
         if budget.content.isnumeric():
             await post_budget_input(ctx, budget)
-        elif '/' not in budget.content :
-            await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter \/budget command")
+        elif '#' not in budget.content :
+            await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
 async def select_date(ctx):
     await ctx.send("Enter the date (1-31):")
