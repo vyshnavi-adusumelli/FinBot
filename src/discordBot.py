@@ -1,5 +1,4 @@
 import asyncio
-
 from discord.ext import commands, tasks
 import discord
 from discordUser import User
@@ -11,16 +10,8 @@ import pathlib
 import pickle
 import re
 import time
-import csv
-import io
 from datetime import datetime
 from tabulate import tabulate
-import sys
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
@@ -33,8 +24,8 @@ logger = logging.getLogger()
 @bot.event
 async def on_ready():
     channel = bot.get_channel(int(CHANNEL_ID))
-    await channel.send("Hello! Welcome to FinBot - a simple solution to track your expenses! \n\n"
-            + "Enter #menu command to view all the commands offered by FinBot")
+    await channel.send(f"Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
+    await menu(channel)
 
 @bot.command()
 async def menu(ctx):
@@ -49,7 +40,7 @@ async def menu(ctx):
 
     em = discord.Embed(
         title="FinBot",
-        description="Here is a list of available commands, please enter a command of your choice so that I can assist you further.\n ",
+        description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",
         color = discord.Color.teal()
     )
     em.add_field(name="**#menu**", value="Displays all commands and their descriptions", inline=False)
@@ -61,12 +52,113 @@ async def menu(ctx):
     em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
     
-    
     await ctx.send(embed=em)
 
 @bot.command()
-async def hello(ctx):
-    await ctx.send("Hello!")
+async def display(ctx):
+    """
+    Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
+    transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
+    next.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0:
+        await ctx.send("Oops! Looks like you do not have any spending records!")
+    else:
+        try:
+            select_options = [
+                    discord.SelectOption(label="Day"),
+                    discord.SelectOption(label="Month"),
+                ]
+            select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
+                
+            async def my_callback(interaction):
+                await interaction.response.send_message(f'You chose: {select.values[0]}')
+                await asyncio.sleep(0.5)
+                await display_total(ctx, select.values[0])
+            
+            select.callback = my_callback
+            view = View(timeout=90)
+            view.add_item(select)
+            
+            await ctx.send('Please select a category to see the total expense', view=view)
+
+        except Exception as ex:
+            print(f"Exception occurred : {str(ex)}")
+            await ctx.send("Oops! - \nError : " + str(ex))
+
+
+async def display_total(ctx, sel_category):
+    """
+    Receives the input time period and displays the transaction summary for the corresponding time period.
+
+    :param message: Discord ctx object, selected category
+    :type: object
+    :return: None
+    """
+    dateFormat = "%m/%d/%Y"
+    try:
+        day_week_month = sel_category
+
+        if day_week_month not in user_list[CHANNEL_ID].spend_display_option:
+            raise Exception(
+                'Sorry I can\'t show spendings for "{}"!'.format(day_week_month)
+            )
+
+        if len(user_list[CHANNEL_ID].transactions) == 0:
+            raise Exception("Oops! Looks like you do not have any spending records!")
+
+        await ctx.send("Hold on! Calculating...")
+
+        if day_week_month == "Day":
+            query = datetime.today()
+            query_result = ""
+            total_value = 0
+            for category in user_list[CHANNEL_ID].transactions.keys():
+                for transaction in user_list[CHANNEL_ID].transactions[category]:
+                    if transaction["Date"].strftime("%d") == query.strftime("%d"):
+                        query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(
+                            category,
+                            transaction["Date"].strftime(dateFormat),
+                            transaction["Value"],
+                        )
+                        total_value += transaction["Value"]
+            total_spendings = "Here are your total spendings for the date {} \n\n".format(
+                datetime.today().strftime("%m/%d/%Y")
+            )
+            total_spendings += query_result
+            total_spendings += "Total Value {:.2f}".format(total_value)
+            await ctx.send(total_spendings)
+        elif day_week_month == "Month":
+            query = datetime.today()
+            query_result = ""
+            total_value = 0
+            # print(user_list[chat_id].keys())
+            budget_value = user_list[CHANNEL_ID].monthly_budget
+            for category in user_list[CHANNEL_ID].transactions.keys():
+                for transaction in user_list[CHANNEL_ID].transactions[category]:
+                    if transaction["Date"].strftime("%m") == query.strftime("%m"):
+                        query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(
+                            category,
+                            transaction["Date"].strftime(dateFormat),
+                            transaction["Value"],
+                        )
+                        total_value += transaction["Value"]
+            total_spendings = (
+                "Here are your total spendings for the Month {} \n\n".format(
+                    datetime.today().strftime("%B")
+                )
+            )
+            total_spendings += query_result
+            total_spendings += "Total Value {:.2f}\n".format(total_value)
+            total_spendings += "Budget for the month {}".format(str(budget_value))
+            await ctx.send(total_spendings)
+    except Exception as ex:
+        print(f"Exception occurred : {str(ex)}")
+        await ctx.send("Oops, error-" + str(ex))
 
 @bot.command()
 async def budget(ctx):
@@ -173,8 +265,6 @@ async def select_category(ctx, date):
     '''
 
     spend_categories = user_list[CHANNEL_ID].spend_categories
-    global selected_category
-    selected_category = ''
     select_options = [
         discord.SelectOption(
                 label=category,
