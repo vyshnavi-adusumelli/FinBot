@@ -51,7 +51,7 @@ async def menu(ctx):
     em.add_field(name="**#edit**", value="Edit/Change spending details", inline=False)
     em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
-
+    
     await ctx.send(embed=em)
 
 @bot.command()
