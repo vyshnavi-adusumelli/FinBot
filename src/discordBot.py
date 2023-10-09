@@ -136,7 +136,7 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            # print(user_list[chat_id].keys())
+            # print(user_list[CHANNEL_ID].keys())
             budget_value = user_list[CHANNEL_ID].monthly_budget
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
@@ -454,8 +454,8 @@ async def handle_confirmation(ctx, message, records_to_delete):
     else:
         await ctx.send("No records deleted")
 
-@bot.message_handler(commands=["edit"])
-def edit1(message):
+@bot.command()
+async def edit(ctx):
     """
     Handles the command 'edit' and then displays a message explaining the format. The function 'edit_list2' is called next.
 
@@ -463,29 +463,27 @@ def edit1(message):
     :type: object
     :return: None
     """
-    chat_id = str(message.chat.id)
 
     try:
-        if chat_id in list(user_list.keys()):
-            msg = bot.reply_to(
-                message,
+        if CHANNEL_ID in list(user_list.keys()):
+            await ctx.send(
                 "Please enter the date (in mm/dd/yyyy format), category and "
-                "value of the transaction you made (Eg: 01/03/2021,Transport,25)",
+                "value of the transaction you made (Eg: 01/03/2021,Transport,25)"
             )
-            bot.register_next_step_handler(msg, edit_list2)
+            msg = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+            await edit_list2(ctx,msg)
 
         else:
-            bot.send_message(chat_id, "No data found")
+            await ctx.send("No data found")
     except Exception as ex:
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
-        bot.reply_to(
-            message,
-            "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)",
+        await ctx.send(
+            "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)"
         )
 
 
-def edit_list2(message):
+async def edit_list2(ctx,message):
     """
     Parses the input from the user message, and finds the appropriate transaction. Asks the user whether they
     want to update the date, value, or category of the transaction, and then passes control to edit3 function
@@ -494,45 +492,51 @@ def edit_list2(message):
     :return: None
     """
     try:
-        chat_id = str(message.chat.id)
-        info = message.text
+        print('edit_list2 entered')
+        info = message.content
+        print(info)
         # date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
         info = info.split(",")
 
         dateFormat = "%m/%d/%Y"
-        info_date = user_list[chat_id].validate_date_format(info[0], dateFormat)
+        info_date = user_list[CHANNEL_ID].validate_date_format(info[0], dateFormat)
         info_category = info[1].strip()
         info_value = info[2].strip()
         if info_date is None:
-            bot.reply_to(message, "The date is incorrect")
+            await ctx.send("The date is incorrect")
             return
+        select_options = [
+                    discord.SelectOption(label="Date"),
+                    discord.SelectOption(label="Category"),
+                    discord.SelectOption(label="Cost")
+                ]
+        select = Select(placeholder="What do you want to update", max_values=1,min_values=1, options=select_options)
+        async def my_callback(interaction):
+            await interaction.response.send_message(f'You chose: {select.values[0]}')
+            await asyncio.sleep(0.5)
+            await edit3(ctx, select.values[0])
 
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        markup.row_width = 2
-        choices = ["Date", "Category", "Cost"]
-        for c in choices:
-            markup.add(c)
-
-        for transaction in user_list[chat_id].transactions[info_category]:
+        for transaction in user_list[CHANNEL_ID].transactions[info_category]:
             if transaction["Date"].date() == info_date:
                 if transaction["Value"] == float(info_value):
-                    user_list[chat_id].store_edit_transaction(
+                    user_list[CHANNEL_ID].store_edit_transaction(
                         transaction, info_category
                     )
-                    choice = bot.reply_to(
-                        message, "What do you want to update?", reply_markup=markup
-                    )
-                    bot.register_next_step_handler(choice, edit3)
+                    select.callback = my_callback
+                    view = View(timeout=90)
+                    view.add_item(select)
+
+                    await ctx.send('Please select an option to update', view=view)
                     break
         else:
-            bot.reply_to(message, "Transaction not found")
+            await ctx.send("Transaction not found")
     except Exception as ex:
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
-        bot.reply_to(message, "Processing Failed - Error: " + str(ex))
+        await ctx.send("Oops! - \nError : " + str(ex))
 
 
-def edit3(message):
+async def edit3(ctx,choice):
     """
     Receives the user's input corresponding to what they want to edit, and then transfers the execution to the
     function according to the choice.
@@ -541,17 +545,11 @@ def edit3(message):
     :type: object
     :return: None
     """
-    choice1 = message.text
-    chat_id = str(message.chat.id)
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.row_width = 2
-    for category in user_list[chat_id].spend_categories:
-        markup.add(category)
+    choice1 = choice
     if choice1 == "Date":
-        new_date = bot.reply_to(
-            message, "Please enter the new date (in mm/dd/yyyy format)"
-        )
-        bot.register_next_step_handler(new_date, edit_date)
+        await ctx.send ("Please enter the new date (in mm/dd/yyyy format)")
+        new_date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        await edit_date(ctx,new_date)
 
     if choice1 == "Category":
         new_cat = bot.reply_to(
@@ -560,11 +558,12 @@ def edit3(message):
         bot.register_next_step_handler(new_cat, edit_cat)
 
     if choice1 == "Cost":
-        new_cost = bot.reply_to(message, "Please type the new cost")
-        bot.register_next_step_handler(new_cost, edit_cost)
+        await ctx.send ( "Please type the new cost")
+        new_cost = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        await edit_cost(ctx,new_cost)
 
 
-def edit_date(message):
+async def edit_date(ctx, message):
     """
     This function is called if the user chooses to edit the date of a transaction. This function receives the new
     date and updates the transaction.
@@ -573,21 +572,21 @@ def edit_date(message):
     :type: object
     :return: None
     """
-    new_date = message.text
-    chat_id = str(message.chat.id)
+    print("entered edit_date")
+    new_date = message.content
     user_date = datetime.strptime(new_date, "%m/%d/%Y")
     if user_date is None:
-        bot.reply_to(message, "The date is incorrect")
+        await ctx.send ("The date is incorrect")
         return
-    updated_transaction = user_list[chat_id].edit_transaction_date(user_date)
-    user_list[chat_id].save_user(chat_id)
+    updated_transaction = user_list[CHANNEL_ID].edit_transaction_date(user_date)
+    user_list[CHANNEL_ID].save_user(CHANNEL_ID)
     edit_message = (
         "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
             updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),
-            format(updated_transaction["Value"], ".2f"),
+            format(updated_transaction["Value"], ".2f")
         )
     )
-    bot.reply_to(message, edit_message)
+    await ctx.send(edit_message)
 
 
 def edit_cat(message):
@@ -599,11 +598,11 @@ def edit_cat(message):
     :type: object
     :return: None
     """
-    chat_id = str(message.chat.id)
+    CHANNEL_ID = str(message.chat.id)
     new_category = message.text.strip()
-    updated_transaction = user_list[chat_id].edit_transaction_category(new_category)
+    updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
     if updated_transaction:
-        user_list[chat_id].save_user(chat_id)
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
         edit_message = "Category has been edited."
         bot.reply_to(message, edit_message)
     else:
@@ -611,7 +610,7 @@ def edit_cat(message):
         bot.reply_to(message, edit_message)
 
 
-def edit_cost(message):
+async def edit_cost(ctx,message):
     """
     This function is called if the user chooses to edit the amount of a transaction. This function receives the new
     amount and updates the transaction.
@@ -620,20 +619,21 @@ def edit_cost(message):
     :type: object
     :return: None
     """
-    new_cost = message.text
-    chat_id = str(message.chat.id)
-    new_cost = user_list[chat_id].validate_entered_amount(new_cost)
+    print("entered edit cost")
+    new_cost = message.content
+
+    new_cost = user_list[CHANNEL_ID].validate_entered_amount(new_cost)
     if new_cost != 0:
-        user_list[chat_id].save_user(chat_id)
-        updated_transaction = user_list[chat_id].edit_transaction_value(new_cost)
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
         edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
             updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),
             format(updated_transaction["Value"], ".2f"),
         )
-        bot.reply_to(message, edit_message)
+        await ctx.send(edit_message)
 
     else:
-        bot.reply_to(message, "The cost is invalid")
+        await ctx.send("The cost is invalid")
         return
 
 
