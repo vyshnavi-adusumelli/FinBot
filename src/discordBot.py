@@ -203,21 +203,28 @@ async def post_budget_input(ctx, budget):
             await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
 async def select_date(ctx):
-    await ctx.send("Enter the date (1-31):")
+    '''
+    Function to get date selection from user. This function is invoked from the add to
+    enter the date of expense to be added.
+
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :param date - date message object received from the user
+    :type: object
+    :return: None
+
+    '''
+    dateFormat = "%m-%d-%Y"
+    curr_day = datetime.now()
+    await ctx.send("Enter day")
+    await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
     try:
         date_message = await bot.wait_for('message', check=check, timeout=60)
-        date = date_message.content.strip()
-
-        await ctx.send("Enter the month (1-12):")
-        month_message = await bot.wait_for('message', check=check, timeout=60)
-        month = month_message.content.strip()
-
-        await ctx.send("Enter the year (e.g., 2023):")
-        year_message = await bot.wait_for('message', check=check, timeout=60)
-        year = year_message.content.strip()
+        date_str = date_message.content.strip()
+        month, date, year = map(int, date_str.split('-'))
 
         # Call the next function with the date, month, and year
         await process_date(ctx, date, month, year)
@@ -230,7 +237,7 @@ async def process_date(ctx, date, month, year):
     # For example, you can convert them to a datetime object
     try:
         date_obj = datetime(int(year), int(month), int(date))
-        await ctx.send(f"Selected Date: {date_obj.strftime('%Y-%m-%d')}")
+        await ctx.send(f"Selected Date: {date_obj.strftime('%m-%d-%Y')}")
         await select_category(ctx, date_obj)
     except ValueError:
         await ctx.send("Invalid date, month, or year. Please enter valid values.")
@@ -371,8 +378,8 @@ async def delete(ctx):
             
             curr_day = datetime.now()
             prompt = "Enter the day, month, or All\n"
-            prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
-            prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+            prompt += f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n"
+            prompt += f"\n\tExample month in formate mm-YYYY: {curr_day.strftime(monthFormat)}"
             await ctx.send(prompt)
             delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
             await process_delete_argument(ctx, delete_type.content)
@@ -454,13 +461,61 @@ async def handle_confirmation(ctx, message, records_to_delete):
     else:
         await ctx.send("No records deleted")
 
+
+@bot.command()
+async def history(ctx):
+    """
+    Handles the command 'history'. Lists the transaction history.
+
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :type: object
+    :return: None
+    """
+    try:
+        count = 0
+        table = [["Category", "Date", "Amount in $"]]
+
+        if CHANNEL_ID not in user_list.keys():
+            user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+        if not user_list[CHANNEL_ID].transactions:
+            raise Exception("Sorry! No spending records found!")
+
+        for category, transactions in user_list[CHANNEL_ID].transactions.items():
+            for transaction in transactions:
+                count += 1
+                date = transaction["Date"].strftime("%m-%d-%y")
+                value = format(transaction["Value"], ".2f")
+                table.append([category, date, "$ " + value])
+
+        if count == 0:
+            raise Exception("Sorry! No spending records found!")
+
+        spend_total_str = "```" + tabulate(table, headers='firstrow') + "```"
+        await ctx.send(spend_total_str)
+
+    except Exception as ex:
+        print(str(ex))
+        await ctx.send(str(ex))
+
 @bot.command()
 async def chart(ctx):
-    if CHANNEL_ID not in user_list.keys():
-        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    """
+    Handles the chart command. When the user runs this command the bot will create a piechart
+    of all the transactions and their categories and post that to the chat
 
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :param date - date message object received from the user
+    :type: object
+    :return: None
+    """
     try:
-        await ctx.send("Please enter the start date (YYYY-MM-DD):")
+        dateFormat = "%m-%d-%Y"
+        curr_day = datetime.now()
+        await ctx.send("Enter start day")
+        await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel
@@ -468,13 +523,14 @@ async def chart(ctx):
         start_date_message = await bot.wait_for('message', check=check, timeout=30)
         start_date_str = start_date_message.content
 
-        await ctx.send("Please enter the end date (YYYY-MM-DD):")
+        await ctx.send("Enter start day")
+        await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         end_date_message = await bot.wait_for('message', check=check, timeout=30)
         end_date_str = end_date_message.content
 
-        start_date_dt = datetime.strptime(start_date_str, "%Y-%m-%d")
-        end_date_dt = datetime.strptime(end_date_str, "%Y-%m-%d")
+        start_date_dt = datetime.strptime(start_date_str, "%m-%d-%Y")
+        end_date_dt = datetime.strptime(end_date_str, "%m-%d-%Y")
 
         chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID, start_date_dt, end_date_dt)
         for cf in chart_file:
