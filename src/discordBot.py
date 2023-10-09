@@ -80,9 +80,14 @@ async def display(ctx):
                 await asyncio.sleep(0.5)
                 await display_total(ctx, select.values[0])
             
+            async def timeout():
+                await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
+                await menu(ctx)
+            
             select.callback = my_callback
-            view = View(timeout=90)
+            view = View(timeout=20)
             view.add_item(select)
+            view.on_timeout = timeout
             
             await ctx.send('Please select a category to see the total expense', view=view)
 
@@ -275,7 +280,6 @@ async def select_category(ctx, date):
     async def my_callback(interaction):
         await interaction.response.send_message(f'You chose: {select.values[0]}')
         await asyncio.sleep(0.5)
-
         if select.values[0] not in spend_categories:
             await ctx.send("Invalid category")   
             raise Exception(
@@ -284,9 +288,15 @@ async def select_category(ctx, date):
 
         await post_category_selection(ctx, date, select.values[0])
    
+    async def timeout():
+        await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
+        await menu(ctx)
+
     select.callback = my_callback
-    view = View(timeout=90)
+    
+    view = View(timeout=15)
     view.add_item(select)
+    view.on_timeout = timeout
   
     await ctx.send('Please select a category', view=view)
 
