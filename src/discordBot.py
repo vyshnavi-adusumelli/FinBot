@@ -552,10 +552,24 @@ async def edit3(ctx,choice):
         await edit_date(ctx,new_date)
 
     if choice1 == "Category":
-        new_cat = bot.reply_to(
-            message, "Please select the new category", reply_markup=markup
-        )
-        bot.register_next_step_handler(new_cat, edit_cat)
+        select_options = [
+                    discord.SelectOption(label="Food"),
+                    discord.SelectOption(label="Groceries"),
+                    discord.SelectOption(label="Utilities"),
+                    discord.SelectOption(label="Transport"),
+                    discord.SelectOption(label="Shopping"),
+                ]
+        select = Select(max_values=1,min_values=1, options=select_options)
+        async def my_callback(interaction):
+            await interaction.response.send_message(f'You chose: {select.values[0]}')
+            await asyncio.sleep(0.5)
+            await edit_cat(ctx, select.values[0])
+
+        select.callback = my_callback
+        view = View(timeout=90)
+        view.add_item(select)
+
+        await ctx.send('Please select the new Category', view=view)
 
     if choice1 == "Cost":
         await ctx.send ( "Please type the new cost")
@@ -589,7 +603,7 @@ async def edit_date(ctx, message):
     await ctx.send(edit_message)
 
 
-def edit_cat(message):
+async def edit_cat(ctx,new_category):
     """
     This function is called if the user chooses to edit the category of a transaction. This function receives the new
     category and updates the transaction.
@@ -598,16 +612,15 @@ def edit_cat(message):
     :type: object
     :return: None
     """
-    CHANNEL_ID = str(message.chat.id)
-    new_category = message.text.strip()
+    print("entered edit cat")
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
     if updated_transaction:
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
         edit_message = "Category has been edited."
-        bot.reply_to(message, edit_message)
+        await ctx.send(edit_message)
     else:
         edit_message = "Category has not been edited successfully"
-        bot.reply_to(message, edit_message)
+        await ctx.send(edit_message)
 
 
 async def edit_cost(ctx,message):
