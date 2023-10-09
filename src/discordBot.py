@@ -466,24 +466,41 @@ async def edit(ctx):
 
     try:
         if CHANNEL_ID in list(user_list.keys()):
-            await ctx.send(
-                "Please enter the date (in mm/dd/yyyy format), category and "
-                "value of the transaction you made (Eg: 01/03/2021,Transport,25)"
-            )
-            msg = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
-            await edit_list2(ctx,msg)
+            await ctx.send("Please enter the date of transaction to edit(in mm-dd-yyyy format)")
+            date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
 
+            await ctx.send("Please enter the value of transaction to edit")
+            value = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+
+            select_options = [
+                    discord.SelectOption(label="Food"),
+                    discord.SelectOption(label="Groceries"),
+                    discord.SelectOption(label="Utilities"),
+                    discord.SelectOption(label="Transport"),
+                    discord.SelectOption(label="Shopping"),
+                ]
+            select = Select(max_values=1,min_values=1, options=select_options)
+            async def my_callback(interaction):
+                await interaction.response.send_message(f'You chose: {select.values[0]}')
+                await asyncio.sleep(0.5)
+                await edit_list2(ctx, date.content, select.values[0], value.content)
+
+            select.callback = my_callback
+            view = View(timeout=90)
+            view.add_item(select)
+
+            await ctx.send('Please select the Category of transaction', view=view)
+        
         else:
             await ctx.send("No data found")
     except Exception as ex:
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
         await ctx.send(
             "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)"
         )
 
 
-async def edit_list2(ctx,message):
+async def edit_list2(ctx,date,category,value):
     """
     Parses the input from the user message, and finds the appropriate transaction. Asks the user whether they
     want to update the date, value, or category of the transaction, and then passes control to edit3 function
@@ -493,15 +510,12 @@ async def edit_list2(ctx,message):
     """
     try:
         print('edit_list2 entered')
-        info = message.content
-        print(info)
-        # date_format = r"^([0123]?\d)[\/](\d?\d)[\/](20\d+)"
-        info = info.split(",")
 
-        dateFormat = "%m/%d/%Y"
-        info_date = user_list[CHANNEL_ID].validate_date_format(info[0], dateFormat)
-        info_category = info[1].strip()
-        info_value = info[2].strip()
+        dateFormat = "%m-%d-%Y"
+        info_date = user_list[CHANNEL_ID].validate_date_format(date, dateFormat)
+        info_category = category
+        info_value = value
+
         if info_date is None:
             await ctx.send("The date is incorrect")
             return
@@ -547,7 +561,7 @@ async def edit3(ctx,choice):
     """
     choice1 = choice
     if choice1 == "Date":
-        await ctx.send ("Please enter the new date (in mm/dd/yyyy format)")
+        await ctx.send ("Please enter the new date (in mm-dd-yyyy format)")
         new_date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
         await edit_date(ctx,new_date)
 
@@ -588,7 +602,7 @@ async def edit_date(ctx, message):
     """
     print("entered edit_date")
     new_date = message.content
-    user_date = datetime.strptime(new_date, "%m/%d/%Y")
+    user_date = datetime.strptime(new_date, "%m-%d-%Y")
     if user_date is None:
         await ctx.send ("The date is incorrect")
         return
@@ -596,7 +610,7 @@ async def edit_date(ctx, message):
     user_list[CHANNEL_ID].save_user(CHANNEL_ID)
     edit_message = (
         "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),
+            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
             format(updated_transaction["Value"], ".2f")
         )
     )
@@ -640,7 +654,7 @@ async def edit_cost(ctx,message):
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
         updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
         edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),
+            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
             format(updated_transaction["Value"], ".2f"),
         )
         await ctx.send(edit_message)
