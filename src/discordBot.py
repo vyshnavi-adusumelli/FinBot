@@ -255,7 +255,7 @@ async def add(ctx):
     except Exception as ex:
         print("Exception occurred : ")
         print(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 async def select_category(ctx, date):
     '''
@@ -357,7 +357,7 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
 
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
-        await ctx.send(f"Processing Failed - \nError : " + str(ex))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def delete(ctx):
@@ -393,7 +393,7 @@ async def delete(ctx):
     except Exception as ex:
         print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def process_delete_argument(ctx, delete_type):
@@ -541,7 +541,7 @@ async def chart(ctx):
     except Exception as ex:
         print("Exception occurred : ")
         print(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 def get_users():
     """
