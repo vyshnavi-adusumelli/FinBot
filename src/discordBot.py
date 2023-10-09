@@ -80,9 +80,14 @@ async def display(ctx):
                 await asyncio.sleep(0.5)
                 await display_total(ctx, select.values[0])
             
+            async def timeout():
+                await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
+                await menu(ctx)
+            
             select.callback = my_callback
-            view = View(timeout=90)
+            view = View(timeout=20)
             view.add_item(select)
+            view.on_timeout = timeout
             
             await ctx.send('Please select a category to see the total expense', view=view)
 
