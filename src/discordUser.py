@@ -201,7 +201,7 @@ class User:
         try:
             date = datetime.strptime(text, date_format).date()
             
-        except exception as e:
+        except Exception as e:
             print(e)
         return date
 
