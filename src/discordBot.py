@@ -23,6 +23,17 @@ logger = logging.getLogger()
 
 @bot.event
 async def on_ready():
+    """
+    An event handler for the "on_ready" event.
+    This function is called when the bot has successfully connected to the Discord server and is ready to operate. It sends a welcome message to a specific channel and then calls the "menu" 
+    function to display a menu, likely for user interaction.
+
+    Parameters: 
+    - None
+
+    Returns: 
+    - None
+    """
     channel = bot.get_channel(int(CHANNEL_ID))
     await channel.send(f"Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
     await menu(channel)
@@ -30,14 +41,14 @@ async def on_ready():
 @bot.command()
 async def menu(ctx):
     """
-    Handles the commands 'menu'. To show the list of available commands and their descriptions. Outputs a An embed window sent to the context 
-    with all commands/descriptions
+    Handles the 'menu' command to display a list of available commands and their descriptions in an embed window.
 
-    :param ctx - Discord context window
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
     """
-
     em = discord.Embed(
         title="FinBot",
         description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",
@@ -61,9 +72,11 @@ async def display(ctx):
     transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
     next.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
     """
     if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0:
         await ctx.send("Oops! Looks like you do not have any spending records!")
@@ -93,11 +106,14 @@ async def display(ctx):
 
 async def display_total(ctx, sel_category):
     """
-    Receives the input time period and displays the transaction summary for the corresponding time period.
+    Receives the input time period from display(ctx) and displays the transaction summary for the corresponding time period.
 
-    :param message: Discord ctx object, selected category
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window
+    - sel_category (string): The time period selected by the user (day / month)
+
+    Returns:
+    - None
     """
     dateFormat = "%m/%d/%Y"
     try:
@@ -165,9 +181,11 @@ async def budget(ctx):
     """
     Handles the commands 'budget'. To set a budget monthly and hence keep a track of the transactions. 
 
-    :param ctx - Discord context window
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
     """
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
@@ -184,6 +202,17 @@ async def budget(ctx):
             await ctx.send('Nope enter a valid date')
 
 async def post_budget_input(ctx, budget):
+    """
+    Handles the processing of user input (budget). This function validates the entered amount and sets the budget. The error handling 
+    functionality is also implemented.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - budget (discord.Message): The user's response message containing the budget input.
+
+    Returns:
+    - None
+    """
     try:
         amount_entered = budget.content
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(
@@ -201,6 +230,21 @@ async def post_budget_input(ctx, budget):
             await post_budget_input(ctx, budget)
         elif '#' not in budget.content :
             await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
+
+@bot.command()
+async def add(ctx):
+    '''
+    Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
+    '''
+    if CHANNEL_ID not in user_list.keys():
+        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    try:
+        await select_date(ctx)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Processing Failed - \nError : " + str(ex))
 
 async def select_date(ctx):
     await ctx.send("Enter the date (1-31):")
@@ -235,34 +279,19 @@ async def process_date(ctx, date, month, year):
     except ValueError:
         await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
-@bot.command()
-async def add(ctx):
-    '''
-    Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
-    '''
-    if CHANNEL_ID not in user_list.keys():
-        user_list[CHANNEL_ID] = User(CHANNEL_ID)
-    try:
-        await select_date(ctx)
-
-    except Exception as ex:
-        print("Exception occurred : ")
-        print(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
-
 async def select_category(ctx, date):
-    '''
-    Function to enable category selection via a custom defined category dropdown. This function is invoked from the select_date to 
-    select the category of expense to be added. Uses the Select and View classes from discord.ui and a callback to handle the
-    interaction response
+    """
+    Function to enable category selection via a custom-defined category dropdown. This function is invoked from the 'select_date' function 
+    to select the category of expense to be added. It utilizes the Select and View classes from discord.ui and a callback to handle the 
+    interaction response.
 
-    :param ctx - Discord context window
-    :param Bot - Discord Bot object
-    :param date - date message object received from the user 
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - date (discord.Message): The date message object received from the user.
 
-    '''
+    Returns:
+    - None
+    """
 
     spend_categories = user_list[CHANNEL_ID].spend_categories
     select_options = [
@@ -292,19 +321,22 @@ async def select_category(ctx, date):
 
 async def post_category_selection(ctx, date_to_add,category):
     """
-    Receives the category selected by the user and then asks for the amount spend. If an invalid category is given,
-    an error message is displayed followed by command list. IF the category given is valid, 'post_amount_input' is
-    called next.
+    Receives the category selected by the user and then asks for the amount spent. If an invalid category is given,
+    an error message is displayed, followed by a command list. If the category given is valid, 'post_amount_input' is
+    called next to collect the amount spent.
 
-    :param message: telebot.types.Message object representing the message object
-    :param date_to_add: the date of the purchase
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - date_to_add (object): The date of the purchase.
+    - category (str): The selected category for the expense.
+
+    Returns:
+    - None
     """
     try:
         selected_category = category
         
-        await ctx.send(f'how much did you spend on {selected_category}')
+        await ctx.send(f'\nHow much did you spend on {selected_category}')
         amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
         await post_amount_input(ctx, amount.content,selected_category,date_to_add)
@@ -489,10 +521,12 @@ async def chart(ctx):
 
 def get_users():
     """
-    Reads data and returns user list as a Dict
+    Reads user data from files in a specified directory and returns it as a dictionary.
+    The function searches for files with a ".pickle" extension in the specified directory, reads each file's content, and stores it in a 
+    dictionary where the keys are the filenames (without the ".pickle" extension) and the values are the deserialized data from the files.
 
-    :return: users
-    :rtype: dict
+    Returns:
+    - users (dict): A dictionary containing user data.
     """
 
     data_dir = "discordData"
@@ -506,7 +540,6 @@ def get_users():
                 with open(abspath, "rb") as f:
                     users[u] = pickle.load(f)
     return users
-
 
 if __name__ == "__main__":
     try:
