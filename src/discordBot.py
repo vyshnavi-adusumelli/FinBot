@@ -157,7 +157,7 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            # print(user_list[chat_id].keys())
+            # print(user_list[CHANNEL_ID].keys())
             budget_value = user_list[CHANNEL_ID].monthly_budget
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
@@ -540,6 +540,218 @@ async def history(ctx):
     except Exception as ex:
         print(str(ex))
         await ctx.send(str(ex))
+
+@bot.command()
+async def edit(ctx):
+    """
+    Handles the command 'edit' and then displays a message explaining the format. The function 'edit_list2' is called next.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+
+    try:
+        if CHANNEL_ID in list(user_list.keys()):
+            await ctx.send("Please enter the date of transaction to edit(in mm-dd-yyyy format)")
+            date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+
+            await ctx.send("Please enter the value of transaction to edit")
+            value = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+
+            select_options = [
+                    discord.SelectOption(label="Food"),
+                    discord.SelectOption(label="Groceries"),
+                    discord.SelectOption(label="Utilities"),
+                    discord.SelectOption(label="Transport"),
+                    discord.SelectOption(label="Shopping"),
+                ]
+            select = Select(max_values=1,min_values=1, options=select_options)
+            async def my_callback(interaction):
+                await interaction.response.send_message(f'You chose: {select.values[0]}')
+                await asyncio.sleep(0.5)
+                await edit_list2(ctx, date.content, select.values[0], value.content)
+
+            select.callback = my_callback
+            view = View(timeout=90)
+            view.add_item(select)
+
+            await ctx.send('Please select the Category of transaction', view=view)
+        
+        else:
+            await ctx.send("No data found")
+    except Exception as ex:
+        print("Exception occurred : ")
+        await ctx.send(
+            "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)"
+        )
+
+
+async def edit_list2(ctx,date,category,value):
+    """
+    Parses the input from the user message, and finds the appropriate transaction. Asks the user whether they
+    want to update the date, value, or category of the transaction, and then passes control to edit3 function
+
+    :param message: the message sent of the transaction
+    :return: None
+    """
+    try:
+        print('edit_list2 entered')
+
+        dateFormat = "%m-%d-%Y"
+        info_date = user_list[CHANNEL_ID].validate_date_format(date, dateFormat)
+        info_category = category
+        info_value = value
+
+        if info_date is None:
+            await ctx.send("The date is incorrect")
+            return
+        select_options = [
+                    discord.SelectOption(label="Date"),
+                    discord.SelectOption(label="Category"),
+                    discord.SelectOption(label="Cost")
+                ]
+        select = Select(placeholder="What do you want to update", max_values=1,min_values=1, options=select_options)
+        async def my_callback(interaction):
+            await interaction.response.send_message(f'You chose: {select.values[0]}')
+            await asyncio.sleep(0.5)
+            await edit3(ctx, select.values[0])
+
+        for transaction in user_list[CHANNEL_ID].transactions[info_category]:
+            if transaction["Date"].date() == info_date:
+                if transaction["Value"] == float(info_value):
+                    user_list[CHANNEL_ID].store_edit_transaction(
+                        transaction, info_category
+                    )
+                    select.callback = my_callback
+                    view = View(timeout=90)
+                    view.add_item(select)
+
+                    await ctx.send('Please select an option to update', view=view)
+                    break
+        else:
+            await ctx.send("Transaction not found")
+    except Exception as ex:
+        print("Exception occurred : ")
+        logger.error(str(ex), exc_info=True)
+        await ctx.send("Oops! - \nError : " + str(ex))
+
+
+async def edit3(ctx,choice):
+    """
+    Receives the user's input corresponding to what they want to edit, and then transfers the execution to the
+    function according to the choice.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    choice1 = choice
+    if choice1 == "Date":
+        await ctx.send ("Please enter the new date (in mm-dd-yyyy format)")
+        new_date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        await edit_date(ctx,new_date)
+
+    if choice1 == "Category":
+        select_options = [
+                    discord.SelectOption(label="Food"),
+                    discord.SelectOption(label="Groceries"),
+                    discord.SelectOption(label="Utilities"),
+                    discord.SelectOption(label="Transport"),
+                    discord.SelectOption(label="Shopping"),
+                ]
+        select = Select(max_values=1,min_values=1, options=select_options)
+        async def my_callback(interaction):
+            await interaction.response.send_message(f'You chose: {select.values[0]}')
+            await asyncio.sleep(0.5)
+            await edit_cat(ctx, select.values[0])
+
+        select.callback = my_callback
+        view = View(timeout=90)
+        view.add_item(select)
+
+        await ctx.send('Please select the new Category', view=view)
+
+    if choice1 == "Cost":
+        await ctx.send ( "Please type the new cost")
+        new_cost = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        await edit_cost(ctx,new_cost)
+
+
+async def edit_date(ctx, message):
+    """
+    This function is called if the user chooses to edit the date of a transaction. This function receives the new
+    date and updates the transaction.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    print("entered edit_date")
+    new_date = message.content
+    user_date = datetime.strptime(new_date, "%m-%d-%Y")
+    if user_date is None:
+        await ctx.send ("The date is incorrect")
+        return
+    updated_transaction = user_list[CHANNEL_ID].edit_transaction_date(user_date)
+    user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+    edit_message = (
+        "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
+            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
+            format(updated_transaction["Value"], ".2f")
+        )
+    )
+    await ctx.send(edit_message)
+
+
+async def edit_cat(ctx,new_category):
+    """
+    This function is called if the user chooses to edit the category of a transaction. This function receives the new
+    category and updates the transaction.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    print("entered edit cat")
+    updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
+    if updated_transaction:
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        edit_message = "Category has been edited."
+        await ctx.send(edit_message)
+    else:
+        edit_message = "Category has not been edited successfully"
+        await ctx.send(edit_message)
+
+
+async def edit_cost(ctx,message):
+    """
+    This function is called if the user chooses to edit the amount of a transaction. This function receives the new
+    amount and updates the transaction.
+
+    :param message: telebot.types.Message object representing the message object
+    :type: object
+    :return: None
+    """
+    print("entered edit cost")
+    new_cost = message.content
+
+    new_cost = user_list[CHANNEL_ID].validate_entered_amount(new_cost)
+    if new_cost != 0:
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
+        edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
+            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
+            format(updated_transaction["Value"], ".2f"),
+        )
+        await ctx.send(edit_message)
+
+    else:
+        await ctx.send("The cost is invalid")
+        return
+
+
+
 
 @bot.command()
 async def chart(ctx):
