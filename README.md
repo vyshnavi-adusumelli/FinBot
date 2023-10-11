@@ -11,7 +11,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/secheaper/slashbot)
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
-[![codecov](https://codecov.io/gh/secheaper/slashbot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://codecov.io/gh/secheaper/slashbot)
+[![codecov](https://app.codecov.io/gh/vyshnavi-adusumelli/FinBot/tree/main)](https://app.codecov.io/gh/vyshnavi-adusumelli/FinBot/tree/main)
 [![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
 ![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
 ![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
