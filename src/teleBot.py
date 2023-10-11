@@ -21,9 +21,11 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-sys.path.append("C:/NCSU/Sem 1/SE/Project 3/slashbot/")
+# sys.path.append("../slashbot/")
 try:
-    from teleUser import User
+    from src import teleUser
+    import src.teleUser as teleUser
+    from src.teleUser import User
 except:
    from teleUser import User
 
