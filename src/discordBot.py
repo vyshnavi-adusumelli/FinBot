@@ -323,16 +323,11 @@ async def select_category(ctx, date):
             )
 
         await post_category_selection(ctx, date, select.values[0])
-   
-    async def timeout():
-        await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
-        await menu(ctx)
 
     select.callback = my_callback
     
     view = View(timeout=15)
     view.add_item(select)
-    view.on_timeout = timeout
   
     await ctx.send('Please select a category', view=view)
 
