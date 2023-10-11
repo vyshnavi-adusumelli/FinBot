@@ -102,8 +102,9 @@ async def display(ctx):
             await ctx.send('Please select a category to see the total expense', view=view)
 
         except Exception as ex:
-            print(f"Exception occurred : {str(ex)}")
-            await ctx.send("Oops! - \nError : " + str(ex))
+            print("Exception occurred : ")
+            print(str(ex), exc_info=True)
+            await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def display_total(ctx, sel_category):
@@ -175,8 +176,9 @@ async def display_total(ctx, sel_category):
             total_spendings += "Budget for the month {}".format(str(budget_value))
             await ctx.send(total_spendings)
     except Exception as ex:
-        print(f"Exception occurred : {str(ex)}")
-        await ctx.send("Oops, error-" + str(ex))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def budget(ctx):
@@ -284,8 +286,7 @@ async def add(ctx):
         await select_date(ctx)
 
     except Exception as ex:
-        print("Exception occurred : ")
-        print(str(ex), exc_info=True)
+        print("exception occurred:"+str(e))
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 async def select_category(ctx, date):
@@ -350,7 +351,9 @@ async def post_category_selection(ctx, date_to_add,category):
 
         await post_amount_input(ctx, amount.content,selected_category,date_to_add)
     except Exception as ex:
-        await ctx.send(f"{ex}")
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
         
 
 async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
@@ -390,7 +393,7 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     except Exception as ex:
 
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
+        print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
@@ -425,7 +428,8 @@ async def delete(ctx):
             await ctx.send(delete_history_text)
 
     except Exception as ex:
-        print("exception occurred:"+str(e))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
@@ -529,8 +533,9 @@ async def history(ctx):
         await ctx.send(spend_total_str)
 
     except Exception as ex:
-        print(str(ex))
-        await ctx.send(str(ex))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def edit(ctx):
@@ -573,9 +578,8 @@ async def edit(ctx):
             await ctx.send("No data found")
     except Exception as ex:
         print("Exception occurred : ")
-        await ctx.send(
-            "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)"
-        )
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def edit_list2(ctx,date,category,value):
@@ -623,8 +627,9 @@ async def edit_list2(ctx,date,category,value):
         else:
             await ctx.send("Transaction not found")
     except Exception as ex:
-        print("exception occurred:"+str(e))
-        await ctx.send("Oops! - \nError : " + str(ex))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def edit3(ctx,choice):
