@@ -3,7 +3,6 @@ from discord.ext import commands, tasks
 import discord
 from discordUser import User
 from discord.ui import Select, View
-import logging
 import os
 from calendar import monthrange
 import pathlib
@@ -16,10 +15,8 @@ from tabulate import tabulate
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
 
-logger = logging.getLogger()
 bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
-logger = logging.getLogger()
 
 @bot.event
 async def on_ready():
@@ -428,8 +425,7 @@ async def delete(ctx):
             await ctx.send(delete_history_text)
 
     except Exception as ex:
-        print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
+        print("exception occurred:"+str(e))
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
@@ -627,8 +623,7 @@ async def edit_list2(ctx,date,category,value):
         else:
             await ctx.send("Transaction not found")
     except Exception as ex:
-        print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
+        print("exception occurred:"+str(e))
         await ctx.send("Oops! - \nError : " + str(ex))
 
 
