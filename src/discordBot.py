@@ -155,7 +155,6 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            # print(user_list[CHANNEL_ID].keys())
             budget_value = user_list[CHANNEL_ID].monthly_budget
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
@@ -367,7 +366,6 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     :return: None
     """
     try:
-        print(amount_entered,selected_category,date_to_add)
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
 
@@ -454,12 +452,9 @@ async def process_delete_argument(ctx, delete_type):
     else:
         # try and parse as Date-Month-Year
         if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None:
-            print("date_format check")
             date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
-            print(date)
         # try and parse as Month-Year
         elif user_list[CHANNEL_ID].validate_date_format(text, monthFormat) is not None:
-            print("month_format check")
             date = user_list[CHANNEL_ID].validate_date_format(text, monthFormat)
             is_month = True
 
@@ -591,8 +586,6 @@ async def edit_list2(ctx,date,category,value):
     :return: None
     """
     try:
-        print('edit_list2 entered')
-
         dateFormat = "%m-%d-%Y"
         info_date = user_list[CHANNEL_ID].validate_date_format(date, dateFormat)
         info_category = category
@@ -682,7 +675,6 @@ async def edit_date(ctx, message):
     :type: object
     :return: None
     """
-    print("entered edit_date")
     new_date = message.content
     user_date = datetime.strptime(new_date, "%m-%d-%Y")
     if user_date is None:
@@ -708,7 +700,6 @@ async def edit_cat(ctx,new_category):
     :type: object
     :return: None
     """
-    print("entered edit cat")
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
     if updated_transaction:
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
@@ -728,7 +719,6 @@ async def edit_cost(ctx,message):
     :type: object
     :return: None
     """
-    print("entered edit cost")
     new_cost = message.content
 
     new_cost = user_list[CHANNEL_ID].validate_entered_amount(new_cost)
