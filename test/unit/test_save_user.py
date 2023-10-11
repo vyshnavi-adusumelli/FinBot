@@ -37,7 +37,7 @@ class TestSaveUser(BaseCase):
         # with no history, call save_user
         self.user.save_user(1)
         # assert the pickle exists
-        abspath = pathlib.Path("data/1.pickle").absolute()
+        abspath = pathlib.Path("teleData/1.pickle").absolute()
         assert os.path.exists(abspath)
 
         with open(abspath, "rb") as f:
@@ -62,7 +62,7 @@ class TestSaveUser(BaseCase):
         # with history, call save_user
         self.user.save_user(1)
         # assert the pickle exists
-        abspath = pathlib.Path("data/1.pickle").absolute()
+        abspath = pathlib.Path("teleData/1.pickle").absolute()
         assert os.path.exists(abspath)
         with open(abspath, "rb") as f:
             new_user = pickle.load(f)
