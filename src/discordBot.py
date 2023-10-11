@@ -1,6 +1,6 @@
 import asyncio
-from discord.ext import commands, tasks
 import discord
+from discord.ext import commands, tasks
 from discordUser import User
 from discord.ui import Select, View
 import logging

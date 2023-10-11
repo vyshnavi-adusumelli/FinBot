@@ -2,8 +2,12 @@ import os.path
 import pathlib
 import unittest
 
-from src.teleUser import User
-
+try:
+    from src import teleUser
+    import src.teleUser as teleUser
+    from src.teleUser import User
+except:
+    from teleUser import User
 
 class BaseCase(unittest.TestCase):
     """
