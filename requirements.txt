@@ -3,3 +3,4 @@ pandas
 matplotlib==3.4.3
 tabulate
 discord.py
+
