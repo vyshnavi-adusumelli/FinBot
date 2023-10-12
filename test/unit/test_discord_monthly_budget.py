@@ -2,10 +2,10 @@
 Tests the add_monthly_budget_method
 """
 import unittest
-from BaseCase import BaseCase
+from discord_BaseCase import discord_BaseCase
 
 
-class TestAddMonthlyBudget(BaseCase):
+class TestAddMonthlyBudget(discord_BaseCase):
     """
     Unit test for add monthly budget
     """
@@ -16,7 +16,7 @@ class TestAddMonthlyBudget(BaseCase):
         """
         assert self.user.monthly_budget == 0
         amount = 10.00
-        self.user.add_monthly_budget(amount, 1)
+        self.user.add_monthly_budget(amount, 2)
         assert self.user.monthly_budget == amount
 
     def add_monthly_budget_invalid(self):
@@ -26,10 +26,10 @@ class TestAddMonthlyBudget(BaseCase):
         """
         assert self.user.monthly_budget == 0
         amount_valid = 10.00
-        self.user.add_monthly_budget(amount_valid, 1)
+        self.user.add_monthly_budget(amount_valid, 2)
         assert self.user.monthly_budget == amount
         amount = 0.00
-        self.user.add_monthly_budget(amount, 1)
+        self.user.add_monthly_budget(amount, 2)
         assert self.user.monthly_budget == amount_valid
 
 
