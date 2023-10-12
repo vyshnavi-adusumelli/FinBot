@@ -1,9 +1,9 @@
-
-from BaseCase import BaseCase
+import unittest
+from discord_BaseCase import discord_BaseCase
 from datetime import datetime, timedelta
 
 
-class TestAddUserRecord(BaseCase):
+class TestAddUserRecord(discord_BaseCase):
     """
         Tests the edit series of functions in bot.py
     """
@@ -18,7 +18,7 @@ class TestAddUserRecord(BaseCase):
         user_date = datetime.today()
         user_category = "Food"
         user_value = 10.00
-        userid = "1"
+        userid = "2"
         self.user.add_transaction(user_date, user_category, user_value, userid)
         transaction = {"Date": user_date, "Value": user_value}
         self.user.store_edit_transaction(transaction, user_category)
@@ -31,7 +31,7 @@ class TestAddUserRecord(BaseCase):
         edit_date = datetime.today() - timedelta(days=1)
         user_category = "Groceries"
         user_value = 10.00
-        userid = "1"
+        userid = "2"
         self.user.add_transaction(user_date, user_category, user_value, userid)
         transaction = {"Date": user_date, "Value": user_value}
         self.user.store_edit_transaction(transaction, user_category)
@@ -44,7 +44,7 @@ class TestAddUserRecord(BaseCase):
         user_category = "Utilities"
         edit_category = "Transport"
         user_value = 10.00
-        userid = "1"
+        userid = "2"
         self.user.add_transaction(user_date, user_category, user_value, userid)
         transaction = {"Date": user_date, "Value": user_value}
         self.user.store_edit_transaction(transaction, user_category)
@@ -57,7 +57,7 @@ class TestAddUserRecord(BaseCase):
         user_category = "Shopping"
         user_value = 10.00
         edit_value = 20.00
-        userid = "1"
+        userid = "2"
         self.user.add_transaction(user_date, user_category, user_value, userid)
         transaction = {"Date": user_date, "Value": user_value}
         self.user.store_edit_transaction(transaction, user_category)
