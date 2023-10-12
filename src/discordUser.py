@@ -1,15 +1,12 @@
 """
 File contains functions that stores and retrieves data from the .pickle file and also handles validations
 """
-import logging
 import pathlib
 import pickle
 import re
 from datetime import datetime, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
-
-logger = logging.getLogger()
 
 
 class User:
@@ -56,7 +53,8 @@ class User:
                 pickle.dump(self, f)
 
         except Exception as e:
-            logger.error(str(e), exc_info=True)
+            print("exception occurred:"+str(e))
+            
 
     def validate_entered_amount(self, amount_entered):
         """
@@ -94,7 +92,7 @@ class User:
             self.save_user(userid)
 
         except Exception as e:
-            logger.error(str(e), exc_info=True)
+            print("exception occurred:"+str(e))
 
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
@@ -111,7 +109,7 @@ class User:
             self.edit_category = edit_category
 
         except Exception as e:
-            logger.error(str(e), exc_info=True)
+            print("exception occurred:"+str(e))
 
     def edit_transaction_date(self, new_date):
         """
@@ -177,8 +175,7 @@ class User:
                     try:
                         self.transactions[category].remove(record)
                     except Exception as e:
-                        print("Exception occurred : ")
-                        logger.error(str(e), exc_info=True)
+                        print("exception occurred:"+str(e))
         else:
             self.transactions = {}
             for category in self.spend_categories:
@@ -283,7 +280,7 @@ class User:
                 self.save_user(userid)
 
         except Exception as e:
-            logger.error(str(e), exc_info=True)
+            print("exception occurred:"+str(e))
 
     def monthly_total(self):
         """
@@ -412,7 +409,7 @@ class User:
             self.save_user(userid)
 
         except Exception as e:
-            logger.error(str(e), exc_info=True)
+            print("exception occurred:"+str(e))
 
     def delete_category(self, category, userid):
         """
@@ -431,4 +428,4 @@ class User:
             self.save_user(userid)
 
         except Exception as e:
-            logger.error(str(e), exc_info=True)
+            print("exception occurred:"+str(e))

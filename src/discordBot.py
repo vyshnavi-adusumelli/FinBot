@@ -3,7 +3,6 @@ from discord.ext import commands, tasks
 import discord
 from discordUser import User
 from discord.ui import Select, View
-import logging
 import os
 from calendar import monthrange
 import pathlib
@@ -16,10 +15,8 @@ from tabulate import tabulate
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
 
-logger = logging.getLogger()
 bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
-logger = logging.getLogger()
 
 @bot.event
 async def on_ready():
@@ -105,8 +102,9 @@ async def display(ctx):
             await ctx.send('Please select a category to see the total expense', view=view)
 
         except Exception as ex:
-            print(f"Exception occurred : {str(ex)}")
-            await ctx.send("Oops! - \nError : " + str(ex))
+            print("Exception occurred : ")
+            print(str(ex), exc_info=True)
+            await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def display_total(ctx, sel_category):
@@ -157,7 +155,6 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            # print(user_list[CHANNEL_ID].keys())
             budget_value = user_list[CHANNEL_ID].monthly_budget
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
@@ -178,8 +175,9 @@ async def display_total(ctx, sel_category):
             total_spendings += "Budget for the month {}".format(str(budget_value))
             await ctx.send(total_spendings)
     except Exception as ex:
-        print(f"Exception occurred : {str(ex)}")
-        await ctx.send("Oops, error-" + str(ex))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def budget(ctx):
@@ -287,8 +285,7 @@ async def add(ctx):
         await select_date(ctx)
 
     except Exception as ex:
-        print("Exception occurred : ")
-        print(str(ex), exc_info=True)
+        print("exception occurred:"+str(e))
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 async def select_category(ctx, date):
@@ -323,16 +320,11 @@ async def select_category(ctx, date):
             )
 
         await post_category_selection(ctx, date, select.values[0])
-   
-    async def timeout():
-        await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
-        await menu(ctx)
 
     select.callback = my_callback
     
     view = View(timeout=15)
     view.add_item(select)
-    view.on_timeout = timeout
   
     await ctx.send('Please select a category', view=view)
 
@@ -358,7 +350,9 @@ async def post_category_selection(ctx, date_to_add,category):
 
         await post_amount_input(ctx, amount.content,selected_category,date_to_add)
     except Exception as ex:
-        await ctx.send(f"{ex}")
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
         
 
 async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
@@ -372,7 +366,6 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     :return: None
     """
     try:
-        print(amount_entered,selected_category,date_to_add)
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
 
@@ -398,7 +391,7 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     except Exception as ex:
 
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
+        print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
@@ -434,7 +427,7 @@ async def delete(ctx):
 
     except Exception as ex:
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
+        print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
@@ -459,12 +452,9 @@ async def process_delete_argument(ctx, delete_type):
     else:
         # try and parse as Date-Month-Year
         if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None:
-            print("date_format check")
             date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
-            print(date)
         # try and parse as Month-Year
         elif user_list[CHANNEL_ID].validate_date_format(text, monthFormat) is not None:
-            print("month_format check")
             date = user_list[CHANNEL_ID].validate_date_format(text, monthFormat)
             is_month = True
 
@@ -538,8 +528,9 @@ async def history(ctx):
         await ctx.send(spend_total_str)
 
     except Exception as ex:
-        print(str(ex))
-        await ctx.send(str(ex))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def edit(ctx):
@@ -582,9 +573,8 @@ async def edit(ctx):
             await ctx.send("No data found")
     except Exception as ex:
         print("Exception occurred : ")
-        await ctx.send(
-            "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)"
-        )
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def edit_list2(ctx,date,category,value):
@@ -596,8 +586,6 @@ async def edit_list2(ctx,date,category,value):
     :return: None
     """
     try:
-        print('edit_list2 entered')
-
         dateFormat = "%m-%d-%Y"
         info_date = user_list[CHANNEL_ID].validate_date_format(date, dateFormat)
         info_category = category
@@ -633,8 +621,8 @@ async def edit_list2(ctx,date,category,value):
             await ctx.send("Transaction not found")
     except Exception as ex:
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
-        await ctx.send("Oops! - \nError : " + str(ex))
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def edit3(ctx,choice):
@@ -687,7 +675,6 @@ async def edit_date(ctx, message):
     :type: object
     :return: None
     """
-    print("entered edit_date")
     new_date = message.content
     user_date = datetime.strptime(new_date, "%m-%d-%Y")
     if user_date is None:
@@ -713,7 +700,6 @@ async def edit_cat(ctx,new_category):
     :type: object
     :return: None
     """
-    print("entered edit cat")
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
     if updated_transaction:
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
@@ -733,7 +719,6 @@ async def edit_cost(ctx,message):
     :type: object
     :return: None
     """
-    print("entered edit cost")
     new_cost = message.content
 
     new_cost = user_list[CHANNEL_ID].validate_entered_amount(new_cost)
