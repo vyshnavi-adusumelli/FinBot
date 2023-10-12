@@ -1,7 +1,6 @@
 """
 Tests the add_monthly_budget_method
 """
-import unittest
 from discord_BaseCase import discord_BaseCase
 
 
@@ -33,5 +32,3 @@ class TestAddMonthlyBudget(discord_BaseCase):
         assert self.user.monthly_budget == amount_valid
 
 
-if __name__ == '__main__':
-    unittest.main()

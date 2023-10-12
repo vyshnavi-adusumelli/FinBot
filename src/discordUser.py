@@ -248,7 +248,7 @@ class User:
         for category in transaction:
             for record in transaction[category]:
                 final_str += (
-                    f'\n {category}, {record["Date"].date()}, {record["Value"]:}\n'
+                    f'{category}, {record["Date"].date()}, {record["Value"]:}\n'
                 )
 
         return final_str
