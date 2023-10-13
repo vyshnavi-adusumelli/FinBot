@@ -12,6 +12,7 @@ import csv
 import io
 from datetime import datetime
 from tabulate import tabulate
+import sys
 import telebot
 from telebot import types
 import smtplib
@@ -22,9 +23,11 @@ from email import encoders
 
 # sys.path.append("../slashbot/")
 try:
+    from src import teleUser
+    import src.teleUser as teleUser
     from src.teleUser import User
-except Exception:
-    from teleUser import User
+except:
+   from teleUser import User
 
 api_token = os.environ["API_TOKEN"]
 commands = {
@@ -459,7 +462,7 @@ def acceptEmailId(message):
                 if count == 0:
                     raise Exception("Sorry! No spending records found!")
 
-                with open('history.csv', 'w', newline = '', encoding='utf-8') as file:
+                with open('history.csv', 'w', newline = '') as file:
                     writer = csv.writer(file)
                     writer.writerows(table)
                 # s = io.StringIO()
