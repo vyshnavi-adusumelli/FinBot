@@ -72,15 +72,8 @@ def start_and_menu_command(m):
     """
     chat_id = m.chat.id
     print("*********************CHAT ID***************************", chat_id)
-    text_intro = (
-        "Welcome to SlashBot - a simple solution to track your expenses! \nHere is a list of available "
-        "commands, please enter a command of your choice so that I can assist you further: \n\n "
-    )
-    for (
-        c
-    ) in (
-        commands
-    ):  # generate help text out of the commands dictionary defined at the top
+    text_intro = ("Welcome to SlashBot - a simple solution to track your expenses! \nHere is a list of available commands, please enter a command of your choice so that I can assist you further: \n\n ")
+    for (c) in (commands):  # generate help text out of the commands dictionary defined at the top
         text_intro += "/" + c + ": "
         text_intro += commands[c] + "\n\n"
     bot.send_message(chat_id, text_intro)
@@ -97,16 +90,9 @@ def command_budget(message):
     """
     chat_id = str(message.chat.id)
     option.pop(chat_id, None)
-    if chat_id not in user_list.keys():
-        user_list[chat_id] = User(chat_id)
-    bot.send_message(
-        chat_id,
-        "Your current monthly budget is {}".format(user_list[chat_id].monthly_budget),
-    )
-    message = bot.send_message(
-        chat_id,
-        "Enter an amount to update your monthly budget. \n(Enter numeric values only)",
-    )
+    if chat_id not in user_list.keys():user_list[chat_id] = User(chat_id)
+    bot.send_message(chat_id, "Your current monthly budget is {}".format(user_list[chat_id].monthly_budget))
+    message = bot.send_message(chat_id, "Enter an amount to update your monthly budget. \n(Enter numeric values only)")
     bot.register_next_step_handler(message, post_budget_input)
 
 
@@ -123,21 +109,12 @@ def post_budget_input(message):
     try:
         chat_id = str(message.chat.id)
         amount_entered = message.text
-        amount_value = user_list[chat_id].validate_entered_amount(
-            amount_entered
-        )  # validate
-        if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Budget amount has to be a positive number.")
+        amount_value = user_list[chat_id].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  raise Exception("Budget amount has to be a positive number.") # cannot be $0 spending
         user_list[chat_id].add_monthly_budget(amount_value, chat_id)
-        bot.send_message(
-            chat_id,
-            "The budget for this month has been set as ${}".format(
-                format(amount_value, ".2f")
-            ),
-        )
+        bot.send_message(chat_id,"The budget for this month has been set as ${}".format(format(amount_value, ".2f")))
 
-    except Exception as ex:
-        bot.reply_to(message, "Oh no. " + str(ex))
+    except Exception as ex: bot.reply_to(message, "Oh no. " + str(ex))
 
 
 @bot.message_handler(commands=["add"])
@@ -153,20 +130,17 @@ def command_add(message):
     """
     chat_id = str(message.chat.id)
     option.pop(chat_id, None)
-    if chat_id not in user_list.keys():
-        user_list[chat_id] = User(chat_id)
+    if chat_id not in user_list.keys(): user_list[chat_id] = User(chat_id)
     user = user_list[chat_id]
     try:
         markup = get_calendar_buttons(user)
         bot.send_message(chat_id, "Click the date of purchase:", reply_markup=markup)
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - \nError : " + str(ex))
 
 
-def is_add_callback(query):
-    return query.data != "none" and "/" not in query.data
+def is_add_callback(query): return query.data != "none" and "/" not in query.data
 
 
 @bot.callback_query_handler(func=is_add_callback, filter=None)
@@ -181,38 +155,27 @@ def post_date_selection(message):
     option.pop(chat_id, None)
 
     try:
-        if chat_id not in user_list.keys():
-            user_list[chat_id] = User(chat_id)
+        if chat_id not in user_list.keys(): user_list[chat_id] = User(chat_id)
         user = user_list[chat_id]
         # if they want to go back/forward a month
         date_to_add = handler_callback(message.data, user)
         if date_to_add is None:
             # just edit the calendar
-            bot.edit_message_reply_markup(
-                chat_id=message.from_user.id,
-                message_id=message.message.message_id,
-                reply_markup=get_calendar_buttons(user),
-            )
+            bot.edit_message_reply_markup(chat_id=message.from_user.id, message_id=message.message.message_id, reply_markup=get_calendar_buttons(user))
             return
         if date_to_add == -1:
             # invalid date
-            fmt_min, fmt_max = user.min_date.strftime(
-                "%m/%d/%Y"
-            ), user.max_date.strftime("%m/%d/%Y")
-            bot.send_message(
-                chat_id, "Enter a date between {} and {}".format(fmt_min, fmt_max)
-            )
+            fmt_min, fmt_max = user.min_date.strftime("%m/%d/%Y"), user.max_date.strftime("%m/%d/%Y")
+            bot.send_message(chat_id, "Enter a date between {} and {}".format(fmt_min, fmt_max))
             return
         spend_categories = user_list[chat_id].spend_categories
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.row_width = 2
-        for c in spend_categories:
-            markup.add(c)
+        for c in spend_categories:markup.add(c)
         msg = bot.reply_to(message.message, "Select Category", reply_markup=markup)
         bot.register_next_step_handler(msg, post_category_selection, date_to_add)
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message.message, "Processing Failed - \nError : " + str(ex))
 
@@ -233,29 +196,16 @@ def post_category_selection(message, date_to_add):
         selected_category = message.text
         spend_categories = user_list[chat_id].spend_categories
         if selected_category not in spend_categories:
-            bot.send_message(
-                chat_id, "Invalid", reply_markup=types.ReplyKeyboardRemove()
-            )
-            raise Exception(
-                'Sorry I don\'t recognise this category "{}"!'.format(selected_category)
-            )
+            bot.send_message(chat_id, "Invalid", reply_markup=types.ReplyKeyboardRemove())
+            raise Exception('Sorry I don\'t recognise this category "{}"!'.format(selected_category))
 
         option[chat_id] = selected_category
-        message = bot.send_message(
-            chat_id,
-            "How much did you spend on {}? \n(Enter numeric values only)".format(
-                str(option[chat_id])
-            ),
-        )
+        message = bot.send_message(chat_id,"How much did you spend on {}? \n(Enter numeric values only)".format(str(option[chat_id])))
         bot.register_next_step_handler(message, post_amount_input, date_to_add)
     except Exception as ex:
         bot.reply_to(message, "Oh no! " + str(ex))
         display_text = ""
-        for (
-            c
-        ) in (
-            commands
-        ):  # generate help text out of the commands dictionary defined at the top
+        for (c) in (commands):  # generate help text out of the commands dictionary defined at the top
             display_text += "/" + c + ": "
             display_text += commands[c] + "\n"
         bot.send_message(chat_id, "Please select a menu option from below:")
@@ -275,47 +225,19 @@ def post_amount_input(message, date_of_entry):
     try:
         chat_id = str(message.chat.id)
         amount_entered = message.text
-        amount_value = user_list[chat_id].validate_entered_amount(
-            amount_entered
-        )  # validate
-        if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Spent amount has to be a non-zero number.")
+        amount_value = user_list[chat_id].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  raise Exception("Spent amount has to be a non-zero number.") # cannot be $0 spending
 
-        date_str, category_str, amount_str = (
-            date_of_entry.strftime("%m/%d/%Y %H:%M:%S"),
-            str(option[chat_id]),
-            format(amount_value, ".2f"),
-        )
-        user_list[chat_id].add_transaction(
-            date_of_entry, option[chat_id], amount_value, chat_id
-        )
+        date_str, category_str, amount_str = (date_of_entry.strftime("%m/%d/%Y %H:%M:%S"),str(option[chat_id]),format(amount_value, ".2f"))
+        user_list[chat_id].add_transaction(date_of_entry, option[chat_id], amount_value, chat_id)
         total_value = user_list[chat_id].monthly_total()
-        add_message = "The following expenditure has been recorded: You have spent ${} for {} on {}".format(
-            amount_str, category_str, date_str
-        )
 
         if user_list[chat_id].monthly_budget > 0:
-            if total_value > user_list[chat_id].monthly_budget:
-                bot.send_message(
-                    chat_id,
-                    text="*You have gone over the monthly budget*",
-                    parse_mode="Markdown",
-                )
-            elif total_value == user_list[chat_id].monthly_budget:
-                bot.send_message(
-                    chat_id,
-                    text="*You have exhausted your monthly budget. You can check/download history*",
-                    parse_mode="Markdown",
-                )
-            elif total_value >= 0.8 * user_list[chat_id].monthly_budget:
-                bot.send_message(
-                    chat_id,
-                    text="*You have used 80% of the monthly budget.*",
-                    parse_mode="Markdown",
-                )
-        bot.send_message(chat_id, add_message)
+            if total_value > user_list[chat_id].monthly_budget: bot.send_message(chat_id,text="*You have gone over the monthly budget*",parse_mode="Markdown")
+            elif total_value == user_list[chat_id].monthly_budget: bot.send_message(chat_id,text="*You have exhausted your monthly budget. You can check/download history*",parse_mode="Markdown")
+            elif total_value >= 0.8 * user_list[chat_id].monthly_budget: bot.send_message(chat_id,text="*You have used 80% of the monthly budget.*", parse_mode="Markdown")
+        bot.send_message(chat_id, "The following expenditure has been recorded: You have spent ${} for {} on {}".format(amount_str, category_str, date_str))
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - \nError : " + str(ex))
 
@@ -331,13 +253,10 @@ def show_history(message):
     """
     try:
         chat_id = str(message.chat.id)
-        spend_total_str = ""
         count = 0
         table = [["Category", "Date", "Amount in $", "Amount in Rs."]]
-        if chat_id not in list(user_list.keys()):
-            raise Exception("Sorry! No spending records found!")
-        if len(user_list[chat_id].transactions) == 0:
-            raise Exception("Sorry! No spending records found!")
+        if chat_id not in list(user_list.keys()): raise Exception("Sorry! No spending records found!")
+        if len(user_list[chat_id].transactions) == 0: raise Exception("Sorry! No spending records found!")
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
@@ -345,8 +264,7 @@ def show_history(message):
                     date = transaction["Date"].strftime("%m/%d/%y")
                     value = format(transaction["Value"], ".2f")
                     table.append([date, category, "$ " + value])
-            if count == 0:
-                raise Exception("Sorry! No spending records found!")
+            if count == 0: raise Exception("Sorry! No spending records found!")
             spend_total_str="<pre>"+ tabulate(table, headers='firstrow')+"</pre>"
             bot.send_message(chat_id, spend_total_str, parse_mode="HTML")
 
@@ -368,10 +286,8 @@ def download_history(message):
         chat_id = str(message.chat.id)
         count = 0
         table = [["Category", "Date", "Amount in $"]]
-        if chat_id not in list(user_list.keys()):
-            raise Exception("Sorry! No spending records found!")
-        if len(user_list[chat_id].transactions) == 0:
-            raise Exception("Sorry! No spending records found!")
+        if chat_id not in list(user_list.keys()): raise Exception("Sorry! No spending records found!")
+        if len(user_list[chat_id].transactions) == 0: raise Exception("Sorry! No spending records found!")
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
@@ -379,8 +295,7 @@ def download_history(message):
                     date = transaction["Date"].strftime("%m/%d/%y")
                     value = format(transaction["Value"], ".2f")
                     table.append([date, category, "$"+value])
-            if count == 0:
-                raise Exception("Sorry! No spending records found!")
+            if count == 0: raise Exception("Sorry! No spending records found!")
 
             s = io.StringIO()
             csv.writer(s).writerows(table)
@@ -409,10 +324,8 @@ def send_email(message):
         chat_id = str(message.chat.id)
         count = 0
         table = [["Category", "Date", "Amount in $"]]
-        if chat_id not in list(user_list.keys()):
-            raise Exception("Sorry! No spending records found!")
-        if len(user_list[chat_id].transactions) == 0:
-            raise Exception("Sorry! No spending records found!")
+        if chat_id not in list(user_list.keys()): raise Exception("Sorry! No spending records found!")
+        if len(user_list[chat_id].transactions) == 0: raise Exception("Sorry! No spending records found!")
         else:
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
@@ -420,8 +333,7 @@ def send_email(message):
                     date = transaction["Date"].strftime("%m/%d/%y")
                     value = format(transaction["Value"], ".2f")
                     table.append([date, category, "$"+value])
-            if count == 0:
-                raise Exception("Sorry! No spending records found!")
+            if count == 0: raise Exception("Sorry! No spending records found!")
 
             s = io.StringIO()
             csv.writer(s).writerows(table)
@@ -448,10 +360,8 @@ def acceptEmailId(message):
             chat_id = str(message.chat.id)
             count = 0
             table = [["Category", "Date", "Amount in $"]]
-            if chat_id not in list(user_list.keys()):
-                raise Exception("Sorry! No spending records found!")
-            if len(user_list[chat_id].transactions) == 0:
-                raise Exception("Sorry! No spending records found!")
+            if chat_id not in list(user_list.keys()): raise Exception("Sorry! No spending records found!")
+            if len(user_list[chat_id].transactions) == 0: raise Exception("Sorry! No spending records found!")
             else:
                 for category in user_list[chat_id].transactions.keys():
                     for transaction in user_list[chat_id].transactions[category]:
@@ -459,8 +369,7 @@ def acceptEmailId(message):
                         date = transaction["Date"].strftime("%m/%d/%y")
                         value = format(transaction["Value"], ".2f")
                         table.append([date, category, "$"+value])
-                if count == 0:
-                    raise Exception("Sorry! No spending records found!")
+                if count == 0: raise Exception("Sorry! No spending records found!")
 
                 with open('history.csv', 'w', newline = '') as file:
                     writer = csv.writer(file)
@@ -476,10 +385,7 @@ def acceptEmailId(message):
                 # writer.writerow(u"date", u"category", u"cost")
 
                 # bot.send_document(chat_id, buf)
-                mail_content = '''Hello,
-                This email has an attached copy of your expenditure history.
-                Thank you!
-                '''
+                mail_content = '''Hello, This email has an attached copy of your expenditure history. Thank you!'''
                 #The mail addresses and password
                 sender_address = 'secheaper@gmail.com'
                 sender_pass = 'csc510se'
@@ -514,8 +420,7 @@ def acceptEmailId(message):
         except Exception as ex:
             logger.error(str(ex), exc_info=True)
             bot.reply_to(message, str(ex))
-    else:
-        bot.send_message(message.chat.id, 'incorrect email')
+    else: bot.send_message(message.chat.id, 'incorrect email')
         
 
 
@@ -531,25 +436,16 @@ def command_display(message):
     :return: None
     """
     chat_id = str(message.chat.id)
-    if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
-        bot.send_message(
-            chat_id, "Oops! Looks like you do not have any spending records!"
-        )
+    if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0: bot.send_message(chat_id, "Oops! Looks like you do not have any spending records!")
     else:
         try:
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.row_width = 2
-            for mode in user_list[chat_id].spend_display_option:
-                markup.add(mode)
-            msg = bot.reply_to(
-                message,
-                "Please select a category to see the total expense",
-                reply_markup=markup,
-            )
+            for mode in user_list[chat_id].spend_display_option: markup.add(mode)
+            msg = bot.reply_to(message, "Please select a category to see the total expense", reply_markup=markup,)
             bot.register_next_step_handler(msg, display_total)
 
         except Exception as ex:
-            print("Exception occurred : ")
             logger.error(str(ex), exc_info=True)
             bot.reply_to(message, "Oops! - \nError : " + str(ex))
 
@@ -567,13 +463,9 @@ def display_total(message):
         chat_id = str(message.chat.id)
         day_week_month = message.text
 
-        if day_week_month not in user_list[chat_id].spend_display_option:
-            raise Exception(
-                'Sorry I can\'t show spendings for "{}"!'.format(day_week_month)
-            )
+        if day_week_month not in user_list[chat_id].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
 
-        if len(user_list[chat_id].transactions) == 0:
-            raise Exception("Oops! Looks like you do not have any spending records!")
+        if len(user_list[chat_id].transactions) == 0: raise Exception("Oops! Looks like you do not have any spending records!")
 
         bot.send_message(chat_id, "Hold on! Calculating...")
 
@@ -584,15 +476,9 @@ def display_total(message):
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%d") == query.strftime("%d"):
-                        query_result += "Category {} Date {} Value {:.2f} \n".format(
-                            category,
-                            transaction["Date"].strftime(dateFormat),
-                            transaction["Value"],
-                        )
+                        query_result += "Category {} Date {} Value {:.2f} \n".format(category,transaction["Date"].strftime(dateFormat),transaction["Value"])
                         total_value += transaction["Value"]
-            total_spendings = "Here are your total spendings for the date {} \n".format(
-                datetime.today().strftime("%m/%d/%Y")
-            )
+            total_spendings = "Here are your total spendings for the date {} \n".format(datetime.today().strftime("%m/%d/%Y"))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}".format(total_value)
             bot.send_message(chat_id, total_spendings)
@@ -605,23 +491,14 @@ def display_total(message):
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%m") == query.strftime("%m"):
-                        query_result += "Category {} Date {} Value {:.2f} \n".format(
-                            category,
-                            transaction["Date"].strftime(dateFormat),
-                            transaction["Value"],
-                        )
+                        query_result += "Category {} Date {} Value {:.2f} \n".format(category,transaction["Date"].strftime(dateFormat),transaction["Value"])
                         total_value += transaction["Value"]
-            total_spendings = (
-                "Here are your total spendings for the Month {} \n".format(
-                    datetime.today().strftime("%B")
-                )
-            )
+            total_spendings = ("Here are your total spendings for the Month {} \n".format(datetime.today().strftime("%B")))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}\n".format(total_value)
             total_spendings += "Budget for the month {}".format(str(budget_value))
             bot.send_message(chat_id, total_spendings)
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, str(ex))
 
@@ -639,22 +516,13 @@ def edit1(message):
 
     try:
         if chat_id in list(user_list.keys()):
-            msg = bot.reply_to(
-                message,
-                "Please enter the date (in mm/dd/yyyy format), category and "
-                "value of the transaction you made (Eg: 01/03/2021,Transport,25)",
-            )
+            msg = bot.reply_to(message,"Please enter the date (in mm/dd/yyyy format), category and value of the transaction you made (Eg: 01/03/2021,Transport,25)")
             bot.register_next_step_handler(msg, edit_list2)
 
-        else:
-            bot.send_message(chat_id, "No data found")
+        else:bot.send_message(chat_id, "No data found")
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
-        bot.reply_to(
-            message,
-            "Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)",
-        )
+        bot.reply_to(message,"Processing Failed - \nError : Incorrect format - (Eg: 01/03/2021,Transport,25)")
 
 
 def edit_list2(message):
@@ -682,24 +550,17 @@ def edit_list2(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.row_width = 2
         choices = ["Date", "Category", "Cost"]
-        for c in choices:
-            markup.add(c)
+        for c in choices: markup.add(c)
 
         for transaction in user_list[chat_id].transactions[info_category]:
             if transaction["Date"].date() == info_date:
                 if transaction["Value"] == float(info_value):
-                    user_list[chat_id].store_edit_transaction(
-                        transaction, info_category
-                    )
-                    choice = bot.reply_to(
-                        message, "What do you want to update?", reply_markup=markup
-                    )
+                    user_list[chat_id].store_edit_transaction( transaction, info_category)
+                    choice = bot.reply_to(message, "What do you want to update?", reply_markup=markup)
                     bot.register_next_step_handler(choice, edit3)
                     break
-        else:
-            bot.reply_to(message, "Transaction not found")
+        else:bot.reply_to(message, "Transaction not found")
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - Error: " + str(ex))
 
@@ -717,18 +578,13 @@ def edit3(message):
     chat_id = str(message.chat.id)
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.row_width = 2
-    for category in user_list[chat_id].spend_categories:
-        markup.add(category)
+    for category in user_list[chat_id].spend_categories: markup.add(category)
     if choice1 == "Date":
-        new_date = bot.reply_to(
-            message, "Please enter the new date (in mm/dd/yyyy format)"
-        )
+        new_date = bot.reply_to(message, "Please enter the new date (in mm/dd/yyyy format)")
         bot.register_next_step_handler(new_date, edit_date)
 
     if choice1 == "Category":
-        new_cat = bot.reply_to(
-            message, "Please select the new category", reply_markup=markup
-        )
+        new_cat = bot.reply_to(message, "Please select the new category", reply_markup=markup)
         bot.register_next_step_handler(new_cat, edit_cat)
 
     if choice1 == "Cost":
@@ -753,12 +609,7 @@ def edit_date(message):
         return
     updated_transaction = user_list[chat_id].edit_transaction_date(user_date)
     user_list[chat_id].save_user(chat_id)
-    edit_message = (
-        "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),
-            format(updated_transaction["Value"], ".2f"),
-        )
-    )
+    edit_message = ("Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f")))
     bot.reply_to(message, edit_message)
 
 
@@ -776,11 +627,9 @@ def edit_cat(message):
     updated_transaction = user_list[chat_id].edit_transaction_category(new_category)
     if updated_transaction:
         user_list[chat_id].save_user(chat_id)
-        edit_message = "Category has been edited."
-        bot.reply_to(message, edit_message)
+        bot.reply_to(message, "Category has been edited.")
     else:
-        edit_message = "Category has not been edited successfully"
-        bot.reply_to(message, edit_message)
+        bot.reply_to(message, "Category has not been edited successfully")
 
 
 def edit_cost(message):
@@ -798,11 +647,7 @@ def edit_cost(message):
     if new_cost != 0:
         user_list[chat_id].save_user(chat_id)
         updated_transaction = user_list[chat_id].edit_transaction_value(new_cost)
-        edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),
-            format(updated_transaction["Value"], ".2f"),
-        )
-        bot.reply_to(message, edit_message)
+        bot.reply_to(message, "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m/%d/%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f")))
 
     else:
         bot.reply_to(message, "The cost is invalid")
@@ -824,41 +669,23 @@ def handle_budget_document_csv(message):
         chat_id = str(message.chat.id)
         file_info = bot.get_file(message.document.file_id)
         download_file = bot.download_file(file_info.file_path)
-        with open("data/{}_spending.csv".format(chat_id), mode="wb") as f:
-            f.write(download_file)
-        unknown_spending = user_list[chat_id].read_budget_csv(
-            "data/{}_spending.csv".format(chat_id), chat_id
-        )
+        with open("data/{}_spending.csv".format(chat_id), mode="wb") as f: f.write(download_file)
+        unknown_spending = user_list[chat_id].read_budget_csv("data/{}_spending.csv".format(chat_id), chat_id)
         for _, row in unknown_spending.iterrows():
             text = "How do you want to categorize the following transaction \n"
-            text += "Date: {}. Description: {}. Debit: {}. \n".format(
-                row["date"], row["description"], row["debit"]
-            )
+            text += "Date: {}. Description: {}. Debit: {}. \n".format(row["date"], row["description"], row["debit"])
             buttons = telebot.types.InlineKeyboardMarkup(row_width=3)
             for category in user_list[chat_id].spend_categories:
-                callback = "{},{},{},{}".format(
-                    category, row["date"], row["debit"], row["description"]
-                )
-                buttons.add(
-                    telebot.types.InlineKeyboardButton(category, callback_data=callback)
-                )
+                callback = "{},{},{},{}".format(category, row["date"], row["debit"], row["description"])
+                buttons.add(telebot.types.InlineKeyboardButton(category, callback_data=callback))
             bot.send_message(chat_id, text, reply_markup=buttons)
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - Error: " + str(ex))
 
 
-def is_csv_callback(query):
-    """
-    Callback to identify if the button pressed was from the csv function
-
-    :param query: the button pressed
-    :return: if the button pressed relates to the csv
-    """
-    return "," in query.data
-
+def is_csv_callback(query): return "," in query.data
 
 @bot.callback_query_handler(func=is_csv_callback)
 def csv_callback(call):
@@ -878,14 +705,9 @@ def csv_callback(call):
         debit = float(data[2])
         description = data[3]
         chat_id = str(call.from_user.id)
-        user_list[chat_id].create_rules_and_add_unknown_spending(
-            category, description, date, debit, chat_id
-        )
-        bot.delete_message(
-            chat_id=call.from_user.id, message_id=call.message.message_id
-        )
+        user_list[chat_id].create_rules_and_add_unknown_spending(category, description, date, debit, chat_id)
+        bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.send_message(call.from_user.id, "Processing Failed - Error: " + str(ex))
 
@@ -904,13 +726,11 @@ def category_add(message):
     try:
         chat_id = str(message.chat.id)
         option.pop(chat_id, None)
-        if chat_id not in user_list.keys():
-            user_list[chat_id] = User(chat_id)
+        if chat_id not in user_list.keys(): user_list[chat_id] = User(chat_id)
         category = bot.reply_to(message, "Enter category name")
         bot.register_next_step_handler(category, receive_new_category)
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Oh no. " + str(ex))
 
@@ -926,16 +746,11 @@ def receive_new_category(message):
     try:
         category = message.text.strip()
         chat_id = str(message.chat.id)
-        if category == "":  # category cannot be empty
-            raise Exception("Category name cannot be empty")
-        if category in user_list[chat_id].transactions:
-            raise Exception("Category already exists!")
+        if category == "":  raise Exception("Category name cannot be empty") # category cannot be empty
+        if category in user_list[chat_id].transactions: raise Exception("Category already exists!")
         user_list[chat_id].add_category(category, chat_id)
-        bot.send_message(
-            chat_id, "{} has been added as a new category".format(category)
-        )
+        bot.send_message(chat_id, "{} has been added as a new category".format(category))
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Oh no. " + str(ex))
 
@@ -952,14 +767,11 @@ def category_list(message):
     try:
         chat_id = str(message.chat.id)
         option.pop(chat_id, None)
-        if chat_id not in user_list.keys():
-            user_list[chat_id] = User(chat_id)
+        if chat_id not in user_list.keys(): user_list[chat_id] = User(chat_id)
         chat_id = str(message.chat.id)
-        if len(user_list[chat_id].transactions.keys()) == 0:
-            raise Exception("Sorry! No categories found!")
+        if len(user_list[chat_id].transactions.keys()) == 0: raise Exception("Sorry! No categories found!")
         category_list_str = "Here is your category list : \n"
-        for index, category in enumerate(user_list[chat_id].transactions.keys()):
-            category_list_str += "{}. {}".format(index + 1, category + "\n")
+        for index, category in enumerate(user_list[chat_id].transactions.keys()): category_list_str += "{}. {}".format(index + 1, category + "\n")
         bot.send_message(chat_id, category_list_str)
 
     except Exception as ex:
@@ -979,18 +791,15 @@ def category_delete(message):
     try:
         chat_id = str(message.chat.id)
         option.pop(chat_id, None)
-        if chat_id not in user_list.keys():
-            user_list[chat_id] = User(chat_id)
+        if chat_id not in user_list.keys(): user_list[chat_id] = User(chat_id)
         spend_categories = user_list[chat_id].spend_categories
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.row_width = 2
-        for c in spend_categories:
-            markup.add(c)
+        for c in spend_categories: markup.add(c)
         msg = bot.reply_to(message, "Select Category", reply_markup=markup)
         bot.register_next_step_handler(msg, receive_delete_category)
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - \nError : " + str(ex))
 
@@ -1006,16 +815,11 @@ def receive_delete_category(message):
     try:
         chat_id = str(message.chat.id)
         category = message.text.strip()
-        if category not in user_list[chat_id].transactions:
-            raise Exception("Oops! Category does not exist!")
-        if len(user_list[chat_id].transactions[category]) != 0:
-            raise Exception(
-                "Sorry! This category has transactions. Delete those transactions to proceed."
-            )
+        if category not in user_list[chat_id].transactions: raise Exception("Oops! Category does not exist!")
+        if len(user_list[chat_id].transactions[category]) != 0: raise Exception("Sorry! This category has transactions. Delete those transactions to proceed.")
         user_list[chat_id].delete_category(category, chat_id)
         bot.reply_to(message, "{} has been removed from category list".format(category))
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, str(ex))
 
@@ -1035,10 +839,7 @@ def command_delete(message):
     monthFormat = "%m/%Y"
     chat_id = str(message.chat.id)
     try:
-        if (
-            chat_id in user_list
-            and user_list[chat_id].get_number_of_transactions() != 0
-        ):
+        if (chat_id in user_list and user_list[chat_id].get_number_of_transactions() != 0):
             curr_day = datetime.now()
             prompt = "Enter the day, month, or All\n"
             prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
@@ -1046,14 +847,10 @@ def command_delete(message):
             reply_message = bot.reply_to(message, prompt)
             bot.register_next_step_handler(reply_message, process_delete_argument)
         else:
-            delete_history_text = (
-                "No records to be deleted. Start adding your expenses to keep track of your "
-                "spendings! "
-            )
+            delete_history_text = ("No records to be deleted. Start adding your expenses to keep track of your spendings! ")
             bot.send_message(chat_id, delete_history_text)
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - \nError : " + str(ex))
 
@@ -1074,20 +871,16 @@ def process_delete_argument(message):
 
     date = None
     is_month = False
-    if text.lower() == "all":
-        date = "all"
+    if text.lower() == "all": date = "all"
     else:
         # try and parse as Date-Month-Year
-        if user_list[chat_id].validate_date_format(text, dateFormat) is not None:
-            date = user_list[chat_id].validate_date_format(text, dateFormat)
+        if user_list[chat_id].validate_date_format(text, dateFormat) is not None: date = user_list[chat_id].validate_date_format(text, dateFormat)
         # try and parse as Month-Year
         elif user_list[chat_id].validate_date_format(text, monthFormat) is not None:
             date = user_list[chat_id].validate_date_format(text, monthFormat)
             is_month = True
 
-    if date is None:
-        # if none of the formats worked
-        bot.reply_to(message, "Error parsing date")
+    if date is None: bot.reply_to(message, "Error parsing date")
     else:
         # get the records either by given day, month, or all records
         records_to_delete = user_list[chat_id].get_records_by_date(date, is_month)
@@ -1121,8 +914,7 @@ def handle_confirmation(message, records_to_delete):
         user_list[chat_id].deleteHistory(records_to_delete)
         user_list[chat_id].save_user(chat_id)
         bot.send_message(message.chat.id, "Successfully deleted records")
-    else:
-        bot.send_message(message.chat.id, "No records deleted")
+    else: bot.send_message(message.chat.id, "No records deleted")
 
 
 def get_calendar_buttons(user):
@@ -1146,28 +938,16 @@ def get_calendar_buttons(user):
     # for each day in the total days
     # for the first day, figure out how many ' ' to append
     row = []
-    if m[0] != 6:
-        row = [
-            types.InlineKeyboardButton(" ", callback_data="none")
-            for _ in range(m[0] + 1)
-        ]
+    if m[0] != 6: row = [types.InlineKeyboardButton(" ", callback_data="none") for _ in range(m[0] + 1)]
     for day in range(1, m[1] + 1):
         # if it is on a sunday, start a new row
         if user.curr_date.replace(day=day).weekday() == 6:
             kb.row(*row)
             row = []
-        row.append(
-            types.InlineKeyboardButton(
-                day,
-                callback_data="{},{},{}".format(
-                    user.curr_date.year, user.curr_date.month, day
-                ),
-            )
-        )
+        row.append(types.InlineKeyboardButton(day,callback_data="{},{},{}".format(user.curr_date.year, user.curr_date.month, day)))
     # finish out the last row
     if len(row) != 7:
-        for _ in range(7 - len(row)):
-            row.append(types.InlineKeyboardButton(" ", callback_data="none"))
+        for _ in range(7 - len(row)): row.append(types.InlineKeyboardButton(" ", callback_data="none"))
 
     kb.row(*row)
     return kb
@@ -1194,8 +974,7 @@ def get_chart(message):
     chat_id = str(message.chat.id)
     chart_file = user_list[chat_id].create_chart(chat_id)
     for cf in chart_file:
-        with open(cf, "rb") as f:
-            bot.send_photo(chat_id, f)
+        with open(cf, "rb") as f: bot.send_photo(chat_id, f)
             # bot.send_photo(chat_id, cf)
 
 
@@ -1208,26 +987,12 @@ def create_header(user):
     :return: the header row
     """
     # get the month name
-    row = [
-        (
-            types.InlineKeyboardButton(
-                user.curr_date.strftime("%B"), callback_data="none"
-            )
-        )
-    ]
-    if user.curr_date > user.min_date:
-        # if we should be able to go back a month
-        row.append(types.InlineKeyboardButton("<", callback_data="prev"))
-    else:
-        # append a blank
-        row.append(types.InlineKeyboardButton(" ", callback_data="none"))
+    row = [(types.InlineKeyboardButton(user.curr_date.strftime("%B"), callback_data="none"))]
+    if user.curr_date > user.min_date:row.append(types.InlineKeyboardButton("<", callback_data="prev"))
+    else: row.append(types.InlineKeyboardButton(" ", callback_data="none"))
 
-    if user.curr_date < user.max_date:
-        # if we should be able to go forward
-        row.append(types.InlineKeyboardButton(">", callback_data="next"))
-    else:
-        # append a blank
-        row.append(types.InlineKeyboardButton(" ", callback_data="none"))
+    if user.curr_date < user.max_date: row.append(types.InlineKeyboardButton(">", callback_data="next"))
+    else: row.append(types.InlineKeyboardButton(" ", callback_data="none"))
     return row
 
 
@@ -1240,21 +1005,16 @@ def handler_callback(callback, user):
     :return: datetime.date object if some date was picked else None
     """
 
-    if callback == "prev" and user.curr_date.replace(day=1) >= user.min_date.replace(
-        day=1
-    ):
+    if callback == "prev" and user.curr_date.replace(day=1) >= user.min_date.replace(day=1):
         user.curr_date = user.curr_date.replace(month=user.curr_date.month - 1)
         return None
-    if callback == "next" and user.curr_date.replace(day=1) <= user.max_date.replace(
-        day=1
-    ):
+    if callback == "next" and user.curr_date.replace(day=1) <= user.max_date.replace(day=1):
         user.curr_date = user.curr_date.replace(month=user.curr_date.month + 1)
         return None
 
     if callback != "none":
         entered_date = datetime.strptime(callback, "%Y,%m,%d")
-        if user.min_date <= entered_date <= user.max_date:
-            return entered_date
+        if user.min_date <= entered_date <= user.max_date: return entered_date
         return -1
 
 
@@ -1274,8 +1034,7 @@ def get_users():
             if u:
                 u = u.group(1)
                 abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
-                with open(abspath, "rb") as f:
-                    users[u] = pickle.load(f)
+                with open(abspath, "rb") as f: users[u] = pickle.load(f)
     return users
 
 
@@ -1291,25 +1050,16 @@ def command_display_currency(message):
     :return: None
     """
     chat_id = str(message.chat.id)
-    if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0:
-        bot.send_message(
-            chat_id, "Oops! Looks like you do not have any spending records!"
-        )
+    if chat_id not in user_list or user_list[chat_id].get_number_of_transactions() == 0: bot.send_message(chat_id, "Oops! Looks like you do not have any spending records!")
     else:
         try:
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.row_width = 2
-            for mode in user_list[chat_id].spend_display_option:
-                markup.add(mode)
-            msg = bot.reply_to(
-                message,
-                "Please select a category to see the total expense",
-                reply_markup=markup,
-            )
+            for mode in user_list[chat_id].spend_display_option: markup.add(mode)
+            msg = bot.reply_to(message,"Please select a category to see the total expense", reply_markup=markup)
             bot.register_next_step_handler(msg, display_total_currency)
 
         except Exception as ex:
-            print("Exception occurred : ")
             logger.error(str(ex), exc_info=True)
             bot.reply_to(message, "Oops! - \nError : " + str(ex))
 
@@ -1326,13 +1076,9 @@ def display_total_currency(message):
         chat_id = str(message.chat.id)
         day_week_month = message.text
 
-        if day_week_month not in user_list[chat_id].spend_display_option:
-            raise Exception(
-                'Sorry I can\'t show spendings for "{}"!'.format(day_week_month)
-            )
+        if day_week_month not in user_list[chat_id].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
 
-        if len(user_list[chat_id].transactions) == 0:
-            raise Exception("Oops! Looks like you do not have any spending records!")
+        if len(user_list[chat_id].transactions) == 0: raise Exception("Oops! Looks like you do not have any spending records!")
 
         bot.send_message(chat_id, "Hold on! Calculating...")
 
@@ -1343,15 +1089,9 @@ def display_total_currency(message):
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%d") == query.strftime("%d"):
-                        query_result += "Category {} Date {} Value {:.2f} \n".format(
-                            category,
-                            transaction["Date"].strftime(dateFormat),
-                            transaction["Value"],
-                        )
+                        query_result += "Category {} Date {} Value {:.2f} \n".format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
-            total_spendings = "Here are your total spendings for the date {} \n".format(
-                datetime.today().strftime("%m/%d/%Y")
-            )
+            total_spendings = "Here are your total spendings for the date {} \n".format(datetime.today().strftime("%m/%d/%Y"))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}".format(total_value)
             bot.send_message(chat_id, total_spendings)
@@ -1364,36 +1104,24 @@ def display_total_currency(message):
             for category in user_list[chat_id].transactions.keys():
                 for transaction in user_list[chat_id].transactions[category]:
                     if transaction["Date"].strftime("%m") == query.strftime("%m"):
-                        query_result += "Category {} Date {} Value {:.2f} \n".format(
-                            category,
-                            transaction["Date"].strftime(dateFormat),
-                            transaction["Value"],
-                        )
+                        query_result += "Category {} Date {} Value {:.2f} \n".format(category,transaction["Date"].strftime(dateFormat),transaction["Value"])
                         total_value += transaction["Value"]
-            total_spendings = (
-                "Here are your total spendings for the Month {} \n".format(
-                    datetime.today().strftime("%B")
-                )
-            )
+            total_spendings = ("Here are your total spendings for the Month {} \n".format(datetime.today().strftime("%B")))
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.row_width = 2
             choices = ["INR", "EUR", "CHF"]
-            for c in choices:
-                markup.add(c)
+            for c in choices: markup.add(c)
 
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}\n".format(total_value)
             total_spendings += "Budget for the month {}".format(str(budget_value))
             global completeSpendings # pylint: disable=global-statement
             completeSpendings = total_value
-            choice = bot.reply_to(
-                        message, "Which currency to you want to covert to?", reply_markup=markup
-                    )
+            choice = bot.reply_to(message, "Which currency to you want to covert to?", reply_markup=markup)
             bot.register_next_step_handler(choice, display_total_currency2)
             # bot.send_message(chat_id, total_spendings)
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, str(ex))
 
@@ -1407,26 +1135,19 @@ def display_total_currency2(message):
         
         if selection == "INR":
             completeExpenses = completeSpendings * DOLLARS_TO_RUPEES
-            completeExpensesMessage = (
-            "The total expenses in INR is Rs. " + str(completeExpenses)
-        )
+            completeExpensesMessage = ("The total expenses in INR is Rs. " + str(completeExpenses))
             bot.reply_to(message, completeExpensesMessage)
         if selection == "EUR":
             completeExpenses = completeSpendings * DOLLARS_TO_EUROS
-            completeExpensesMessage = (
-            "The total expenses in EUR is " + str(completeExpenses) + " EUR"
-        )
+            completeExpensesMessage = ("The total expenses in EUR is " + str(completeExpenses) + " EUR")
             bot.reply_to(message, completeExpensesMessage)
         if selection == "CHF":
             completeExpenses = completeSpendings * DOLLARS_TO_EUROS
-            completeExpensesMessage = (
-            "The total expenses in Swiss Franc is " + str(completeExpenses) + " CHF"
-        )
+            completeExpensesMessage = ("The total expenses in Swiss Franc is " + str(completeExpenses) + " CHF")
             bot.reply_to(message, completeExpensesMessage)
 
 
     except Exception as ex:
-        print("Exception occurred : ")
         logger.error(str(ex), exc_info=True)
         bot.reply_to(message, "Processing Failed - Error: " + str(ex))
 
@@ -1440,5 +1161,4 @@ if __name__ == "__main__":
     except Exception as e:
         # Connection will be timed out with the set time interval - 3
         time.sleep(3)
-        print("Exception occurred while processing : ")
         logger.error(str(e), exc_info=True)
