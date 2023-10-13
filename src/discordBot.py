@@ -44,11 +44,7 @@ async def menu(ctx):
     Returns:
     - None
     """
-    em = discord.Embed(
-        title="FinBot",
-        description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",
-        color = discord.Color.teal()
-    )
+    em = discord.Embed(title="FinBot", description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",color = discord.Color.teal())
     em.add_field(name="**#menu**", value="Displays all commands and their descriptions", inline=False)
     em.add_field(name="**#add**", value="Record/Add a new spending", inline=False)
     em.add_field(name="**#display**", value="Show sum of expenditure for the current day/month", inline=False)
@@ -73,14 +69,10 @@ async def display(ctx):
     Returns:
     - None
     """
-    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0:
-        await ctx.send("Oops! Looks like you do not have any spending records!")
+    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
     else:
         try:
-            select_options = [
-                    discord.SelectOption(label="Day"),
-                    discord.SelectOption(label="Month"),
-                ]
+            select_options = [discord.SelectOption(label="Day"),discord.SelectOption(label="Month"),]
             select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
                 
             async def my_callback(interaction):
@@ -168,8 +160,7 @@ async def budget(ctx):
     Returns:
     - None
     """
-    if CHANNEL_ID not in user_list.keys():
-        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
     try:
         await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
         await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
@@ -249,8 +240,7 @@ async def process_date(ctx, date, month, year):
         date_obj = datetime(int(year), int(month), int(date))
         await ctx.send(f"Selected Date: {date_obj.strftime('%m-%d-%Y')}")
         await select_category(ctx, date_obj)
-    except ValueError:
-        await ctx.send("Invalid date, month, or year. Please enter valid values.")
+    except ValueError: await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
 @bot.command()
 async def add(ctx):
@@ -347,9 +337,7 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
    
     try:
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
-        if amount_value == 0:  # cannot be $0 spending
-
-            raise Exception("Spent amount has to be a non-zero number.")
+        if amount_value == 0:  raise Exception("Spent amount has to be a non-zero number.") # cannot be $0 spending
 
         category_str, amount_str = (selected_category,format(amount_value, ".2f"))
         user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
