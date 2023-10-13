@@ -17,3 +17,11 @@ jobs:
         with:
           options: "--verbose"
           src: "./src"
+      - name: Sort imports with isort
+        run: |
+          pip install isort
+          isort .
+      - name: Remove unused imports with autoflake
+        run: |
+          pip install autoflake
+          autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive .
