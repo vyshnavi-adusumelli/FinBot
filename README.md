@@ -12,7 +12,7 @@
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![codecov](https://codecov.io/gh/vyshnavi-adusumelli/FinBot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://app.codecov.io/gh/vyshnavi-adusumelli/FinBot/)
-[![Actions Status](https://github.com/vyshnavi-adusumelli/FinBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
+[![Actions Status](https://github.com/vyshnavi-adusumelli/FinBot/workflows/CI/badge.svg)](https://github.com/vyshnavi-adusumelli/FinBot/actions)
 ![github workflow](https://github.com/vyshnavi-adusumelli/FinBot/actions/workflows/black.yml/badge.svg)
 ![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
 ![Lines of code](https://img.shields.io/tokei/lines/:provider/:user/https%3A%2F%2Fgithub.com%2Fvyshnavi-adusumelli%2FFinBot)
