@@ -308,10 +308,8 @@ class User:
             total = 0
             for transaction in self.transactions[category]:
                 transaction_date = transaction["Date"]
-                if start_date and transaction_date < start_date:
-                    continue
-                if end_date and transaction_date > end_date:
-                    continue
+                if start_date and transaction_date < start_date: continue
+                if end_date and transaction_date > end_date: continue
                 total += int(transaction["Value"])
             if total != 0:
                 labels.append(category)

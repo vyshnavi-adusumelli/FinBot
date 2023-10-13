@@ -356,8 +356,7 @@ class User:
         charts = []
         for category in self.spend_categories:
             total = 0
-            for transaction in self.transactions[category]:
-                total = total + transaction["Value"]
+            for transaction in self.transactions[category]: total = total + transaction["Value"]
             if total != 0:
                 labels.append(category)
                 totals.append(total)
