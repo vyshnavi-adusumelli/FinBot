@@ -1,52 +1,55 @@
-import unittest
-from unittest.mock import patch
+"""
+Unit test to check all commands are present
+"""
+# import sys
+# sys.path.append("../../..")
+# import src
 import teleBot as code_lib
+from bot_utils import BotTest
 
-class TestCommands(unittest.TestCase):
-    @patch.object(code_lib, 'telebot')
-    def test_number_commands(self, mock_telebot):
-        bot = code_lib.bot
-        # Simulate bot's behavior
-        bot.message_handlers = [{'filters': ['commands']} for _ in range(14)]
 
-        number_of_commands = 14
-        self.assertEqual(len(bot.message_handlers), number_of_commands)
+class TestCommands(BotTest):
+    """
+    Test class to test commands and functions
+    """
 
-    @patch.object(code_lib, 'telebot')
-    def test_commands(self, mock_telebot):
-        bot = code_lib.bot
-        bot.message_handlers = [
-            {'filters': ['commands'], 'function': code_lib.start_and_menu_command},
-            {'filters': ['commands'], 'function': code_lib.command_budget},
-            {'filters': ['commands'], 'function': code_lib.command_add},
-            {'filters': ['commands'], 'function': code_lib.show_history},
-            {'filters': ['commands'], 'function': code_lib.command_display},
-            {'filters': ['commands'], 'function': code_lib.edit1},
-            {'filters': ['commands'], 'function': code_lib.category_add},
-            {'filters': ['commands'], 'function': code_lib.category_list},
-            {'filters': ['commands'], 'function': code_lib.category_delete},
-            {'filters': ['commands'], 'function': code_lib.command_delete},
-            {'filters': ['commands'], 'function': code_lib.send_email},
-            {'filters': ['commands'], 'function': code_lib.download_history}
-        ]
+    def test_number_commands(self) -> None:
+        """
+        Tests that the correct number of commands are present
+        :return:
+        """
+        # for all commands
+        bot_commands = [hand for hand in self.bot.message_handlers
+                        if "commands" in hand['filters']]
+        number_of_commands = 11
+        # assert there is the right number of commands
+        assert len(bot_commands) == number_of_commands
 
-        actual_titles = [
-            {'function': code_lib.start_and_menu_command, 'commands': ["start", "menu"]},
-            {'function': code_lib.command_budget, 'commands': ["budget"]},
-            {'function': code_lib.command_add, 'commands': ["add"]},
-            {'function': code_lib.show_history, 'commands': ["history"]},
-            {'function': code_lib.command_display, 'commands': ["display"]},
-            {'function': code_lib.edit1, 'commands': ["edit"]},
-            {'function': code_lib.category_add, 'commands': ["categoryAdd"]},
-            {'function': code_lib.category_list, 'commands': ["categoryList"]},
-            {'function': code_lib.category_delete, 'commands': ["categoryDelete"]},
-            {'function': code_lib.command_delete, 'commands': ["delete"]},
-            {'function': code_lib.send_email, 'commands': ["sendEmail"]},
-            {'function': code_lib.download_history, 'commands': ["download"]}
-        ]
+    def test_commands(self) -> None:
+        """
+        Tests if commands are present, and if they are hooked
+        to the correct function
+        :return: None
+        """
+        # for all commands
+        bot_commands = [hand for hand in self.bot.message_handlers
+                        if "commands" in hand['filters']]
+        # dictionary of functions and commands to trigger the function
+        actual_titles = [{'function': code_lib.start_and_menu_command,
+                          'commands': ["start", "menu"]},
+                         {'function': code_lib.command_budget, 'commands': ["budget"]},
+                         {'function': code_lib.command_add, 'commands': ["add"]},
+                         {'function': code_lib.show_history, 'commands': ["history"]},
+                         {'function': code_lib.command_display, 'commands': ["display"]},
+                         {'function': code_lib.edit1, 'commands': ["edit"]},
+                         {'function': code_lib.category_add, 'commands': ["categoryAdd"]},
+                         {'function': code_lib.category_list, 'commands': ["categoryList"]},
+                         {'function': code_lib.category_delete, 'commands': ["categoryDelete"]},
+                         {'function': code_lib.command_delete, 'commands': ["delete"]}]
+        # assert each function and command matches
+        for actual_func, expected_func in zip(bot_commands, actual_titles):
+            assert actual_func['filters']['commands'] == expected_func['commands']
+            assert actual_func['function'] == expected_func['function']
 
-        for i, expected_func in enumerate(actual_titles):
-            self.assertEqual(bot.message_handlers[i]['function'], expected_func['function'])
-
-if __name__ == '__main__':
-    unittest.main()
+        # there should not be any exceptions
+        assert self.bot.worker_pool.exception_info is None
