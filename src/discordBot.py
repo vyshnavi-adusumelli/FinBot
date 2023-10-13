@@ -630,8 +630,7 @@ async def edit_date(ctx, message):
         return
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_date(user_date)
     user_list[CHANNEL_ID].save_user(CHANNEL_ID)
-    edit_message = ("Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f")))
-    await ctx.send(edit_message)
+    await ctx.send(("Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f"))))
 
 
 async def edit_cat(ctx,new_category):
@@ -663,8 +662,7 @@ async def edit_cost(ctx,message):
     if new_cost != 0:
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
         updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
-        edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f"))
-        await ctx.send(edit_message)
+        await ctx.send("Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f")))
 
     else:
         await ctx.send("The cost is invalid")
