@@ -397,7 +397,7 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
         )
         user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
         total_value = user_list[CHANNEL_ID].monthly_total()
-        add_message = f"The following expenditure has been recorded: You have spent ${amount_entered} for {selected_category} on {date_to_add}"
+        add_message = f"The following expenditure has been recorded: You have spent ${amount_str} for {category_str} on {date_to_add}"
 
         if user_list[CHANNEL_ID].monthly_budget > 0:
             if total_value > user_list[CHANNEL_ID].monthly_budget:
