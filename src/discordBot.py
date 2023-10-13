@@ -195,16 +195,16 @@ async def budget(ctx):
     try:
         await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
         await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
-        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        budget_resp = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send('You ran out of time to answer!')
     else:
-        if budget:
-            await post_budget_input(ctx, budget)
+        if budget_resp:
+            await post_budget_input(ctx, budget_resp)
         else:
             await ctx.send('Nope enter a valid date')
 
-async def post_budget_input(ctx, budget):
+async def post_budget_input(ctx, budget_resp):
     """
     Handles the processing of user input (budget). This function validates the entered amount and sets the budget. The error handling 
     functionality is also implemented.
@@ -217,7 +217,7 @@ async def post_budget_input(ctx, budget):
     - None
     """
     try:
-        amount_entered = budget.content
+        amount_entered = budget_resp.content
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(
             amount_entered
         )  # validate
