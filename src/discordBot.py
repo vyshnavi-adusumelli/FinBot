@@ -444,7 +444,6 @@ async def process_delete_argument(ctx, delete_type):
     dateFormat = "%m-%d-%Y"
     monthFormat = "%m-%Y"
     text = delete_type #delete_type
-    ctx = ctx
     date = None
     is_month = False
     if text.lower() == "all":
