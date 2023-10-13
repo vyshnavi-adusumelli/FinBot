@@ -11,8 +11,8 @@ from importlib import reload
 from telebot import types
 import sys
 # sys.path.append("E:\SE\project phase 3\slashbot\src")
-import src.teleBot
-from src.teleUser import User
+import teleBot
+from teleUser import User
 
 CHAT_ID = os.environ['CHAT_ID'] if 'CHAT_ID' in os.environ else 1
 TOKEN = os.environ['API_TOKEN'] if 'API_TOKEN' in os.environ else 0
@@ -31,14 +31,14 @@ class BotTest(unittest.TestCase):
         abspath = pathlib.Path("data").absolute()
         if not os.path.exists(abspath):
             os.mkdir(abspath)
-        reload(src.teleBot)
-        src.teleBot.api_token = os.environ['API_TOKEN']
-        self.bot = src.teleBot.bot
+        reload(teleBot)
+        teleBot.api_token = os.environ['API_TOKEN']
+        self.bot = teleBot.bot
         self.user = User(str(CHAT_ID))
         self.user.save_user(str(CHAT_ID))
         self.chat_id = CHAT_ID
         # reloads the user list
-        src.teleBot.user_list = src.teleBot.get_users()
+        teleBot.user_list = teleBot.get_users()
         # asserts the current user has no data
         assert self.user.get_number_of_transactions() == 0
 
@@ -61,8 +61,8 @@ class BotTest(unittest.TestCase):
         """
         self.user.add_transaction(datetime.now(), self.user.spend_categories[0], amount, CHAT_ID)
         self.user.save_user(CHAT_ID)
-        src.teleBot.user_list = src.teleBot.get_users()
-        assert CHAT_ID in src.teleBot.user_list.keys()
+        teleBot.user_list = teleBot.get_users()
+        assert CHAT_ID in teleBot.user_list.keys()
 
     def create_text_message(self, text: str) -> types.Message:
         """

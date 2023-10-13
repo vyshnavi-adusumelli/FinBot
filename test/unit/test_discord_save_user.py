@@ -5,7 +5,7 @@ import os
 import pathlib
 import pickle
 
-from BaseCase import BaseCase
+from discord_BaseCase import discord_BaseCase
 
 
 def users_equal(user_1, user_2):
@@ -24,7 +24,7 @@ def users_equal(user_1, user_2):
     return True
 
 
-class TestSaveUser(BaseCase):
+class TestSaveUser(discord_BaseCase):
     """
     Unit test for save_user
     """
@@ -35,9 +35,9 @@ class TestSaveUser(BaseCase):
         """
         prev_user = self.user
         # with no history, call save_user
-        self.user.save_user(1)
+        self.user.save_user(2)
         # assert the pickle exists
-        abspath = pathlib.Path("teleData/1.pickle").absolute()
+        abspath = pathlib.Path("discordData/2.pickle").absolute()
         assert os.path.exists(abspath)
 
         with open(abspath, "rb") as f:
@@ -60,9 +60,9 @@ class TestSaveUser(BaseCase):
         self.user.monthly_budget = 100
         prev_user = self.user
         # with history, call save_user
-        self.user.save_user(1)
+        self.user.save_user(2)
         # assert the pickle exists
-        abspath = pathlib.Path("teleData/1.pickle").absolute()
+        abspath = pathlib.Path("discordData/2.pickle").absolute()
         assert os.path.exists(abspath)
         with open(abspath, "rb") as f:
             new_user = pickle.load(f)

@@ -1,9 +1,10 @@
-
-from BaseCase import BaseCase
+import unittest
+# import code
+from discord_BaseCase import discord_BaseCase
 from datetime import datetime
 
 
-class TestAddUserRecord(BaseCase):
+class TestAddUserRecord(discord_BaseCase):
     """
     Tests the addUserrecord method
     """
@@ -52,7 +53,7 @@ class TestAddUserRecord(BaseCase):
         for category in transaction:
             # for each record to add
             for record in transaction[category]:
-                self.user.add_transaction(record['Date'], category, record['Value'], 1)
+                self.user.add_transaction(record['Date'], category, record['Value'], 2)
         # validating the list
         message = self.validate_user_list(transaction)
         if message != "":
@@ -99,3 +100,7 @@ class TestAddUserRecord(BaseCase):
         message = self.validate_user_list(transaction)
         if message != "":
             assert False, message
+
+
+if __name__ == '__main__':
+    unittest.main()

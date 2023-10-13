@@ -4,7 +4,7 @@ Tests delete command
 import time
 import unittest
 from bot_utils import BotTest
-from src import teleBot
+import teleBot
 
 
 class TestDelete(BotTest):

@@ -7,18 +7,18 @@
 <hr>
 
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
-![GitHub](https://img.shields.io/github/languages/top/secheaper/slashbot?color=red&label=Python&logo=Python&logoColor=yellow)
-![GitHub contributors](https://img.shields.io/github/contributors/secheaper/slashbot)
+![GitHub](https://img.shields.io/github/languages/top/vyshnavi-adusumelli/FinBot?color=red&label=Python&logo=Python&logoColor=yellow)
+![GitHub contributors](https://img.shields.io/github/contributors/vyshnavi-adusumelli/FinBot)
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
-[![codecov](https://codecov.io/gh/secheaper/slashbot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://codecov.io/gh/secheaper/slashbot)
-[![Actions Status](https://github.com/mtkumar123/MyDollarBot/workflows/CI/badge.svg)](https://github.com/mtkumar123/MyDollarBot/actions)
-![github workflow](https://github.com/mtkumar123/MyDollarBot/actions/workflows/black.yml/badge.svg)
+[![codecov](https://codecov.io/gh/vyshnavi-adusumelli/FinBot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://app.codecov.io/gh/vyshnavi-adusumelli/FinBot/)
+[![Actions Status](https://github.com/vyshnavi-adusumelli/FinBot/workflows/CI/badge.svg)](https://github.com/vyshnavi-adusumelli/FinBot/actions)
+![github workflow](https://github.com/vyshnavi-adusumelli/FinBot/actions/workflows/black.yml/badge.svg)
 ![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
-![Lines of code](https://img.shields.io/tokei/lines/github/secheaper/slashbot?color=9cf)
-![Version](https://img.shields.io/github/v/release/secheaper/slashbot?color=ff69b4&label=Version)
-![GitHub issues](https://img.shields.io/github/issues-raw/secheaper/slashbot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/secheaper/slashbot)
+![Lines of code](https://img.shields.io/tokei/lines/:provider/:user/https%3A%2F%2Fgithub.com%2Fvyshnavi-adusumelli%2FFinBot)
+![Version](https://img.shields.io/github/v/release/vyshnavi-adusumelli/FinBot?color=ff69b4&label=Version)
+![GitHub issues](https://img.shields.io/github/issues-raw/vyshnavi-adusumelli/FinBot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/vyshnavi-adusumelli/FinBot)
 
 <hr>
 

@@ -3,7 +3,7 @@ Tests budget command
 """
 import time
 import unittest
-from src import teleBot
+import teleBot
 from bot_utils import BotTest
 
 

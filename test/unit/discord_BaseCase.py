@@ -2,14 +2,10 @@ import os.path
 import pathlib
 import unittest
 
-try:
-    from src import teleUser
-    import src.teleUser as teleUser
-    from src.teleUser import User
-except:
-    from teleUser import User
+from src.discordUser import User
 
-class BaseCase(unittest.TestCase):
+
+class discord_BaseCase(unittest.TestCase):
     """
     Base case class for all other unit tests to inherit from
     """
@@ -17,21 +13,20 @@ class BaseCase(unittest.TestCase):
         """
         Creates a new user
         """
-        # os.chdir("test")
-        abspath = pathlib.Path("teleData").absolute()
+        abspath = pathlib.Path("discordData").absolute()
         print(abspath, "abs path")
         if not os.path.exists(abspath):
             os.mkdir(abspath)
 
-        # print(os.getcwd())
-        self.user = User("1")
+        print(os.getcwd(),"current directory")
+        self.user = User("2")
         self.expected_list = self.create_transaction()
 
     def tearDown(self) -> None:
         """
         Removes the user pickle
         """
-        abspath = pathlib.Path("teleData").absolute()
+        abspath = pathlib.Path("discordData").absolute()
         if not os.path.exists(abspath):
             os.mkdir(abspath)
 

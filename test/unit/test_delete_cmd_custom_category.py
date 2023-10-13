@@ -1,8 +1,7 @@
-
 from bot_utils import BotTest
 import unittest
 import time
-from src import teleBot
+import teleBot
 
 
 class TestDeleteCustomCategory(BotTest):

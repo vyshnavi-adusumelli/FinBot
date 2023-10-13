@@ -1,9 +1,8 @@
 import asyncio
-from discord.ext import commands, tasks
 import discord
+from discord.ext import commands, tasks
 from discordUser import User
 from discord.ui import Select, View
-import logging
 import os
 from calendar import monthrange
 import pathlib
@@ -16,13 +15,22 @@ from tabulate import tabulate
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
 
-logger = logging.getLogger()
 bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
-logger = logging.getLogger()
 
 @bot.event
 async def on_ready():
+    """
+    An event handler for the "on_ready" event.
+    This function is called when the bot has successfully connected to the Discord server and is ready to operate. It sends a welcome message to a specific channel and then calls the "menu" 
+    function to display a menu, likely for user interaction.
+
+    Parameters: 
+    - None
+
+    Returns: 
+    - None
+    """
     channel = bot.get_channel(int(CHANNEL_ID))
     await channel.send(f"Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
     await menu(channel)
@@ -30,14 +38,14 @@ async def on_ready():
 @bot.command()
 async def menu(ctx):
     """
-    Handles the commands 'menu'. To show the list of available commands and their descriptions. Outputs a An embed window sent to the context 
-    with all commands/descriptions
+    Handles the 'menu' command to display a list of available commands and their descriptions in an embed window.
 
-    :param ctx - Discord context window
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
     """
-
     em = discord.Embed(
         title="FinBot",
         description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",
@@ -61,9 +69,11 @@ async def display(ctx):
     transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
     next.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
     """
     if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0:
         await ctx.send("Oops! Looks like you do not have any spending records!")
@@ -80,24 +90,33 @@ async def display(ctx):
                 await asyncio.sleep(0.5)
                 await display_total(ctx, select.values[0])
             
+            async def timeout():
+                await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
+                await menu(ctx)
+            
             select.callback = my_callback
-            view = View(timeout=90)
+            view = View(timeout=20)
             view.add_item(select)
+            view.on_timeout = timeout
             
             await ctx.send('Please select a category to see the total expense', view=view)
 
         except Exception as ex:
-            print(f"Exception occurred : {str(ex)}")
-            await ctx.send("Oops! - \nError : " + str(ex))
+            print("Exception occurred : ")
+            print(str(ex), exc_info=True)
+            await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def display_total(ctx, sel_category):
     """
-    Receives the input time period and displays the transaction summary for the corresponding time period.
+    Receives the input time period from display(ctx) and displays the transaction summary for the corresponding time period.
 
-    :param message: Discord ctx object, selected category
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window
+    - sel_category (string): The time period selected by the user (day / month)
+
+    Returns:
+    - None
     """
     dateFormat = "%m/%d/%Y"
     try:
@@ -136,7 +155,6 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            # print(user_list[chat_id].keys())
             budget_value = user_list[CHANNEL_ID].monthly_budget
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
@@ -157,17 +175,20 @@ async def display_total(ctx, sel_category):
             total_spendings += "Budget for the month {}".format(str(budget_value))
             await ctx.send(total_spendings)
     except Exception as ex:
-        print(f"Exception occurred : {str(ex)}")
-        await ctx.send("Oops, error-" + str(ex))
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def budget(ctx):
     """
     Handles the commands 'budget'. To set a budget monthly and hence keep a track of the transactions. 
 
-    :param ctx - Discord context window
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
     """
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
@@ -184,6 +205,17 @@ async def budget(ctx):
             await ctx.send('Nope enter a valid date')
 
 async def post_budget_input(ctx, budget):
+    """
+    Handles the processing of user input (budget). This function validates the entered amount and sets the budget. The error handling 
+    functionality is also implemented.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - budget (discord.Message): The user's response message containing the budget input.
+
+    Returns:
+    - None
+    """
     try:
         amount_entered = budget.content
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(
@@ -203,21 +235,28 @@ async def post_budget_input(ctx, budget):
             await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
 async def select_date(ctx):
-    await ctx.send("Enter the date (1-31):")
+    '''
+    Function to get date selection from user. This function is invoked from the add to
+    enter the date of expense to be added.
+
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :param date - date message object received from the user
+    :type: object
+    :return: None
+
+    '''
+    dateFormat = "%m-%d-%Y"
+    curr_day = datetime.now()
+    await ctx.send("Enter day")
+    await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
     try:
         date_message = await bot.wait_for('message', check=check, timeout=60)
-        date = date_message.content.strip()
-
-        await ctx.send("Enter the month (1-12):")
-        month_message = await bot.wait_for('message', check=check, timeout=60)
-        month = month_message.content.strip()
-
-        await ctx.send("Enter the year (e.g., 2023):")
-        year_message = await bot.wait_for('message', check=check, timeout=60)
-        year = year_message.content.strip()
+        date_str = date_message.content.strip()
+        month, date, year = map(int, date_str.split('-'))
 
         # Call the next function with the date, month, and year
         await process_date(ctx, date, month, year)
@@ -225,44 +264,58 @@ async def select_date(ctx):
         await ctx.send("You took too long to respond. Please try again.")
 
 async def process_date(ctx, date, month, year):
-    # Process the date, month, and year here
-    # You can perform any necessary calculations or operations
-    # For example, you can convert them to a datetime object
+    '''
+    Process the date, month, and year here
+    You can perform any necessary calculations or operations
+    For example, you can convert them to a datetime object
+    :param ctx - Discord context window
+    :param date - date string
+    :param month - month string
+    :param year - year string
+    :type: object
+    :return: None
+    '''
+    
     try:
         date_obj = datetime(int(year), int(month), int(date))
-        await ctx.send(f"Selected Date: {date_obj.strftime('%Y-%m-%d')}")
+        await ctx.send(f"Selected Date: {date_obj.strftime('%m-%d-%Y')}")
         await select_category(ctx, date_obj)
     except ValueError:
         await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
 @bot.command()
 async def add(ctx):
-    '''
-    Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
-    '''
+    """
+    Handles the commands 'add'. To add a transaction to the user records. 
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns: None
+    """
+     
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
     try:
         await select_date(ctx)
 
     except Exception as ex:
-        print("Exception occurred : ")
-        print(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
+        print("exception occurred:"+str(e))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 async def select_category(ctx, date):
-    '''
-    Function to enable category selection via a custom defined category dropdown. This function is invoked from the select_date to 
-    select the category of expense to be added. Uses the Select and View classes from discord.ui and a callback to handle the
-    interaction response
+    """
+    Function to enable category selection via a custom-defined category dropdown. This function is invoked from the 'select_date' function 
+    to select the category of expense to be added. It utilizes the Select and View classes from discord.ui and a callback to handle the 
+    interaction response.
 
-    :param ctx - Discord context window
-    :param Bot - Discord Bot object
-    :param date - date message object received from the user 
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - date (discord.Message): The date message object received from the user.
 
-    '''
+    Returns:
+    - None
+    """
 
     spend_categories = user_list[CHANNEL_ID].spend_categories
     select_options = [
@@ -275,7 +328,6 @@ async def select_category(ctx, date):
     async def my_callback(interaction):
         await interaction.response.send_message(f'You chose: {select.values[0]}')
         await asyncio.sleep(0.5)
-
         if select.values[0] not in spend_categories:
             await ctx.send("Invalid category")   
             raise Exception(
@@ -283,47 +335,57 @@ async def select_category(ctx, date):
             )
 
         await post_category_selection(ctx, date, select.values[0])
-   
+
     select.callback = my_callback
-    view = View(timeout=90)
+    
+    view = View(timeout=15)
     view.add_item(select)
   
     await ctx.send('Please select a category', view=view)
 
 async def post_category_selection(ctx, date_to_add,category):
     """
-    Receives the category selected by the user and then asks for the amount spend. If an invalid category is given,
-    an error message is displayed followed by command list. IF the category given is valid, 'post_amount_input' is
-    called next.
+    Receives the category selected by the user and then asks for the amount spent. If an invalid category is given,
+    an error message is displayed, followed by a command list. If the category given is valid, 'post_amount_input' is
+    called next to collect the amount spent.
 
-    :param message: telebot.types.Message object representing the message object
-    :param date_to_add: the date of the purchase
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - date_to_add (object): The date of the purchase.
+    - category (str): The selected category for the expense.
+
+    Returns:
+    - None
     """
     try:
         selected_category = category
         
-        await ctx.send(f'how much did you spend on {selected_category}')
+        await ctx.send(f'\nHow much did you spend on {selected_category}')
         amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
         await post_amount_input(ctx, amount.content,selected_category,date_to_add)
     except Exception as ex:
-        await ctx.send(f"{ex}")
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
         
 
 async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     """
-    Receives the amount entered by the user and then adds to transaction history. An error is displayed if the entered
-     amount is zero. Else, a message is shown that the transaction has been added.
+    Receives the amount entered by the user and adds it to the transaction history. An error is displayed if the entered
+    amount is zero. Else, a message is shown that the transaction has been added.
 
-    :param date_of_entry: user entered date
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - amount_entered (str): The amount entered by the user for the transaction.
+    - selected_category (str): The category of the expense selected by the user.
+    - date_to_add (str): The date of the transaction in a string format.
+
+    Returns:
+    - None
     """
+   
     try:
-        print(amount_entered,selected_category,date_to_add)
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
 
@@ -349,20 +411,21 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     except Exception as ex:
 
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
-        await ctx.send(f"Processing Failed - \nError : " + str(ex))
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def delete(ctx):
     """
-    Handles the 'delete' command. The user is then given 3 options, 'day', 'month' and 'All" from which they can choose.
-    An error message is displayed if there is no transaction history. If there is transaction history, the execution is
-    passed to the function 'process_delete_argument'.
-
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Handles the 'delete' command and prompts the user to choose a deletion option.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    
+    Returns:
+    - None
     """
+
     dateFormat = "%m-%d-%Y"
     monthFormat = "%m-%Y"
     try:
@@ -371,8 +434,8 @@ async def delete(ctx):
             
             curr_day = datetime.now()
             prompt = "Enter the day, month, or All\n"
-            prompt += f"\n\tExample day: {curr_day.strftime(dateFormat)}\n"
-            prompt += f"\n\tExample month: {curr_day.strftime(monthFormat)}"
+            prompt += f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n"
+            prompt += f"\n\tExample month in formate mm-YYYY: {curr_day.strftime(monthFormat)}"
             await ctx.send(prompt)
             delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
             await process_delete_argument(ctx, delete_type.content)
@@ -385,18 +448,20 @@ async def delete(ctx):
 
     except Exception as ex:
         print("Exception occurred : ")
-        logger.error(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def process_delete_argument(ctx, delete_type):
     """
-    This function receives the choice that user inputs for delete and asks for a confirmation. 'handle_confirmation'
-    is called next.
+    Receives the user's choice for deletion and asks for confirmation.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - delete_type (str): The user's input for deletion.
+
+    Returns:
+    - None
     """
 
     dateFormat = "%m-%d-%Y"
@@ -410,12 +475,9 @@ async def process_delete_argument(ctx, delete_type):
     else:
         # try and parse as Date-Month-Year
         if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None:
-            print("date_format check")
             date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
-            print(date)
         # try and parse as Month-Year
         elif user_list[CHANNEL_ID].validate_date_format(text, monthFormat) is not None:
-            print("month_format check")
             date = user_list[CHANNEL_ID].validate_date_format(text, monthFormat)
             is_month = True
 
@@ -439,12 +501,15 @@ async def process_delete_argument(ctx, delete_type):
 
 async def handle_confirmation(ctx, message, records_to_delete):
     """
-    Deletes the transactions in the previously chosen time period if the user chooses 'yes'.
+    Deletes transactions if the user confirms.
 
-    :param message: telebot.types.Message object representing the message object
-    :param records_to_delete: the records to remove
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - message (str): The user's confirmation ("Yes" or "No").
+    - records_to_delete (list): The records to be deleted.
+
+    Returns:
+    - None
     """
 
     if message.lower() == "yes":
@@ -454,13 +519,272 @@ async def handle_confirmation(ctx, message, records_to_delete):
     else:
         await ctx.send("No records deleted")
 
+
 @bot.command()
-async def chart(ctx):
-    if CHANNEL_ID not in user_list.keys():
-        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+async def history(ctx):
+    """
+    Handles the command 'history'. Lists the transaction history.
+
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :type: object
+    :return: None
+    """
+    try:
+        count = 0
+        table = [["Category", "Date", "Amount in $"]]
+
+        if CHANNEL_ID not in user_list.keys():
+            user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+        if not user_list[CHANNEL_ID].transactions:
+            raise Exception("Sorry! No spending records found!")
+
+        for category, transactions in user_list[CHANNEL_ID].transactions.items():
+            for transaction in transactions:
+                count += 1
+                date = transaction["Date"].strftime("%m-%d-%y")
+                value = format(transaction["Value"], ".2f")
+                table.append([category, date, "$ " + value])
+
+        if count == 0:
+            raise Exception("Sorry! No spending records found!")
+
+        spend_total_str = "```" + tabulate(table, headers='firstrow') + "```"
+        await ctx.send(spend_total_str)
+
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def edit(ctx):
+    """
+    Handles the command 'edit' and then displays a message explaining the format. The function 'edit_list2' is called next.
+
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :type: object
+    :return: None
+    """
 
     try:
-        await ctx.send("Please enter the start date (YYYY-MM-DD):")
+        if CHANNEL_ID in list(user_list.keys()):
+            await ctx.send("Please enter the date of transaction to edit(in mm-dd-yyyy format)")
+            date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+
+            await ctx.send("Please enter the value of transaction to edit")
+            value = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+
+            select_options = [
+                    discord.SelectOption(label="Food"),
+                    discord.SelectOption(label="Groceries"),
+                    discord.SelectOption(label="Utilities"),
+                    discord.SelectOption(label="Transport"),
+                    discord.SelectOption(label="Shopping"),
+                ]
+            select = Select(max_values=1,min_values=1, options=select_options)
+            async def my_callback(interaction):
+                await interaction.response.send_message(f'You chose: {select.values[0]}')
+                await asyncio.sleep(0.5)
+                await edit_list2(ctx, date.content, select.values[0], value.content)
+
+            select.callback = my_callback
+            view = View(timeout=90)
+            view.add_item(select)
+
+            await ctx.send('Please select the Category of transaction', view=view)
+        
+        else:
+            await ctx.send("No data found")
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+
+async def edit_list2(ctx,date,category,value):
+    """
+    Parses the input from the user message, finds the appropriate transaction, and asks the user whether they
+    want to update the date, value, or category of the transaction, then passes control to the edit3 function.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - date (str): The date of the transaction in the format "%m-%d-%Y".
+    - category (str): The category of the expense to be edited.
+    - value (str or float): The value of the transaction to be edited.
+
+    Returns:
+    - None
+    """
+    try:
+        dateFormat = "%m-%d-%Y"
+        info_date = user_list[CHANNEL_ID].validate_date_format(date, dateFormat)
+        info_category = category
+        info_value = value
+
+        if info_date is None:
+            await ctx.send("The date is incorrect")
+            return
+        select_options = [
+                    discord.SelectOption(label="Date"),
+                    discord.SelectOption(label="Category"),
+                    discord.SelectOption(label="Cost")
+                ]
+        select = Select(placeholder="What do you want to update", max_values=1,min_values=1, options=select_options)
+        async def my_callback(interaction):
+            await interaction.response.send_message(f'You chose: {select.values[0]}')
+            await asyncio.sleep(0.5)
+            await edit3(ctx, select.values[0])
+
+        for transaction in user_list[CHANNEL_ID].transactions[info_category]:
+            if transaction["Date"].date() == info_date:
+                if transaction["Value"] == float(info_value):
+                    user_list[CHANNEL_ID].store_edit_transaction(
+                        transaction, info_category
+                    )
+                    select.callback = my_callback
+                    view = View(timeout=90)
+                    view.add_item(select)
+
+                    await ctx.send('Please select an option to update', view=view)
+                    break
+        else:
+            await ctx.send("Transaction not found")
+    except Exception as ex:
+        print("Exception occurred : ")
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+
+async def edit3(ctx,choice):
+    """
+    Receives the user's input corresponding to what they want to edit and transfers the execution to the function
+    according to the choice.
+
+    :param ctx: The Discord context window.
+    :param choice: The user's choice for editing ("Date," "Category," or "Cost").
+    :return: None
+    """
+    choice1 = choice
+    if choice1 == "Date":
+        await ctx.send ("Please enter the new date (in mm-dd-yyyy format)")
+        new_date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        await edit_date(ctx,new_date)
+
+    if choice1 == "Category":
+        select_options = [
+                    discord.SelectOption(label="Food"),
+                    discord.SelectOption(label="Groceries"),
+                    discord.SelectOption(label="Utilities"),
+                    discord.SelectOption(label="Transport"),
+                    discord.SelectOption(label="Shopping"),
+                ]
+        select = Select(max_values=1,min_values=1, options=select_options)
+        async def my_callback(interaction):
+            await interaction.response.send_message(f'You chose: {select.values[0]}')
+            await asyncio.sleep(0.5)
+            await edit_cat(ctx, select.values[0])
+
+        select.callback = my_callback
+        view = View(timeout=90)
+        view.add_item(select)
+
+        await ctx.send('Please select the new Category', view=view)
+
+    if choice1 == "Cost":
+        await ctx.send ( "Please type the new cost")
+        new_cost = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        await edit_cost(ctx,new_cost)
+
+
+async def edit_date(ctx, message):
+    """
+    Updates the date of a transaction when the user chooses to edit it.
+
+    :param ctx: The Discord context window.
+    :param message: The user's message containing the new date.
+    :return: None
+    """
+    new_date = message.content
+    user_date = datetime.strptime(new_date, "%m-%d-%Y")
+    if user_date is None:
+        await ctx.send ("The date is incorrect")
+        return
+    updated_transaction = user_list[CHANNEL_ID].edit_transaction_date(user_date)
+    user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+    edit_message = (
+        "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
+            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
+            format(updated_transaction["Value"], ".2f")
+        )
+    )
+    await ctx.send(edit_message)
+
+
+async def edit_cat(ctx,new_category):
+    """
+    Updates the category of a transaction when the user chooses to edit it.
+
+    :param ctx: The Discord context window.
+    :param new_category: The new category chosen by the user.
+    :return: None
+    """
+    updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
+    if updated_transaction:
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        edit_message = "Category has been edited."
+        await ctx.send(edit_message)
+    else:
+        edit_message = "Category has not been edited successfully"
+        await ctx.send(edit_message)
+
+
+async def edit_cost(ctx,message):
+    """
+    Updates the amount of a transaction when the user chooses to edit it.
+
+    :param ctx: The Discord context window.
+    :param message: The user's message containing the new cost.
+    :return: None
+    """
+    new_cost = message.content
+
+    new_cost = user_list[CHANNEL_ID].validate_entered_amount(new_cost)
+    if new_cost != 0:
+        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
+        edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
+            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
+            format(updated_transaction["Value"], ".2f"),
+        )
+        await ctx.send(edit_message)
+
+    else:
+        await ctx.send("The cost is invalid")
+        return
+
+
+
+
+@bot.command()
+async def chart(ctx):
+    """
+    Handles the chart command. When the user runs this command the bot will create a piechart
+    of all the transactions and their categories and post that to the chat
+
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
+    :param date - date message object received from the user
+    :type: object
+    :return: None
+    """
+    try:
+        dateFormat = "%m-%d-%Y"
+        curr_day = datetime.now()
+        await ctx.send("Enter start day")
+        await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel
@@ -468,13 +792,14 @@ async def chart(ctx):
         start_date_message = await bot.wait_for('message', check=check, timeout=30)
         start_date_str = start_date_message.content
 
-        await ctx.send("Please enter the end date (YYYY-MM-DD):")
+        await ctx.send("Enter start day")
+        await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         end_date_message = await bot.wait_for('message', check=check, timeout=30)
         end_date_str = end_date_message.content
 
-        start_date_dt = datetime.strptime(start_date_str, "%Y-%m-%d")
-        end_date_dt = datetime.strptime(end_date_str, "%Y-%m-%d")
+        start_date_dt = datetime.strptime(start_date_str, "%m-%d-%Y")
+        end_date_dt = datetime.strptime(end_date_str, "%m-%d-%Y")
 
         chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID, start_date_dt, end_date_dt)
         for cf in chart_file:
@@ -485,14 +810,16 @@ async def chart(ctx):
     except Exception as ex:
         print("Exception occurred : ")
         print(str(ex), exc_info=True)
-        await ctx.send("Processing Failed - \nError : " + str(ex))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 def get_users():
     """
-    Reads data and returns user list as a Dict
+    Reads user data from files in a specified directory and returns it as a dictionary.
+    The function searches for files with a ".pickle" extension in the specified directory, reads each file's content, and stores it in a 
+    dictionary where the keys are the filenames (without the ".pickle" extension) and the values are the deserialized data from the files.
 
-    :return: users
-    :rtype: dict
+    Returns:
+    - users (dict): A dictionary containing user data.
     """
 
     data_dir = "discordData"
@@ -506,7 +833,6 @@ def get_users():
                 with open(abspath, "rb") as f:
                     users[u] = pickle.load(f)
     return users
-
 
 if __name__ == "__main__":
     try:
