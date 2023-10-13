@@ -300,7 +300,7 @@ async def add(ctx):
         await select_date(ctx)
 
     except Exception as ex:
-        print("exception occurred:"+str(e))
+        print("exception occurred:"+str(ex))
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 async def select_category(ctx, date):
