@@ -32,7 +32,7 @@ async def on_ready():
     - None
     """
     channel = bot.get_channel(int(CHANNEL_ID))
-    await channel.send(f"Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
+    await channel.send("Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
     await menu(channel)
 
 @bot.command()
