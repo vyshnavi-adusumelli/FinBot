@@ -55,8 +55,7 @@ class User:
             with open(abspath, "wb") as f:
                 pickle.dump(self, f)
 
-        except Exception as e:
-            logger.error(str(e), exc_info=True)
+        except Exception as e: logger.error(str(e), exc_info=True)
 
     def validate_entered_amount(self, amount_entered):
         """
@@ -93,8 +92,7 @@ class User:
             self.transactions[category].append({"Date": date, "Value": value})
             self.save_user(userid)
 
-        except Exception as e:
-            logger.error(str(e), exc_info=True)
+        except Exception as e: logger.error(str(e), exc_info=True)
 
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
@@ -110,8 +108,7 @@ class User:
             self.edit_transactions = existing_transaction
             self.edit_category = edit_category
 
-        except Exception as e:
-            logger.error(str(e), exc_info=True)
+        except Exception as e: logger.error(str(e), exc_info=True)
 
     def edit_transaction_date(self, new_date):
         """
@@ -280,8 +277,7 @@ class User:
                 self.monthly_budget = amount
                 self.save_user(userid)
 
-        except Exception as e:
-            logger.error(str(e), exc_info=True)
+        except Exception as e: logger.error(str(e), exc_info=True)
 
     def monthly_total(self):
         """
@@ -404,8 +400,7 @@ class User:
             self.rules[new_category] = []
             self.save_user(userid)
 
-        except Exception as e:
-            logger.error(str(e), exc_info=True)
+        except Exception as e: logger.error(str(e), exc_info=True)
 
     def delete_category(self, category, userid):
         """
@@ -423,5 +418,4 @@ class User:
             self.rules.pop(category, None)
             self.save_user(userid)
 
-        except Exception as e:
-            logger.error(str(e), exc_info=True)
+        except Exception as e: logger.error(str(e), exc_info=True)
