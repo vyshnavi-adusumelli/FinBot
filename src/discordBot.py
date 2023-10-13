@@ -264,9 +264,18 @@ async def select_date(ctx):
         await ctx.send("You took too long to respond. Please try again.")
 
 async def process_date(ctx, date, month, year):
-    # Process the date, month, and year here
-    # You can perform any necessary calculations or operations
-    # For example, you can convert them to a datetime object
+    '''
+    Process the date, month, and year here
+    You can perform any necessary calculations or operations
+    For example, you can convert them to a datetime object
+    :param ctx - Discord context window
+    :param date - date string
+    :param month - month string
+    :param year - year string
+    :type: object
+    :return: None
+    '''
+    
     try:
         date_obj = datetime(int(year), int(month), int(date))
         await ctx.send(f"Selected Date: {date_obj.strftime('%m-%d-%Y')}")
@@ -276,9 +285,15 @@ async def process_date(ctx, date, month, year):
 
 @bot.command()
 async def add(ctx):
-    '''
-    Transactions stored like 'Food': [{'Date': '10032023', 'Value': '150'}] in transactions dictionary.
-    '''
+    """
+    Handles the commands 'add'. To add a transaction to the user records. 
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns: None
+    """
+     
     if CHANNEL_ID not in user_list.keys():
         user_list[CHANNEL_ID] = User(CHANNEL_ID)
     try:
@@ -357,14 +372,19 @@ async def post_category_selection(ctx, date_to_add,category):
 
 async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     """
-    Receives the amount entered by the user and then adds to transaction history. An error is displayed if the entered
-     amount is zero. Else, a message is shown that the transaction has been added.
+    Receives the amount entered by the user and adds it to the transaction history. An error is displayed if the entered
+    amount is zero. Else, a message is shown that the transaction has been added.
 
-    :param date_of_entry: user entered date
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - amount_entered (str): The amount entered by the user for the transaction.
+    - selected_category (str): The category of the expense selected by the user.
+    - date_to_add (str): The date of the transaction in a string format.
+
+    Returns:
+    - None
     """
+   
     try:
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
@@ -397,14 +417,15 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
 @bot.command()
 async def delete(ctx):
     """
-    Handles the 'delete' command. The user is then given 3 options, 'day', 'month' and 'All" from which they can choose.
-    An error message is displayed if there is no transaction history. If there is transaction history, the execution is
-    passed to the function 'process_delete_argument'.
-
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Handles the 'delete' command and prompts the user to choose a deletion option.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    
+    Returns:
+    - None
     """
+
     dateFormat = "%m-%d-%Y"
     monthFormat = "%m-%Y"
     try:
@@ -433,12 +454,14 @@ async def delete(ctx):
 
 async def process_delete_argument(ctx, delete_type):
     """
-    This function receives the choice that user inputs for delete and asks for a confirmation. 'handle_confirmation'
-    is called next.
+    Receives the user's choice for deletion and asks for confirmation.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - delete_type (str): The user's input for deletion.
+
+    Returns:
+    - None
     """
 
     dateFormat = "%m-%d-%Y"
@@ -478,12 +501,15 @@ async def process_delete_argument(ctx, delete_type):
 
 async def handle_confirmation(ctx, message, records_to_delete):
     """
-    Deletes the transactions in the previously chosen time period if the user chooses 'yes'.
+    Deletes transactions if the user confirms.
 
-    :param message: telebot.types.Message object representing the message object
-    :param records_to_delete: the records to remove
-    :type: object
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - message (str): The user's confirmation ("Yes" or "No").
+    - records_to_delete (list): The records to be deleted.
+
+    Returns:
+    - None
     """
 
     if message.lower() == "yes":
@@ -537,7 +563,8 @@ async def edit(ctx):
     """
     Handles the command 'edit' and then displays a message explaining the format. The function 'edit_list2' is called next.
 
-    :param message: telebot.types.Message object representing the message object
+    :param ctx - Discord context window
+    :param Bot - Discord Bot object
     :type: object
     :return: None
     """
@@ -579,11 +606,17 @@ async def edit(ctx):
 
 async def edit_list2(ctx,date,category,value):
     """
-    Parses the input from the user message, and finds the appropriate transaction. Asks the user whether they
-    want to update the date, value, or category of the transaction, and then passes control to edit3 function
+    Parses the input from the user message, finds the appropriate transaction, and asks the user whether they
+    want to update the date, value, or category of the transaction, then passes control to the edit3 function.
 
-    :param message: the message sent of the transaction
-    :return: None
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - date (str): The date of the transaction in the format "%m-%d-%Y".
+    - category (str): The category of the expense to be edited.
+    - value (str or float): The value of the transaction to be edited.
+
+    Returns:
+    - None
     """
     try:
         dateFormat = "%m-%d-%Y"
@@ -627,11 +660,11 @@ async def edit_list2(ctx,date,category,value):
 
 async def edit3(ctx,choice):
     """
-    Receives the user's input corresponding to what they want to edit, and then transfers the execution to the
-    function according to the choice.
+    Receives the user's input corresponding to what they want to edit and transfers the execution to the function
+    according to the choice.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
+    :param ctx: The Discord context window.
+    :param choice: The user's choice for editing ("Date," "Category," or "Cost").
     :return: None
     """
     choice1 = choice
@@ -668,11 +701,10 @@ async def edit3(ctx,choice):
 
 async def edit_date(ctx, message):
     """
-    This function is called if the user chooses to edit the date of a transaction. This function receives the new
-    date and updates the transaction.
+    Updates the date of a transaction when the user chooses to edit it.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
+    :param ctx: The Discord context window.
+    :param message: The user's message containing the new date.
     :return: None
     """
     new_date = message.content
@@ -693,11 +725,10 @@ async def edit_date(ctx, message):
 
 async def edit_cat(ctx,new_category):
     """
-    This function is called if the user chooses to edit the category of a transaction. This function receives the new
-    category and updates the transaction.
+    Updates the category of a transaction when the user chooses to edit it.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
+    :param ctx: The Discord context window.
+    :param new_category: The new category chosen by the user.
     :return: None
     """
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
@@ -712,11 +743,10 @@ async def edit_cat(ctx,new_category):
 
 async def edit_cost(ctx,message):
     """
-    This function is called if the user chooses to edit the amount of a transaction. This function receives the new
-    amount and updates the transaction.
+    Updates the amount of a transaction when the user chooses to edit it.
 
-    :param message: telebot.types.Message object representing the message object
-    :type: object
+    :param ctx: The Discord context window.
+    :param message: The user's message containing the new cost.
     :return: None
     """
     new_cost = message.content

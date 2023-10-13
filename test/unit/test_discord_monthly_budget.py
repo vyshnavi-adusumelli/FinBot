@@ -1,6 +1,3 @@
-"""
-Tests the add_monthly_budget_method
-"""
 from discord_BaseCase import discord_BaseCase
 
 class TestAddMonthlyBudget(discord_BaseCase):

@@ -248,7 +248,7 @@ class User:
         for category in transaction:
             for record in transaction[category]:
                 final_str += (
-                    f'\n {category}, {record["Date"].date()}, {record["Value"]:}\n'
+                    f'{category}, {record["Date"].date()}, {record["Value"]:}\n'
                 )
 
         return final_str
@@ -297,54 +297,6 @@ class User:
                     total_value += transaction["Value"]
         return total_value
 
-    def read_budget_csv(self, file, userid):
-        """
-        This function reads the csv file passed to the bot by the user into a Pandas Dataframe.
-        It goes through each transaction, and checks if it knows how to categorize that transaction. If it does,
-        it will add the transaction to the user history.
-
-        :param file: csv file sent to the telegram bot
-        :param userid: chat id of the conversation
-        :return: df pandas dataframe that contains all of the transactions that the bot could not categorize by itself
-        :rtype: Dataframe
-        """
-        df = pd.read_csv(file)
-        df.columns = df.columns.str.lower()
-        df = df[["date", "description", "debit"]]
-        df = df.dropna()
-        df = df.loc[df["debit"] != 0]
-        for index, row in df.iterrows():
-            for category in self.rules.keys():
-                if row["description"] in self.rules[category]:
-                    date = datetime.strptime(row["date"], "%m/%d/%y")
-                    value = float(row["debit"])
-                    self.add_transaction(date, category, value, userid)
-                    df = df.drop(index)
-        return df
-
-    def create_rules_and_add_unknown_spending(
-        self, category, description, date, value, userid
-    ):
-        """
-        This function is used to remember how an user categorized a certain transaction, so that the next time
-        the bot sees the transaction the bot will be able to categorize it automatically.
-
-        :param category: category of the transaction
-        :type: string
-        :param description:
-        :type: string
-        :param date:
-        :type: Datetime object
-        :param value:
-        :type: float
-        :param userid:
-        :type: string
-        :return: None
-        """
-        self.rules[category].append(description)
-        self.add_transaction(date, category, value, userid)
-        self.save_user(userid)
-
     def create_chart(self, userid, start_date=None, end_date=None):
         """
         This is used to create the matplotlib piechart of all the transactions and
@@ -391,41 +343,3 @@ class User:
         # Add more visualizations here. Maintain the above format while adding more visualizations. 
 
         return charts
-
-    def add_category(self, new_category, userid):
-        """
-        Stores the category to category list.
-
-        :param new_category: name of the new category
-        :type: string
-        :param userid: userid string which is also the file name
-        :type: string
-        :return: None
-        """
-        try:
-            self.spend_categories.append(new_category)
-            self.transactions[new_category] = []
-            self.rules[new_category] = []
-            self.save_user(userid)
-
-        except Exception as e:
-            print("exception occurred:"+str(e))
-
-    def delete_category(self, category, userid):
-        """
-        Removes the category from category list.
-
-        :param category: name of the category to be removed
-        :type: string
-        :param userid: userid string which is also the file name
-        :type: string
-        :return: None
-        """
-        try:
-            self.spend_categories.remove(category)
-            self.transactions.pop(category, None)
-            self.rules.pop(category, None)
-            self.save_user(userid)
-
-        except Exception as e:
-            print("exception occurred:"+str(e))

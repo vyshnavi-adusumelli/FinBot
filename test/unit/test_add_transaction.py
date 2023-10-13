@@ -1,5 +1,4 @@
-import unittest
-# import code
+
 from BaseCase import BaseCase
 from datetime import datetime
 
@@ -100,7 +99,3 @@ class TestAddUserRecord(BaseCase):
         message = self.validate_user_list(transaction)
         if message != "":
             assert False, message
-
-
-if __name__ == '__main__':
-    unittest.main()

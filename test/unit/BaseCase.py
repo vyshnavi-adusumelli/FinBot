@@ -18,7 +18,7 @@ class BaseCase(unittest.TestCase):
         Creates a new user
         """
         # os.chdir("test")
-        abspath = pathlib.Path("data").absolute()
+        abspath = pathlib.Path("teleData").absolute()
         print(abspath, "abs path")
         if not os.path.exists(abspath):
             os.mkdir(abspath)
@@ -31,7 +31,7 @@ class BaseCase(unittest.TestCase):
         """
         Removes the user pickle
         """
-        abspath = pathlib.Path("data").absolute()
+        abspath = pathlib.Path("teleData").absolute()
         if not os.path.exists(abspath):
             os.mkdir(abspath)
 
