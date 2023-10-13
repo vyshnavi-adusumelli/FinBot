@@ -1,6 +1,6 @@
 import asyncio
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discordUser import User
 from discord.ui import Select, View
 import os
@@ -30,7 +30,7 @@ async def on_ready():
     - None
     """
     channel = bot.get_channel(int(CHANNEL_ID))
-    await channel.send(f"Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
+    await channel.send("Hello ! Welcome to FinBot - a simple solution to track your expenses! \n\n")
     await menu(channel)
 
 @bot.command()
@@ -164,14 +164,14 @@ async def budget(ctx):
     try:
         await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
         await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
-        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+        budget_resp = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
     except asyncio.TimeoutError:
         await ctx.send('You ran out of time to answer!')
     else:
         if budget: await post_budget_input(ctx, budget)
         else: await ctx.send('Nope enter a valid date')
 
-async def post_budget_input(ctx, budget):
+async def post_budget_input(ctx, budget_resp):
     """
     Handles the processing of user input (budget). This function validates the entered amount and sets the budget. The error handling 
     functionality is also implemented.
@@ -257,7 +257,7 @@ async def add(ctx):
     try: await select_date(ctx)
 
     except Exception as ex:
-        print("exception occurred:"+str(e))
+        print("exception occurred:"+str(ex))
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 async def select_category(ctx, date):
@@ -342,7 +342,7 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
         category_str, amount_str = (selected_category,format(amount_value, ".2f"))
         user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
         total_value = user_list[CHANNEL_ID].monthly_total()
-        add_message = f"The following expenditure has been recorded: You have spent ${amount_entered} for {selected_category} on {date_to_add}"
+        add_message = f"The following expenditure has been recorded: You have spent ${amount_str} for {category_str} on {date_to_add}"
 
         if user_list[CHANNEL_ID].monthly_budget > 0:
             if total_value > user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have gone over the monthly budget*")
@@ -403,7 +403,6 @@ async def process_delete_argument(ctx, delete_type):
     dateFormat = "%m-%d-%Y"
     monthFormat = "%m-%Y"
     text = delete_type #delete_type
-    ctx = ctx
     date = None
     is_month = False
     if text.lower() == "all": date = "all"
