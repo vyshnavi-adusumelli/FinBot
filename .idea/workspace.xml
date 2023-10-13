@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ca452a8-09f0-4b4a-9de8-f457707fdde1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/test/unit/test_add_command.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/teleBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/teleBot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
