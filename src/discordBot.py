@@ -682,7 +682,7 @@ async def chart(ctx):
         start_date_message = await bot.wait_for('message', check=check, timeout=30)
         start_date_str = start_date_message.content
 
-        await ctx.send("Enter start day")
+        await ctx.send("Enter end day")
         await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         end_date_message = await bot.wait_for('message', check=check, timeout=30)
