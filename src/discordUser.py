@@ -5,7 +5,7 @@ import pathlib
 import pickle
 import re
 from datetime import datetime, timedelta
-import pandas as pd
+import pandas
 import matplotlib.pyplot as plt
 
 
@@ -308,7 +308,7 @@ class User:
         :return: df pandas dataframe that contains all of the transactions that the bot could not categorize by itself
         :rtype: Dataframe
         """
-        df = pd.read_csv(file)
+        df = pandas.read_csv(file)
         df.columns = df.columns.str.lower()
         df = df[["date", "description", "debit"]]
         df = df.dropna()
