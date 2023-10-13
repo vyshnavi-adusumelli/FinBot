@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6ca452a8-09f0-4b4a-9de8-f457707fdde1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/discordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/discordBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/discordUser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/discordUser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/teleUser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/teleUser.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -173,9 +173,7 @@ class User:
                 for record in records[category]:
                     try:
                         self.transactions[category].remove(record)
-                    except Exception as e:
-                        print("Exception occurred : ")
-                        logger.error(str(e), exc_info=True)
+                    except Exception as e: logger.error(str(e), exc_info=True)
         else:
             self.transactions = {}
             for category in self.spend_categories:
