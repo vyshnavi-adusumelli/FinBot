@@ -7,8 +7,8 @@ setup(
     description='Telegram/Discord bot to manage expenses',
     tests_require=['pytest'],
     author='CSC510 - Group 13',
-    author_email='mydollarbot@gmail.com',
-    url='https://github.com/secheaper/slashbot/',
+    author_email='vadusum@gmail.com',
+    url='https://github.com/vyshnavi-adusumelli/FinBot',
     python_requires='>=3.7',
     classifiers=[
         "License :: OSI Approved :: MIT License",
