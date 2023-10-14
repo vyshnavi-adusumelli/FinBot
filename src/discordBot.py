@@ -44,11 +44,7 @@ async def menu(ctx):
     Returns:
     - None
     """
-    em = discord.Embed(
-        title="FinBot",
-        description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",
-        color = discord.Color.teal()
-    )
+    em = discord.Embed(title="FinBot", description="Here is a list of available commands, please enter a command of your choice with a prefix '#' so that I can assist you further.\n ",color = discord.Color.teal())
     em.add_field(name="**#menu**", value="Displays all commands and their descriptions", inline=False)
     em.add_field(name="**#add**", value="Record/Add a new spending", inline=False)
     em.add_field(name="**#display**", value="Show sum of expenditure for the current day/month", inline=False)
@@ -73,14 +69,10 @@ async def display(ctx):
     Returns:
     - None
     """
-    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0:
-        await ctx.send("Oops! Looks like you do not have any spending records!")
+    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
     else:
         try:
-            select_options = [
-                    discord.SelectOption(label="Day"),
-                    discord.SelectOption(label="Month"),
-                ]
+            select_options = [discord.SelectOption(label="Day"),discord.SelectOption(label="Month"),]
             select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
                 
             async def my_callback(interaction):
@@ -100,7 +92,6 @@ async def display(ctx):
             await ctx.send('Please select a category to see the total expense', view=view)
 
         except Exception as ex:
-            print("Exception occurred : ")
             print(str(ex), exc_info=True)
             await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -120,13 +111,9 @@ async def display_total(ctx, sel_category):
     try:
         day_week_month = sel_category
 
-        if day_week_month not in user_list[CHANNEL_ID].spend_display_option:
-            raise Exception(
-                'Sorry I can\'t show spendings for "{}"!'.format(day_week_month)
-            )
+        if day_week_month not in user_list[CHANNEL_ID].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
 
-        if len(user_list[CHANNEL_ID].transactions) == 0:
-            raise Exception("Oops! Looks like you do not have any spending records!")
+        if len(user_list[CHANNEL_ID].transactions) == 0: raise Exception("Oops! Looks like you do not have any spending records!")
 
         await ctx.send("Hold on! Calculating...")
 
@@ -137,15 +124,9 @@ async def display_total(ctx, sel_category):
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
                     if transaction["Date"].strftime("%d") == query.strftime("%d"):
-                        query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(
-                            category,
-                            transaction["Date"].strftime(dateFormat),
-                            transaction["Value"],
-                        )
+                        query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
-            total_spendings = "Here are your total spendings for the date {} \n\n".format(
-                datetime.today().strftime("%m/%d/%Y")
-            )
+            total_spendings = "Here are your total spendings for the date {} \n\n".format(datetime.today().strftime("%m/%d/%Y"))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}".format(total_value)
             await ctx.send(total_spendings)
@@ -157,23 +138,14 @@ async def display_total(ctx, sel_category):
             for category in user_list[CHANNEL_ID].transactions.keys():
                 for transaction in user_list[CHANNEL_ID].transactions[category]:
                     if transaction["Date"].strftime("%m") == query.strftime("%m"):
-                        query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(
-                            category,
-                            transaction["Date"].strftime(dateFormat),
-                            transaction["Value"],
-                        )
+                        query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(category,transaction["Date"].strftime(dateFormat),transaction["Value"])
                         total_value += transaction["Value"]
-            total_spendings = (
-                "Here are your total spendings for the Month {} \n\n".format(
-                    datetime.today().strftime("%B")
-                )
-            )
+            total_spendings = ("Here are your total spendings for the Month {} \n\n".format(datetime.today().strftime("%B")))
             total_spendings += query_result
             total_spendings += "Total Value {:.2f}\n".format(total_value)
             total_spendings += "Budget for the month {}".format(str(budget_value))
             await ctx.send(total_spendings)
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -188,8 +160,7 @@ async def budget(ctx):
     Returns:
     - None
     """
-    if CHANNEL_ID not in user_list.keys():
-        user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
     try:
         await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
         await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
@@ -197,10 +168,8 @@ async def budget(ctx):
     except asyncio.TimeoutError:
         await ctx.send('You ran out of time to answer!')
     else:
-        if budget_resp:
-            await post_budget_input(ctx, budget_resp)
-        else:
-            await ctx.send('Nope enter a valid date')
+        if budget_resp: await post_budget_input(ctx, budget)
+        else: await ctx.send('Nope enter a valid date')
 
 async def post_budget_input(ctx, budget_resp):
     """
@@ -216,21 +185,16 @@ async def post_budget_input(ctx, budget_resp):
     """
     try:
         amount_entered = budget_resp.content
-        amount_value = user_list[CHANNEL_ID].validate_entered_amount(
-            amount_entered
-        )  # validate
-        if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Budget amount has to be a positive number.")
+        amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  raise Exception("Budget amount has to be a positive number.") # cannot be $0 spending
         user_list[CHANNEL_ID].add_monthly_budget(amount_value, CHANNEL_ID)
         await ctx.send(f"The budget for this month has been set as $ {amount_value}")
     
     except Exception as ex:
         await ctx.send("Oh no! " + str(ex))
         budget_new = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
-        if budget_new.content.isnumeric():
-            await post_budget_input(ctx, budget_new)
-        elif '#' not in budget_new.content :
-            await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
+        if budget_new.content.isnumeric(): await post_budget_input(ctx, budget_new)
+        elif '#' not in budget_new.content : await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
 async def select_date(ctx):
     '''
@@ -248,8 +212,7 @@ async def select_date(ctx):
     curr_day = datetime.now()
     await ctx.send("Enter day")
     await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
-    def check(msg):
-        return msg.author == ctx.author and msg.channel == ctx.channel
+    def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
 
     try:
         date_message = await bot.wait_for('message', check=check, timeout=60)
@@ -258,8 +221,7 @@ async def select_date(ctx):
 
         # Call the next function with the date, month, and year
         await process_date(ctx, date, month, year)
-    except asyncio.TimeoutError:
-        await ctx.send("You took too long to respond. Please try again.")
+    except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
 
 async def process_date(ctx, date, month, year):
     '''
@@ -278,8 +240,7 @@ async def process_date(ctx, date, month, year):
         date_obj = datetime(int(year), int(month), int(date))
         await ctx.send(f"Selected Date: {date_obj.strftime('%m-%d-%Y')}")
         await select_category(ctx, date_obj)
-    except ValueError:
-        await ctx.send("Invalid date, month, or year. Please enter valid values.")
+    except ValueError: await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
 @bot.command()
 async def add(ctx):
@@ -292,10 +253,8 @@ async def add(ctx):
     Returns: None
     """
      
-    if CHANNEL_ID not in user_list.keys():
-        user_list[CHANNEL_ID] = User(CHANNEL_ID)
-    try:
-        await select_date(ctx)
+    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    try: await select_date(ctx)
 
     except Exception as ex:
         print("exception occurred:"+str(ex))
@@ -316,11 +275,7 @@ async def select_category(ctx, date):
     """
 
     spend_categories = user_list[CHANNEL_ID].spend_categories
-    select_options = [
-        discord.SelectOption(
-                label=category,
-        ) for category in spend_categories
-    ]
+    select_options = [discord.SelectOption(label=category) for category in spend_categories]
     select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
     
     async def my_callback(interaction):
@@ -328,9 +283,7 @@ async def select_category(ctx, date):
         await asyncio.sleep(0.5)
         if select.values[0] not in spend_categories:
             await ctx.send("Invalid category")   
-            raise Exception(
-                    'Sorry I don\'t recognise this category "{}"!'.format(select.values[0])
-            )
+            raise Exception('Sorry I don\'t recognise this category "{}"!'.format(select.values[0]))
 
         await post_category_selection(ctx, date, select.values[0])
 
@@ -363,7 +316,6 @@ async def post_category_selection(ctx, date_to_add,category):
 
         await post_amount_input(ctx, amount.content,selected_category,date_to_add)
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
         
@@ -385,30 +337,20 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
    
     try:
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
-        if amount_value == 0:  # cannot be $0 spending
+        if amount_value == 0:  raise Exception("Spent amount has to be a non-zero number.") # cannot be $0 spending
 
-            raise Exception("Spent amount has to be a non-zero number.")
-
-        category_str, amount_str = (
-            selected_category,
-            format(amount_value, ".2f"),
-        )
+        category_str, amount_str = (selected_category,format(amount_value, ".2f"))
         user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
         total_value = user_list[CHANNEL_ID].monthly_total()
         add_message = f"The following expenditure has been recorded: You have spent ${amount_str} for {category_str} on {date_to_add}"
 
         if user_list[CHANNEL_ID].monthly_budget > 0:
-            if total_value > user_list[CHANNEL_ID].monthly_budget:
-                await ctx.send("*You have gone over the monthly budget*")
-            elif total_value == user_list[CHANNEL_ID].monthly_budget:
-                await ctx.send("*You have exhausted your monthly budget. You can check/download history*")
-            elif total_value >= 0.8 * user_list[CHANNEL_ID].monthly_budget:
-                await ctx.send("*You have used 80% of the monthly budget*")
+            if total_value > user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have gone over the monthly budget*")
+            elif total_value == user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have exhausted your monthly budget. You can check/download history*")
+            elif total_value >= 0.8 * user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have used 80% of the monthly budget*")
 
         await ctx.send(add_message)
     except Exception as ex:
-
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -438,14 +380,10 @@ async def delete(ctx):
             delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
             await process_delete_argument(ctx, delete_type.content)
         else:
-            delete_history_text = (
-                "No records to be deleted. Start adding your expenses to keep track of your "
-                "spendings! "
-            )
+            delete_history_text = ("No records to be deleted. Start adding your expenses to keep track of your spendings! ")
             await ctx.send(delete_history_text)
 
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -467,26 +405,21 @@ async def process_delete_argument(ctx, delete_type):
     text = delete_type #delete_type
     date = None
     is_month = False
-    if text.lower() == "all":
-        date = "all"
+    if text.lower() == "all": date = "all"
     else:
         # try and parse as Date-Month-Year
-        if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None:
-            date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
+        if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None: date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
         # try and parse as Month-Year
         elif user_list[CHANNEL_ID].validate_date_format(text, monthFormat) is not None:
             date = user_list[CHANNEL_ID].validate_date_format(text, monthFormat)
             is_month = True
 
-    if date is None:
-        # if none of the formats worked
-        await ctx.send("error parsing text")
+    if date is None: await ctx.send("error parsing text")
     else:
         # get the records either by given day, month, or all records
         records_to_delete = user_list[CHANNEL_ID].get_records_by_date(date, is_month)
         # if none of the records match that day
-        if len(records_to_delete) == 0:
-            await ctx.send(f"No transactions within {text}")
+        if len(records_to_delete) == 0: await ctx.send(f"No transactions within {text}")
         response_str = "Confirm records to delete\n"
         response_str += user_list[CHANNEL_ID].display_transaction(records_to_delete)
         await ctx.send(response_str)
@@ -513,8 +446,7 @@ async def handle_confirmation(ctx, message, records_to_delete):
         user_list[CHANNEL_ID].deleteHistory(records_to_delete)
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
         await ctx.send("Successfully deleted records")
-    else:
-        await ctx.send("No records deleted")
+    else: await ctx.send("No records deleted")
 
 
 @bot.command()
@@ -531,11 +463,9 @@ async def history(ctx):
         count = 0
         table = [["Category", "Date", "Amount in $"]]
 
-        if CHANNEL_ID not in user_list.keys():
-            user_list[CHANNEL_ID] = User(CHANNEL_ID)
+        if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
 
-        if not user_list[CHANNEL_ID].transactions:
-            raise Exception("Sorry! No spending records found!")
+        if not user_list[CHANNEL_ID].transactions: raise Exception("Sorry! No spending records found!")
 
         for category, transactions in user_list[CHANNEL_ID].transactions.items():
             for transaction in transactions:
@@ -544,14 +474,12 @@ async def history(ctx):
                 value = format(transaction["Value"], ".2f")
                 table.append([category, date, "$ " + value])
 
-        if count == 0:
-            raise Exception("Sorry! No spending records found!")
+        if count == 0: raise Exception("Sorry! No spending records found!")
 
         spend_total_str = "```" + tabulate(table, headers='firstrow') + "```"
         await ctx.send(spend_total_str)
 
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -574,13 +502,7 @@ async def edit(ctx):
             await ctx.send("Please enter the value of transaction to edit")
             value = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
 
-            select_options = [
-                    discord.SelectOption(label="Food"),
-                    discord.SelectOption(label="Groceries"),
-                    discord.SelectOption(label="Utilities"),
-                    discord.SelectOption(label="Transport"),
-                    discord.SelectOption(label="Shopping"),
-                ]
+            select_options = [discord.SelectOption(label="Food"), discord.SelectOption(label="Groceries"), discord.SelectOption(label="Utilities"), discord.SelectOption(label="Transport"), discord.SelectOption(label="Shopping")]
             select = Select(max_values=1,min_values=1, options=select_options)
             async def my_callback(interaction):
                 await interaction.response.send_message(f'You chose: {select.values[0]}')
@@ -593,10 +515,8 @@ async def edit(ctx):
 
             await ctx.send('Please select the Category of transaction', view=view)
         
-        else:
-            await ctx.send("No data found")
+        else: await ctx.send("No data found")
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -624,11 +544,7 @@ async def edit_list2(ctx,date,category,value):
         if info_date is None:
             await ctx.send("The date is incorrect")
             return
-        select_options = [
-                    discord.SelectOption(label="Date"),
-                    discord.SelectOption(label="Category"),
-                    discord.SelectOption(label="Cost")
-                ]
+        select_options = [discord.SelectOption(label="Date"), discord.SelectOption(label="Category"), discord.SelectOption(label="Cost")]
         select = Select(placeholder="What do you want to update", max_values=1,min_values=1, options=select_options)
         async def my_callback(interaction):
             await interaction.response.send_message(f'You chose: {select.values[0]}')
@@ -638,19 +554,15 @@ async def edit_list2(ctx,date,category,value):
         for transaction in user_list[CHANNEL_ID].transactions[info_category]:
             if transaction["Date"].date() == info_date:
                 if transaction["Value"] == float(info_value):
-                    user_list[CHANNEL_ID].store_edit_transaction(
-                        transaction, info_category
-                    )
+                    user_list[CHANNEL_ID].store_edit_transaction(transaction, info_category)
                     select.callback = my_callback
                     view = View(timeout=90)
                     view.add_item(select)
 
                     await ctx.send('Please select an option to update', view=view)
                     break
-        else:
-            await ctx.send("Transaction not found")
+        else: await ctx.send("Transaction not found")
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -671,13 +583,7 @@ async def edit3(ctx,choice):
         await edit_date(ctx,new_date)
 
     if choice1 == "Category":
-        select_options = [
-                    discord.SelectOption(label="Food"),
-                    discord.SelectOption(label="Groceries"),
-                    discord.SelectOption(label="Utilities"),
-                    discord.SelectOption(label="Transport"),
-                    discord.SelectOption(label="Shopping"),
-                ]
+        select_options = [discord.SelectOption(label="Food"),discord.SelectOption(label="Groceries"),discord.SelectOption(label="Utilities"),discord.SelectOption(label="Transport"),discord.SelectOption(label="Shopping")]
         select = Select(max_values=1,min_values=1, options=select_options)
         async def my_callback(interaction):
             await interaction.response.send_message(f'You chose: {select.values[0]}')
@@ -711,13 +617,7 @@ async def edit_date(ctx, message):
         return
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_date(user_date)
     user_list[CHANNEL_ID].save_user(CHANNEL_ID)
-    edit_message = (
-        "Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
-            format(updated_transaction["Value"], ".2f")
-        )
-    )
-    await ctx.send(edit_message)
+    await ctx.send(("Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f"))))
 
 
 async def edit_cat(ctx,new_category):
@@ -731,11 +631,8 @@ async def edit_cat(ctx,new_category):
     updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
     if updated_transaction:
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
-        edit_message = "Category has been edited."
-        await ctx.send(edit_message)
-    else:
-        edit_message = "Category has not been edited successfully"
-        await ctx.send(edit_message)
+        await ctx.send("Category has been edited.")
+    else: await ctx.send("Category has not been edited successfully")
 
 
 async def edit_cost(ctx,message):
@@ -752,11 +649,7 @@ async def edit_cost(ctx,message):
     if new_cost != 0:
         user_list[CHANNEL_ID].save_user(CHANNEL_ID)
         updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
-        edit_message = "Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(
-            updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),
-            format(updated_transaction["Value"], ".2f"),
-        )
-        await ctx.send(edit_message)
+        await ctx.send("Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f")))
 
     else:
         await ctx.send("The cost is invalid")
@@ -783,13 +676,12 @@ async def chart(ctx):
         await ctx.send("Enter start day")
         await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
-        def check(message):
-            return message.author == ctx.author and message.channel == ctx.channel
+        def check(message):return message.author == ctx.author and message.channel == ctx.channel
 
         start_date_message = await bot.wait_for('message', check=check, timeout=30)
         start_date_str = start_date_message.content
 
-        await ctx.send("Enter start day")
+        await ctx.send("Enter end day")
         await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         end_date_message = await bot.wait_for('message', check=check, timeout=30)
@@ -805,7 +697,6 @@ async def chart(ctx):
                 await ctx.send(file=file)
 
     except Exception as ex:
-        print("Exception occurred : ")
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
@@ -827,14 +718,13 @@ def get_users():
             if u:
                 u = u.group(1)
                 abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
-                with open(abspath, "rb") as f:
-                    users[u] = pickle.load(f)
+                with open(abspath, "rb") as f: users[u] = pickle.load(f)
+
     return users
 
 if __name__ == "__main__":
     try:
         user_list = get_users()
         bot.run(BOT_TOKEN)
-    except Exception as e:
-        print(f"{e}")
+    except Exception as e: print(f"{e}")
 
