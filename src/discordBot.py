@@ -168,8 +168,7 @@ async def budget(ctx):
     except asyncio.TimeoutError:
         await ctx.send('You ran out of time to answer!')
     else:
-        if budget:
-            await post_budget_input(ctx, budget)
+        if budget_resp: await post_budget_input(ctx, budget)
         else: await ctx.send('Nope enter a valid date')
 
 async def post_budget_input(ctx, budget_resp):
