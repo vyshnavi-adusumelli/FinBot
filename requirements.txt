@@ -2,5 +2,5 @@ pyTelegramBotAPI==4.1.0
 pandas
 matplotlib
 tabulate
-discord.py==2.3.2
+discord.py
 
