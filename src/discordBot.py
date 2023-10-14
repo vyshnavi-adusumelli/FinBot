@@ -192,9 +192,9 @@ async def post_budget_input(ctx, budget_resp):
     
     except Exception as ex:
         await ctx.send("Oh no! " + str(ex))
-        budget_resp = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
-        if budget_resp.content.isnumeric(): await post_budget_input(ctx, budget_resp)
-        elif '#' not in budget_resp.content : await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
+        budget_new = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        if budget_new.content.isnumeric(): await post_budget_input(ctx, budget_new)
+        elif '#' not in budget_new.content : await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
 async def select_date(ctx):
     '''
