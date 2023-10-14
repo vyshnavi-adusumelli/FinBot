@@ -719,6 +719,7 @@ def get_users():
                 u = u.group(1)
                 abspath = pathlib.Path("{0}/{1}".format(data_dir, file)).absolute()
                 with open(abspath, "rb") as f: users[u] = pickle.load(f)
+
     return users
 
 if __name__ == "__main__":
