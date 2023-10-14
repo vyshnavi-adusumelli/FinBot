@@ -184,7 +184,7 @@ async def post_budget_input(ctx, budget_resp):
     - None
     """
     try:
-        amount_entered = budget.content
+        amount_entered = budget_resp.content
         amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  raise Exception("Budget amount has to be a positive number.") # cannot be $0 spending
         user_list[CHANNEL_ID].add_monthly_budget(amount_value, CHANNEL_ID)
@@ -192,9 +192,9 @@ async def post_budget_input(ctx, budget_resp):
     
     except Exception as ex:
         await ctx.send("Oh no! " + str(ex))
-        budget = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
-        if budget.content.isnumeric(): await post_budget_input(ctx, budget)
-        elif '#' not in budget.content : await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
+        budget_resp = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        if budget_resp.content.isnumeric(): await post_budget_input(ctx, budget_resp)
+        elif '#' not in budget_resp.content : await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
 async def select_date(ctx):
     '''
