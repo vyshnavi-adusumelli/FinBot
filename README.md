@@ -90,35 +90,27 @@ Sample demos are shown below. They are run on a local machine.
 ```
   pip install -r requirements.txt
 ```
-5. Download and install the Telegram desktop application for your system from the following site: https://desktop.telegram.org/
+5. Ensure that you export the PYTHONPATH variable to the main project folder in the environment variables. This is essential for your Python scripts to locate and import the project modules correctly.
 
-6. Once you login to your Telegram account, search for "BotFather" in Telegram. Click on "Start" --> enter the following command:
+### Telegram Installation
+
+### Discord Installation
+
+### Testing with Pytest
+
+1. Ensure that all necessary environment variables are correctly set on your computer. These variables are crucial for the functioning of your bot and test environment:
+
+DISCORD_TOKEN: Your Discord bot's token.
+CHANNEL_ID: The ID of the Discord channel your bot operates in.
+API_TOKEN: The API token for your Telegram bot.
+CHAT_ID: The ID of the chat where your Telegram bot operates.
+PYTHONPATH: Set the PYTHONPATH variable to the main project folder. This helps your Python scripts locate and import project modules correctly.
+
+2. Navigate to the FinBot/test/unit folder in your project directory. In your terminal, run the following command:
 ```
-  /newbot
+  python -m pytest
 ```
-7. Follow the instructions on screen and choose a name for your bot. Post this, select a username for your bot that ends with "bot" (as per the instructions on your Telegram screen)
-
-8. BotFather will now confirm the creation of your bot and provide a TOKEN to access the HTTP API - copy this token for future use.
-
-9. Search for "Edit the system environment variables" on your local computer. Click on Environment Variables and create a new System Variable called "API_TOKEN" and paste the token copied in step 8.
-
-10. In the Telegram app, search for your newly created bot by entering the username and open the same. Once this is done, go back to the terminal session. 
-Make sure you export the PYTHONPATH variable to the main project folder
- ```
- python src/bot.py
-```
-11. A successful run will generate a message on your terminal that says "TeleBot: Started polling." 
-12. Post this, navigate to your bot on Telegram, enter the "/start" or "/menu" command, and you are all set to track your expenses!
-
-For more info on deployment(Heroku), check out the doc [here](https://github.com/mtkumar123/MyDollarBot/blob/main/CONTRIBUTING.md#more-tips-for-developers)
-
-
-## 💻For testing with Pytest
-1. Some modules in testing require CHAT_ID environment variable to be set.
-2. This is the specific ID that is maintained for your chat with the Bot.
-3. While running the bot.py , get this id from line 72 and set it in your system environment variables.
-4. This should ensure effective running of all tests.
-
+After running the tests, you should see a summary indicating the number of test failures and passes.
 
 # :information_desk_person: Sample Demos
 
