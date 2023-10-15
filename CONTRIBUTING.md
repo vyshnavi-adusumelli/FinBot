@@ -46,7 +46,7 @@ Provide details like
 - What is the enhancement?
 - Suggestions to implement the enhancement
 
-Lastly, We welcome suggestions to improve the bot; please add them to the TO-DO list.
+We welcome suggestions to improve the bot; please add them to the TO-DO list.
 
 ### Pull Requests
 
@@ -72,3 +72,23 @@ Key features to pay attention to
   
 - Insert a clear and descriptive title.
 
+##Style Guides
+
+###Git Commit Messages
+
+- Describe why any particular modification is being made.
+
+- Give a detailed description about the limitations of current code.
+
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+
+- Limit the first line to 72 characters or less
+
+- Link an issue to the change
+
+###Python Style Guides
+
+All Python code is linted with Pylint. Ensure that before you commit any changes, your code passes all the default pylint checks and pipeline checks. Pylint can be installed with pip install pylint.
+
+##Need Additional Help?
+Due to any reason, if you feel like you have reservations related to the process, feel free to reach us out at [vadusum@ncsu.edu] Github process can be a bit complex and we don't want to lose your valuable contributions because of that reason. We are extremely glad that you have visited us and will make our project much better.
