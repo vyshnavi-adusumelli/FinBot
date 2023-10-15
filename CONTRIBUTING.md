@@ -36,7 +36,17 @@ This section guides you through submitting a bug report for FinBot. Following th
 
 - If the problem wasn't triggered by a specific action, describe what you were doing before the problem happened and share more information using the guidelines below.
 
-## Pull Requests
+### Suggesting Enhancements
+
+This section guides you through submitting a suggestion for FinBot, including completely new features and minor improvements to existing functionality.
+
+Enhancement suggestions are tracked as GitHub issues. After you've determine your enhancement suggestion, create an issue on that repository and provide with information like title, step-by-step description, specific examples. Giving more detailed information will help us understand the suggestion better.
+
+Provide details like
+- What is the enhancement?
+- Suggestions to implement the enhancement
+
+### Pull Requests
 
 The process described here has several goals:
 
