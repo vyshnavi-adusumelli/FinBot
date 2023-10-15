@@ -14,27 +14,27 @@ This section guides you through submitting a bug report for FinBot. Following th
 
 ### Before Submitting A Bug Report
 
-Check the debugging guide.
+- Check the debugging guide.
 
-Review the FAQs on the forum for common questions and problems.
+- Review the FAQs on the forum for common questions and problems.
 
-Perform a cursory search to see if the problem has already been reported.
+- Perform a cursory search to see if the problem has already been reported.
 
-When you are creating a bug report, please ensure that you include as many details as possible to understand the issue.
+- When you are creating a bug report, please ensure that you include as many details as possible to understand the issue.
 
 ### How Do I Submit A (Good) Bug Report?
 
-Use a clear and descriptive title for the issue to identify the problem.
+- Use a clear and descriptive title for the issue to identify the problem.
 
-Describe the exact steps which reproduce the problem in as many details as possible.
+- Describe the exact steps which reproduce the problem in as many details as possible.
 
-Provide specific examples to demonstrate the steps. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets in the issue, use Markdown code blocks.
+- Provide specific examples to demonstrate the steps. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets in the issue, use Markdown code blocks.
 
-If the problem is related to performance or memory, then ensure that you include a CPU profile capture with your report.
+- If the problem is related to performance or memory, then ensure that you include a CPU profile capture with your report.
 
-Include screenshots and animated GIFs which show you following the described steps and clearly demonstrate the problem.
+- Include screenshots and animated GIFs which show you following the described steps and clearly demonstrate the problem.
 
-If the problem wasn't triggered by a specific action, describe what you were doing before the problem happened and share more information using the guidelines below.
+- If the problem wasn't triggered by a specific action, describe what you were doing before the problem happened and share more information using the guidelines below.
 
 ## Pull Requests
 
