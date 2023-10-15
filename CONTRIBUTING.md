@@ -72,9 +72,9 @@ Key features to pay attention to
   
 - Insert a clear and descriptive title.
 
-##Style Guides
+## Style Guides
 
-###Git Commit Messages
+### Git Commit Messages
 
 - Describe why any particular modification is being made.
 
@@ -86,9 +86,9 @@ Key features to pay attention to
 
 - Link an issue to the change
 
-###Python Style Guides
+### Python Style Guides
 
 All Python code is linted with Pylint. Ensure that before you commit any changes, your code passes all the default pylint checks and pipeline checks. Pylint can be installed with pip install pylint.
 
-##Need Additional Help?
+## Need Additional Help?
 Due to any reason, if you feel like you have reservations related to the process, feel free to reach us out at [vadusum@ncsu.edu] Github process can be a bit complex and we don't want to lose your valuable contributions because of that reason. We are extremely glad that you have visited us and will make our project much better.
