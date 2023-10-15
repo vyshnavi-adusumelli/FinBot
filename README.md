@@ -129,7 +129,7 @@ Sample demos are shown below. They are run on a local machine.
 
 8. Open your terminal and navigate to the project's root folder. Run the command: ```python src/DiscordBot.py``` in the terminal. A successful run will generate a message in your terminal, indicating that "Shard ID None has connected to Gateway."
 
-9. After a successful connection, go to your bot on Discord and enter the "/menu" command. Your bot is now ready to track your expenses!
+9. After a successful connection, go to your bot on Discord and enter the "#menu" command. Your bot is now ready to track your expenses!
 
 ### Testing with Pytest
 
