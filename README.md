@@ -1,4 +1,4 @@
-# :money_with_wings: SlashBot
+# :money_with_wings: FinBot
 <hr>
 <p align="center">
 <a><img width=500 
@@ -26,7 +26,7 @@
 
 https://youtu.be/NBihyIU13pw
 
-## About SlashBot
+## About FinBot
 
 SlashBot is an easy-to-use Telegram Bot that assists you in recording your daily expenses on a local system without any hassle.  
 With simple commands, this bot allows you to:
@@ -107,11 +107,29 @@ Sample demos are shown below. They are run on a local machine.
 
 7.  Set both the CHAT_ID and API_TOKEN as environment variables on your computer. These variables are essential for your bot to interact with Telegram.
 
-8.  Open your terminal and navigate to the project's root folder. Run the command: python src/TeleBot.py in the terminal. A successful run will generate a message in your terminal, indicating that "TeleBot: Started polling."
+8.  Open your terminal and navigate to the project's root folder. Run the command: ```python src/TeleBot.py``` in the terminal. A successful run will generate a message in your terminal, indicating that "TeleBot: Started polling."
 
 9.  After a successful run, go to your bot on Telegram. Enter the "/start" or "/menu" command to initialize your bot, and you're all set to track your expenses!
 
 ### Discord Installation
+
+1. Start by downloading and installing the Discord desktop application for your system from the following official website: [Discord Download](https://discord.com/download).
+
+2. Visit the [Discord Developer Portal](https://discord.com/developers/applications) and create a new application. Follow the steps in this guide to create your Discord bot: [Creating Your First Bot](https://guide.pycord.dev/getting-started/creating-your-first-bot).
+
+3. Give your bot a unique name and customize its avatar. Important: Ensure that your bot's name does not include "Discord." Applications with "Discord" in their name may not function correctly.
+
+4. Once you've created your bot, it will be provided with a DISCORD_TOKEN. Make sure to copy this token as you'll need it later.
+
+5. From the Discord Developer Portal, configure your bot with the necessary permissions and rights. This ensures it can interact with servers and channels.
+
+6. Create a server on Discord where your bot will operate. Inside this server, create a dedicated channel for your bot. Copy the CHANNEL_ID of this channel for future reference.
+
+7. Set the DISCORD_TOKEN and CHANNEL_ID as environment variables on your computer. These variables will be used by your bot to connect to the correct server and channel.
+
+8. Open your terminal and navigate to the project's root folder. Run the command: ```python src/DiscordBot.py``` in the terminal. A successful run will generate a message in your terminal, indicating that "Shard ID None has connected to Gateway."
+
+9. After a successful connection, go to your bot on Discord and enter the "/menu" command. Your bot is now ready to track your expenses!
 
 ### Testing with Pytest
 
