@@ -100,11 +100,11 @@ Sample demos are shown below. They are run on a local machine.
 
 1. Ensure that all necessary environment variables are correctly set on your computer. These variables are crucial for the functioning of your bot and test environment:
 
-DISCORD_TOKEN: Your Discord bot's token.
-CHANNEL_ID: The ID of the Discord channel your bot operates in.
-API_TOKEN: The API token for your Telegram bot.
-CHAT_ID: The ID of the chat where your Telegram bot operates.
-PYTHONPATH: Set the PYTHONPATH variable to the main project folder. This helps your Python scripts locate and import project modules correctly.
+    - DISCORD_TOKEN: Your Discord bot's token.
+    - CHANNEL_ID: The ID of the Discord channel your bot operates in.
+    - API_TOKEN: The API token for your Telegram bot.
+    - CHAT_ID: The ID of the chat where your Telegram bot operates.
+    - PYTHONPATH: Set the PYTHONPATH variable to the main project folder. This helps your Python scripts locate and import project modules correctly.
 
 2. Navigate to the FinBot/test/unit folder in your project directory. In your terminal, run the following command:
 ```
