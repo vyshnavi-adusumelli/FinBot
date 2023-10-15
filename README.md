@@ -93,6 +93,23 @@ Sample demos are shown below. They are run on a local machine.
 5. Ensure that you export the PYTHONPATH variable to the main project folder in the environment variables. This is essential for your Python scripts to locate and import the project modules correctly.
 
 ### Telegram Installation
+1. Begin by downloading and installing the Telegram desktop application for your system from the official website: [Telegram Desktop](https://desktop.telegram.org/).
+
+2.  Log in to your Telegram account. In the Telegram app, search for "BotFather." Click on "Start" to initiate a conversation with BotFather. Enter the following command: /newbot
+
+3.  Follow the on-screen instructions to choose a name for your bot. After naming your bot, select a username for your bot, which should end with "bot" (as instructed in the Telegram interface).
+
+4.  Once you've configured your bot, BotFather will confirm the creation and provide you with an API TOKEN. Copy this token for future use.
+
+5.  In the Telegram app, search for your newly created bot by entering its username. Open the bot's chat to access its details.
+
+6.  Right-click on the chat with your bot in the Telegram app. Copy the chat's ID as CHAT_ID for future reference.
+
+7.  Set both the CHAT_ID and API_TOKEN as environment variables on your computer. These variables are essential for your bot to interact with Telegram.
+
+8.  Open your terminal and navigate to the project's root folder. Run the command: python src/TeleBot.py in the terminal. A successful run will generate a message in your terminal, indicating that "TeleBot: Started polling."
+
+9.  After a successful run, go to your bot on Telegram. Enter the "/start" or "/menu" command to initialize your bot, and you're all set to track your expenses!
 
 ### Discord Installation
 
@@ -110,7 +127,7 @@ Sample demos are shown below. They are run on a local machine.
 ```
   python -m pytest
 ```
-After running the tests, you should see a summary indicating the number of test failures and passes.
+  After running the tests, you should see a summary indicating the number of test failures and passes.
 
 # :information_desk_person: Sample Demos
 
