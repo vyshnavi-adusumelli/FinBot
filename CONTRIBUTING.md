@@ -1,18 +1,12 @@
-# Contributing to SlashBot
+# Contributing to FinBot
 
-Follow the set of guidelines below to contribute to SlashBot!
+Thank you for your interest in contributing to our project. Please make sure to read and follow these guidelines for a smooth and effective contribution process.
 
 ## Code of Conduct
 
-By participating, you are expected to uphold this code. Please report unacceptable behavior to psomash@ncsu.edu or secheaper@gamil.com.
+Everyone participating in this project needs to abide by the aPAS - A Personal Agile Scheduler Code of Conduct that can be found under the main repository link as a [CODE_OF_CONDUCT.md](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/CODE_OF_CONDUCT.md) file. By participating, you are expected to uphold this code. Please report unacceptable behavior to any of the original team members listed at the bottom of [README.md](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/README.md).
 
-Prerequistes required before starting this project
-
-1. Must be a graduate student at NC State University
-2. Must be a student in Software Engineering Course in Fall 2021
-3. Have proficiency in Python
-
-## How can I Contribute -
+## How can I Contribute
  
 ### Reporting Bugs
 
