@@ -6,37 +6,35 @@ Thank you for your interest in contributing to our project. Please make sure to 
 
 Everyone participating in this project needs to abide by the aPAS - A Personal Agile Scheduler Code of Conduct that can be found under the main repository link as a [CODE_OF_CONDUCT.md](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/CODE_OF_CONDUCT.md) file. By participating, you are expected to uphold this code. Please report unacceptable behavior to any of the original team members listed at the bottom of [README.md](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/README.md).
 
-## How can I Contribute
+## How can You Contribute
  
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for SlashBot.
-Following these guidelines helps maintainers and the community understand your report, reproduce the behavior and find related reports.
+This section guides you through submitting a bug report for FinBot. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior and find related reports.
 
-Before Submitting A Bug Report
+### Before Submitting A Bug Report
 
-Check the debugging guide
+Check the debugging guide.
 
-Check the FAQs on the forum for a list of common questions and problems.
-Determine which repository the problem should be reported in.
+Review the FAQs on the forum for common questions and problems.
 
 Perform a cursory search to see if the problem has already been reported.
 
-## How Do I Submit A (Good) Bug Report?
+When you are creating a bug report, please ensure that you include as many details as possible to understand the issue.
+
+### How Do I Submit A (Good) Bug Report?
 
 Use a clear and descriptive title for the issue to identify the problem.
 
 Describe the exact steps which reproduce the problem in as many details as possible.
 
-Provide specific examples to demonstrate the steps.
+Provide specific examples to demonstrate the steps. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets in the issue, use Markdown code blocks.
 
-Describe the behavior you observed after following the steps and point out what exactly is the problem with that behavior.
-
-Explain which behavior you expected to see instead and why.
+If the problem is related to performance or memory, then ensure that you include a CPU profile capture with your report.
 
 Include screenshots and animated GIFs which show you following the described steps and clearly demonstrate the problem.
 
-If the problem is related to performance or memory, include a CPU profile capture with your report.
+If the problem wasn't triggered by a specific action, describe what you were doing before the problem happened and share more information using the guidelines below.
 
 ## Pull Requests
 
