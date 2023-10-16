@@ -55,34 +55,18 @@ With simple commands, this bot allows you to:
 
 📊 Set Your Budget: Take full control of your finances by defining and tracking your budget with FinBot. It's the proactive step that puts you firmly in the driver's seat of your financial journey.
 
-📈 **Visualize your spendings:** Numbers can be daunting, but FinBot transforms them into a captivating visual experience. Use the '/chart' option to see your spending as graphs and pie charts. This punchline to your story helps you spot trends and make smarter financial choices.
+📈 **Visualize your spending:** Numbers can be daunting, but FinBot transforms them into a captivating visual experience. Use the '/chart' option to see your spending as graphs and pie charts. This punchline to your story helps you spot trends and make smarter financial choices.
 
-# :star: What's New??
+# :star: What's New?
 
-### Release Version 1.2.1
-
-- See your total daily/monthly expenditure in differet currencies using the /displayDifferentCurrency command
-- Download your spendings history CSV file using the /download command
-- Email the monthly spendings history to yourself using the /sendEmail command
-- User can now get a message when the monthly budget is exhausted.
-- Details for testing requirements added in README.md
-
-
-### Release Version 1.2.0
-
-- Visualize your spendings in the form of graphs
-- The User can now see his expenses across various categories in the form of graphs along with pie charts.
-- Just go on adding multiple spendings using /add and type /chart to see the spendings in the form of graphs.
-- More Badges added in Repository
-
-
-
+- **Multi-Platform Functionality:** With our latest update, FinBot is no longer limited to Telegram; we've extended its capabilities to Discord as well, providing you with a seamless multi-platform experience.
+- **Unified User Experience:** Whether you prefer Telegram or Discord, you can now enjoy the same user-friendly experience for recording your daily expenses, managing your budget, and more.
+- **Cross-Platform Expense Recording:** You can now add/record new spending, view your expenditure for the day/month, display your spending history, and edit/change spending details on both Telegram and Discord.
+- **Data Visualization:** Our data visualization feature is now available on both platforms. Use the '/chart' (Telegram) or '#chart' (Discord) option to visualize your expenses in the form of graphs and pie charts, gaining deeper insights into your spending habits.
 
 <!-- [comment]: <> (## Demo) -->
 
 <!-- [comment]: <> (https://user-images.githubusercontent.com/15325746/135395315-e234dc5e-d891-470a-b3f4-04aa1d11ed45.mp4) -->
-
-
 
 # :rocket: Installation Guide
 
@@ -201,40 +185,6 @@ Oh no! I entered a transaction but entered the wrong category!
 3. Specify what part of the transaction to edit (either date, category, or value)
 4. Enter in a new value
 
-### Adding transactions from CSV and displaying chart
-
-I want to add transactions from a CSV my bank gave me, and visalize my spendings
-
-<p align="center"><img width="700" src="./docs/workflows/csv_vis.gif"></p>
-
-
-1. Drag the .csv file into the telegram chat, and press send
-2. For each transaction, classify the category
-   1. The application will remember these mappings
-3. Enter the `/chart` command
-
-### Download History
-
-I want a CSV file of all my transactions.
-
-<p align="center"><img width="700" src="./docs/workflows/download.gif"></p>
-
-1. Make sure you have a transaction history.
-2. Enter the `/download` command.
-3. A CSV file will be sent with your history.
-
-### See total Expenditure in different currencies
-
-I want to convert my total daily or monthly expenditure in a different currency.
-
-<p align="center"><img width="700" src="./docs/workflows/currencyWorking.gif"></p>
-
-1. Enter the /displayDifferentCurrency command
-2. Choose from the category of day or month
-3. Next, Choose your currency from the options
-4. You will get the converted price in that currency
-
-
 ### Visualization in the form of graphs
 
 I want to see my spendings in the form of graphs
@@ -244,18 +194,6 @@ I want to see my spendings in the form of graphs
 1. Make sure you have a transaction history.
 2. Enter the `/chart` command.
 3. You will see multiple visualizations for your spending 
-
-### SendEmail 
-
-I want to send myself an email for the monthly expenditure
-
-
-<p align="center"><img width="700" src="./docs/workflows/email.gif"></p>
-
-1. Make sure you have a transaction history.
-2. Enter the `/sendEmail` command.
-3. Type the intended email address
-4. You will get an email with the history file as attachment
 
 # :grey_question: Documentation
 
