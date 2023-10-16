@@ -298,7 +298,7 @@ This project is licensed under the terms of the MIT license. Please check [Licen
 <table>
   <tr>
     <td align="center"><img src="https://avatars.githubusercontent.com/u/114872378?v=4" width="75px;" alt=""/><br /><sub><b>Harshavardhan Bandaru</b></sub></a></td>
-    <td align="center"><a href="https://github.com/vyshnavi-adusumelli"><img src="https://avatars.githubusercontent.com/u/43350493?v=4" width="75px;" alt=""/><br /><sub><b>Vyshnavi Adusumeli</b></sub></a><br /></td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/35067896?v=4" width="75px;" alt=""/><br /><sub><b>Vyshnavi Adusumeli</b></sub></a><br /></td>
     <td align="center"><img src="https://avatars.githubusercontent.com/u/144171816?s=400&u=e9fb80d2e9acb2fc438881017b49e6d26720a50d&v=4" width="75px;" alt=""/><br /><sub><b>Tejaswini Panati</b></sub></a><br /></td>
 
   </tr>
