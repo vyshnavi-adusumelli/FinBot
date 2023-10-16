@@ -62,7 +62,7 @@ With simple commands, this bot allows you to:
 - **Multi-Platform Functionality:** With our latest update, FinBot is no longer limited to Telegram; we've extended its capabilities to Discord as well, providing you with a seamless multi-platform experience.
 - **Unified User Experience:** Whether you prefer Telegram or Discord, you can now enjoy the same user-friendly experience for recording your daily expenses, managing your budget, and more.
 - **Cross-Platform Expense Recording:** You can now add/record new spending, view your expenditure for the day/month, display your spending history, and edit/change spending details on both Telegram and Discord.
-- **Data Visualization:** Our data visualization feature is now available on both platforms. Use the '/chart' (Telegram) or '#chart' (Discord) option to visualize your expenses in the form of graphs and pie charts, gaining deeper insights into your spending habits.
+- **Data Visualization:** Our data visualization feature is now available on both platforms. Use the '/chart' (Telegram) or '#chart' (Discord) option to visualize your expenses in the form of graphs and pie charts, gaining deeper insights into your spending habits. Further in Discord, the bot supports the start and end dates within which the visuals can be viewed enabling customization.
 
 <!-- [comment]: <> (## Demo) -->
 
@@ -138,7 +138,85 @@ With simple commands, this bot allows you to:
 ```
   After running the tests, you should see a summary indicating the number of test failures and passes.
 
-# :information_desk_person: Sample Demos
+# :information_desk_person: Use cases
+
+## Discord
+
+### Menu
+View all the commands Finbot offers to manage your expenses
+
+<p align="center"><img width="700" src="./docs/workflows/menu_discord.gif"></p>
+
+1. This automatically appears when the bot runs.
+2. It can be invoked again using `#menu` command.
+
+### Budget
+Managing your monthly budget - increase/ decrease
+
+<p align="center"><img width="700" src="./docs/workflows/budget_discord.gif"></p>
+
+1. Enter the `#budget` command
+2. Enter the new budget amount (must be greater than 0)
+
+### History
+View the entire history of the spendings till date
+
+<p align="center"><img width="700" src="./docs/workflows/history_discord.gif"></p>
+
+1. Enter the `#history` command
+
+### Add
+Record the money spent on any of the categories as a transaction
+
+<p align="center"><img width="700" src="./docs/workflows/add_discord.gif"></p>
+
+1. Enter the `#add` command
+2. Enter the date of the transaction in MM-DD-YYYY format
+3. Select the category to add
+4. Enter the amount spent
+
+### Delete
+Delete a transaction that has been recorded
+
+<p align="center"><img width="700" src="./docs/workflows/delete_discord.gif"></p>
+
+1. Enter the `#delete` command
+2. Based on what records you want to delete -
+   1. Day: enter the day to delete in MM-DD-YYYY format
+   2. Month: enter the month to delete in MM-YYYY format
+   3. All: enter `All`
+3. The records will be displayed. Enter YES to confirm, or NO to cancel
+
+### Edit
+Edit or correct a record that has been miss-entered
+
+<p align="center"><img width="700" src="./docs/workflows/edit_discord.gif"></p>
+
+1. Enter the `#edit` command
+2. Enter the date (MM-DD-YYYY), value, and category of the transaction miss-entered
+3. Specify what part of the transaction to edit (either date, category, or value)
+4. Enter the new value
+
+### Display
+Display the expenditure for the day or for the current month to keep track of your expenses and hence the monthly budget
+
+<p align="center"><img width="700" src="./docs/workflows/display_discord.gif"></p>
+
+1. Enter the `#display` command
+2. Select the option - day or month for which you want to view the expenses
+
+### Visualization in the form of graphs
+Visualize or track your expenses in the form of bar charts and pie charts
+
+<p align="center"><img width="700" src="./docs/workflows/chart_discord.gif"></p>
+
+1. Make sure you have a transaction history.
+2. Enter the `#chart` command.
+3. Enter the start date in MM-DD-YYYY format.
+4. Enter the end date in MM-DD-YYYY format
+5. Charts for the spending that fall in this duration will be generated.
+
+## Telegram
 
 ### Budget
 
@@ -148,7 +226,6 @@ I want to increase/decrease my monthly budget.
 
 1. Enter the `/budget` command
 2. Enter the new budget amount (must be greater than 0)
-
 
 ### Add
 
