@@ -80,14 +80,9 @@ async def display(ctx):
                 await asyncio.sleep(0.5)
                 await display_total(ctx, select.values[0])
             
-            async def timeout():
-                await ctx.send("Interaction has timed out!! User has not selected the appropriate category from dropdown. \nPlease try again.")
-                await menu(ctx)
-            
             select.callback = my_callback
-            view = View(timeout=20)
+            view = View(timeout=90)
             view.add_item(select)
-            view.on_timeout = timeout
             
             await ctx.send('Please select a category to see the total expense', view=view)
 
@@ -211,7 +206,7 @@ async def select_date(ctx):
     dateFormat = "%m-%d-%Y"
     curr_day = datetime.now()
     await ctx.send("Enter day")
-    await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
+    await ctx.send(f"\n\tExample day in format mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
     def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
 
     try:
@@ -289,7 +284,7 @@ async def select_category(ctx, date):
 
     select.callback = my_callback
     
-    view = View(timeout=15)
+    view = View(timeout=90)
     view.add_item(select)
   
     await ctx.send('Please select a category', view=view)
@@ -374,8 +369,8 @@ async def delete(ctx):
             
             curr_day = datetime.now()
             prompt = "Enter the day, month, or All\n"
-            prompt += f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n"
-            prompt += f"\n\tExample month in formate mm-YYYY: {curr_day.strftime(monthFormat)}"
+            prompt += f"\n\tExample day in format mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n"
+            prompt += f"\n\tExample month in format mm-YYYY: {curr_day.strftime(monthFormat)}"
             await ctx.send(prompt)
             delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
             await process_delete_argument(ctx, delete_type.content)
@@ -674,7 +669,7 @@ async def chart(ctx):
         dateFormat = "%m-%d-%Y"
         curr_day = datetime.now()
         await ctx.send("Enter start day")
-        await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
+        await ctx.send(f"\n\tExample day in format mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         def check(message):return message.author == ctx.author and message.channel == ctx.channel
 
@@ -682,7 +677,7 @@ async def chart(ctx):
         start_date_str = start_date_message.content
 
         await ctx.send("Enter end day")
-        await ctx.send(f"\n\tExample day in formate mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
+        await ctx.send(f"\n\tExample day in format mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n")
 
         end_date_message = await bot.wait_for('message', check=check, timeout=30)
         end_date_str = end_date_message.content
