@@ -1,9 +1,3 @@
-# :money_with_wings: FinBot
-<hr>
-<p align="center">
-<a><img width=500 
-  src="/docs/workflows/banner.jpg" alt="Expense tracking made easy!"></a>
-</p>
 <hr>
 
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
@@ -22,35 +16,48 @@
 
 <hr>
 
+# FinBot - Because your financial future deserves the best!
+
+You wake up, brew a fresh cup of coffee, and start your day. You're excited because today is the day you take control of your finances like never before. How? Say hello to FinBot, your ultimate financial companion. With simple commands, it transforms your financial story into one of motivation, empowerment, and control. 
+
+And the best part? FinBot is your multi-platform financial sidekick, available on both Discord and Telegram. That means no matter where you are, it's there to assist you in recording your expenses seamlessly.
+<hr>
+<p align="center">
+<a><img width=500 
+  src="https://png.pngtree.com/png-clipart/20230824/original/pngtree-chatbot-messenger-banking-services-isometric-composition-with-personal-financial-manager-providing-budget-expenses-solutions-vector-illustration-picture-image_8372509.png" ></a>
+</p>
+<hr>
+
 ## Demo Video
 
 https://youtu.be/NBihyIU13pw
 
-## About FinBot
+## :money_with_wings: About FinBot
 
-SlashBot is an easy-to-use Telegram Bot that assists you in recording your daily expenses on a local system without any hassle.  
+FinBot is a user-friendly Telegram and Discord bot designed to simplify your daily expense recording on a local system effortlessly. By offering the bot on two popular messaging platforms, we tap into a larger and diverse user base, increasing the potential reach of the service and enhancing user experience. 
+<p align="center">
+<a><img width=500 
+  src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/262018288/original/8676cd7fe4b730618bfd1ca4886465ca5d148708/do-telegram-or-discord-bot-for-you.jpg" ></a>
+</p>
+
+
 With simple commands, this bot allows you to:
-- Add/Record a new spending
-- Show the sum of your expenditure for the current day/month
-- Display your spending history
-- Clear/Erase all your records
-- Edit/Change any spending details if you wish to
-- Download your expenditure history in the CSV format
-- Visualize your spendings in the form of graphs/pie chart using the /chart option
-- Email the history CSV file to yourself
-- See the total daily/monthly expenditure in different currencies
 
-Check out the bot here: https://t.me/ncsuBot
+📝 **Add/Record a new spending:** As you sip that morning coffee, effortlessly log your expenses, no matter how small or significant. Every expense adds up, and FinBot ensures you don't miss a thing.
 
----
-Sample demos are shown below. They are run on a local machine.
+💡 **Display your expenditure for the current day/month:** With FinBot, you're never in the dark about your spending. Get real-time insights on your daily and monthly expenses, motivating you to stay on budget and crush your financial goals.
 
-- [:information_desk_person: Sample Demos](#information_desk_person-Sample-Demos)
+🔍 **Show your spending history:** Ever wondered where your money disappears to? FinBot provides a detailed spending history that tells a story of your financial habits. It's a tale of lessons and opportunities for improvement.
 
+🗑️ **Delete/Erase all your records:** Made an error or just want to start afresh? It's as simple as a command, a chance to correct your narrative without any hassle.
 
----
+🔧 **Edit/Change any spending details:** Life is full of surprises, and sometimes expenses change. FinBot adapts with you, offering easy editing options to keep your story accurate.
 
-# :star: Whats New
+📊 Set Your Budget: Take full control of your finances by defining and tracking your budget with FinBot. It's the proactive step that puts you firmly in the driver's seat of your financial journey.
+
+📈 **Visualize your spendings:** Numbers can be daunting, but FinBot transforms them into a captivating visual experience. Use the '/chart' option to see your spending as graphs and pie charts. This punchline to your story helps you spot trends and make smarter financial choices.
+
+# :star: What's New??
 
 ### Release Version 1.2.1
 
@@ -131,7 +138,7 @@ Sample demos are shown below. They are run on a local machine.
 
 9. After a successful connection, go to your bot on Discord and enter the "#menu" command. Your bot is now ready to track your expenses!
 
-### Testing with Pytest
+## Testing with Pytest
 
 1. Ensure that all necessary environment variables are correctly set on your computer. These variables are crucial for the functioning of your bot and test environment:
 
