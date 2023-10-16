@@ -5,11 +5,11 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/vyshnavi-adusumelli/FinBot)
 [![DOI](https://zenodo.org/badge/431190543.svg)](https://zenodo.org/badge/latestdoi/431190543)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
+[![Platform](https://img.shields.io/badge/Platform-Discord-blue)](https://discord.com/)
 [![codecov](https://codecov.io/gh/vyshnavi-adusumelli/FinBot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://app.codecov.io/gh/vyshnavi-adusumelli/FinBot/)
 [![Actions Status](https://github.com/vyshnavi-adusumelli/FinBot/workflows/CI/badge.svg)](https://github.com/vyshnavi-adusumelli/FinBot/actions)
 ![github workflow](https://github.com/vyshnavi-adusumelli/FinBot/actions/workflows/black.yml/badge.svg)
-![Discord](https://img.shields.io/discord/879343473940107264?color=blueviolet&label=Discord%20Discussion%20Chat)
-![Lines of code](https://img.shields.io/tokei/lines/:provider/:user/https%3A%2F%2Fgithub.com%2Fvyshnavi-adusumelli%2FFinBot)
+![Lines of code](https://tokei.rs/b1/github/vyshnavi-adusumelli/FinBot)
 ![Version](https://img.shields.io/github/v/release/vyshnavi-adusumelli/FinBot?color=ff69b4&label=Version)
 ![GitHub issues](https://img.shields.io/github/issues-raw/vyshnavi-adusumelli/FinBot)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/vyshnavi-adusumelli/FinBot)
@@ -278,14 +278,13 @@ Thorough documentation of all methods and classes can be found at [Github Pages]
 
 # :construction: Road Map
 
-Our ideas for new features that can be implemented to make this project better can be seen in our RoadMap project board.
-[Road Map](https://github.com/secheaper/slashbot/projects/1)
-
+Our implementation has been tracked in a project board which can be viewed here -
+[FinBot Developer board](https://github.com/users/vyshnavi-adusumelli/projects/2)
 
 
 :heart: Acknowledgements
 ---
-We would like to thank Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants Xiao Ling, Andre Lustosa, Kewen Peng, Weichen Shi for their support throughout the project.
+We would like to thank Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants San Gilson, Andre Lustosa, Xueqi (Sherry) Yang, Yasitha Rajapaksha, and Rahul Yedida for their support throughout the project.
 
 
 :page_facing_up: License
@@ -298,11 +297,10 @@ This project is licensed under the terms of the MIT license. Please check [Licen
 
 <table>
   <tr>
-    <td align="center"><a href="http://www.shubhammankar.com/"><img src="https://avatars.githubusercontent.com/u/29366125?v=4" width="75px;" alt=""/><br /><sub><b>Shubham Mankar</b></sub></a></td>
-    <td align="center"><a href="https://github.com/pratikdevnani"><img src="https://avatars.githubusercontent.com/u/43350493?v=4" width="75px;" alt=""/><br /><sub><b>Pratik Devnani</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/moksh98"><img src="https://avatars.githubusercontent.com/u/29693765?v=4" width="75px;" alt=""/><br /><sub><b>Moksh Jain</b></sub></a><br /></td>
-    <td align="center"><a href="https://rahilsarvaiya.tech/"><img src="https://avatars0.githubusercontent.com/u/32304956?v=4" width="75px;" alt=""/><br /><sub><b>Rahil Sarvaiya</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/annie0467"><img src="https://avatars.githubusercontent.com/u/17164255?v=4" width="75px;" alt=""/><br /><sub><b>Anushi Keswani</b></sub></a><br /></td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/114872378?v=4" width="75px;" alt=""/><br /><sub><b>Harshavardhan Bandaru</b></sub></a></td>
+    <td align="center"><a href="https://github.com/pratikdevnani"><img src="https://avatars.githubusercontent.com/u/43350493?v=4" width="75px;" alt=""/><br /><sub><b>Vyshnavi Adusumeli</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/moksh98"><img src="https://avatars.githubusercontent.com/u/29693765?v=4" width="75px;" alt=""/><br /><sub><b>Tejaswini Panati</b></sub></a><br /></td>
+
   </tr>
 </table>
 
