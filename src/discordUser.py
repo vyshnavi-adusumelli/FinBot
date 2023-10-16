@@ -227,14 +227,16 @@ class User:
 
     def validate_date_format(self, text, date_format):
         """
-        Converts the inputted date to the inputted date format
+        Deletes specified transaction records.
 
-        :param text has the date which is to be converted
-        :type: string
-        :param date_format has the format to which the conversion should be done
-        :type: string
-        :return: date, contains the formatted date
-        :rtype: datetime.dateime
+        This function deletes transaction records from the user's history based on the provided list of records.
+
+        Parameters:
+        - text(string): has the date which is to be converted
+        - date_format(string): has the format to which the conversion should be done
+
+        Return:
+        - date (datetime.dateime): contains the formatted date
         """
         date = None
 
@@ -247,15 +249,17 @@ class User:
 
     def get_records_by_date(self, date: datetime.date, is_month: bool):
         """
-        Given a date and chat_id returns all records that match the filter
-        If is_month is true, only matches year and month, not day
+        Retrieve transaction records that match a given date or month.
 
-        :param date: date for filtering records
-        :type: datetime.date
-        :param is_month: this parameter is true if records for a month are taken
-        :type: bool
-        :return: matched_dates which is the array of records for that day or month
-        :rtype: array
+        This function filters the user's transaction records based on the provided date.
+        If `is_month` is True, it matches the year and month, but not the day.
+
+        Parameters:
+        - date (datetime.date): The date for filtering records
+        - is_month(bool): If True, filter records for the entire month.
+
+        Returns (dictionary): 
+        A dict of matched records categorized by spend category.
         """
         user_history = self.transactions
         if date == "all":
@@ -280,11 +284,17 @@ class User:
 
     def display_transaction(self, transaction):
         """
-        Helper function to turn the dictionary into a user-readable string
+        Convert a dictionary of transactions into a user-readable string.
 
-        :param transaction: dictionary of category, and each value is a dictionary of transactions of that category
-        :return: final_str, which is the transactions stringifies
-        :rtype: string
+        This function takes a dictionary where each key is a spend category, and the
+        corresponding value is a list of transaction records for that category. It
+        then converts this data into a user-readable string format.
+
+        Parameters:
+        - transaction (dict): A dictionary of transaction records organized by category
+        
+        Returns (string):
+        - final_str, which is the transactions stringifies
         """
         final_str = ""
 
@@ -301,8 +311,11 @@ class User:
         Helper function to get the total number of transactions across
         all categories
 
-        :return: number of transactions
-        :rtype: int
+        Parameters:
+        - None
+
+        Return (int):
+        - number of transactions
         """
         total = 0
         for category in self.transactions:
@@ -311,11 +324,17 @@ class User:
 
     def add_monthly_budget(self, amount, userid):
         """
-        Given amount and userid, edit the budget of the current user
+        Set or update the monthly budget for the current user.
 
-        :param amount: budget amount
-        :param userid:
-        :return: None
+        This function allows setting or updating the monthly budget for a user with the
+        specified 'userid'.
+
+        Parameters:
+        - amount (float): The budget amount to be set or updated.
+        - userid (str): The unique identifier for the user.
+
+        Returns:
+        - None
         """
         try:
             if amount != 0:
@@ -326,10 +345,16 @@ class User:
 
     def monthly_total(self):
         """
-        Calculates total expenditure for the current month
+        Calculate the total expenditure for the current month.
 
-        :return: total_value - rounded amount if valid, else 0.
-        :rtype: float
+        This function calculates the total expenditure for the current month based on
+        the user's transaction records.
+
+        Parameters:
+        - None
+
+        Return:
+        - total_value (float) - The total expenditure for the current month, rounded to 2 decimal places.
         """
         date = datetime.today()
         total_value = 0
@@ -341,12 +366,19 @@ class User:
 
     def create_chart(self, userid, start_date=None, end_date=None):
         """
-        This is used to create the matplotlib piechart of all the transactions and
-        their categories. If a category does not have any transactions, then it is not
-        included in the piechart
+        Generate visualizations of transaction data, including a pie chart and a bar graph.
 
-        :param userid:
-        :return: filepath to the image created by matplotlib
+        This function creates visualizations using Matplotlib to represent transaction data. It generates
+        a pie chart and a bar graph, where each segment or bar represents a spending category and its total
+        expenditure.
+
+        Parameter:
+        - userid (str): The unique identifier for the user
+        - start_date (datetime.date or None): Optional start date to filter transactions (inclusion criterion).
+        - end_date (datetime.date or None): Optional end date to filter transactions (inclusion criterion).
+
+        Returns (str):
+        - A list of file paths to the generated images.
         """
         labels = []
         totals = []
