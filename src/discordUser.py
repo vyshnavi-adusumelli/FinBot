@@ -24,15 +24,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
 import pathlib
 import pickle
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 import matplotlib.pyplot as plt
 
 
 class User:
+    """
+    A class that represents a user's financial data and transactions. It functions that stores and retrieves data from the .pickle file and 
+    handles validations
+
+    Attributes:
+        spend_categories (list): List of spend categories.
+        spend_display_option (list): List of display options for spend categories.
+        transactions (dict): Dictionary to store user's financial transactions.
+        edit_transactions (dict): Dictionary to store transactions being edited.
+        edit_category (str): The category of the transaction being edited.
+        monthly_budget (float): User's monthly budget.
+        rules (dict): Dictionary to store user-defined rules for categories.
+
+    Methods:
+        - save_user(userid): Saves user data to a .pickle file.
+        - validate_entered_amount(amount_entered): Validates and rounds entered amounts.
+        - add_transaction(date, category, value, userid): Stores a transaction to file.
+        - store_edit_transaction(existing_transaction, edit_category): Assigns a transaction and category to be edited.
+        - edit_transaction_date(new_date): Returns the edited transaction with the new date.
+        - edit_transaction_category(new_category): Updates the edited transaction with the new category.
+        - edit_transaction_value(new_value): Returns the edited transaction with the new value.
+        - deleteHistory(records=None): Deletes transactions.
+        - validate_date_format(text, date_format): Converts an inputted date to the specified date format.
+        - get_records_by_date(date, is_month): Returns records that match the filter by date.
+        - display_transaction(transaction): Converts a dictionary of transactions into a user-readable string.
+        - get_number_of_transactions(): Returns the total number of transactions across all categories.
+        - add_monthly_budget(amount, userid): Edits the user's monthly budget.
+        - monthly_total(): Calculates the total expenditure for the current month.
+        - create_chart(userid, start_date=None, end_date=None): Creates matplotlib charts of expenditure transactions.
+    """    
     def __init__(self, userid):
         self.spend_categories = [
             "Food",
@@ -47,28 +76,30 @@ class User:
         self.edit_transactions = {}
         self.edit_category = {}
         self.monthly_budget = 0
-        self.rules = {}
-
-        # for the calendar widget
-        self.max_date = datetime.today() + timedelta(days=1)
-        self.curr_date = datetime.today()
-        self.min_date = datetime.today()
-        self.min_date = self.min_date.replace(year=self.min_date.year - 1)
 
         for category in self.spend_categories:
             self.transactions[category] = []
-            self.rules[category] = []
         self.save_user(userid)
 
     def save_user(self, userid):
         """
-        Saves data to .pickle file
+        Save user data to a pickle file.
 
-        :param userid: userid string which is also the file name
-        :type: string
-        :return: None
+        This function takes a user ID and attempts to save the user data to a pickle
+        file. It constructs the file path based on the provided user ID and the
+        'discordData' directory. The user data is serialized using the pickle module
+        and saved to the specified file.
+
+        Parameters:
+        -  userid (string): The unique identifier for the user whose data is being saved.
+
+        Raises:
+        - Exception: If an error occurs during the data saving process, an exception
+                   is raised and an error message is printed.
+
+        Return: 
+        - None
         """
-
         try:
             data_dir = "discordData"
             abspath = pathlib.Path("{0}/{1}.pickle".format(data_dir, userid)).absolute()
@@ -80,12 +111,16 @@ class User:
 
     def validate_entered_amount(self, amount_entered):
         """
-        Validates that an entered amount is greater than zero and also rounds it to 2 decimal places.
+        Validates and rounds an entered amount.
 
-        :param amount_entered: entered amount
-        :type: float
-        :return: rounded amount if valid, else 0.
-        :rtype: float
+        This function validates an entered amount to ensure it is greater than zero and
+        rounds it to 2 decimal places.
+
+        Parameters:
+        - amount_entered (float): The entered amount to be validated and rounded.
+
+        Return (float): 
+        - The rounded amount if valid, else 0.
         """
         if 0 < len(amount_entered) <= 15:
             if amount_entered.isdigit:
@@ -97,17 +132,19 @@ class User:
 
     def add_transaction(self, date, category, value, userid):
         """
-        Stores the transaction to file.
+        Stores a transaction in a user's data file.
 
-        :param date: date string of the transaction
-        :type: string
-        :param category: category of the transaction
-        :type: string
-        :param value: amount of the transaction
-        :type: string
-        :param userid: userid string which is also the file name
-        :type: string
-        :return: None
+        This function records a transaction with the provided date, category, and value
+        in the user's data file, identified by the 'userid'.
+
+        Parameters:
+        - date (string): The date of the transaction 
+        - category (string): The category of the transaction.
+        - value (string): The amount of the transaction.
+        - userid (string): The unique identifier for the user and the filename.
+        
+        Returns:
+        - None
         """
         try:
             self.transactions[category].append({"Date": date, "Value": value})
@@ -117,13 +154,16 @@ class User:
 
     def store_edit_transaction(self, existing_transaction, edit_category):
         """
-        Assigns the transaction and category to be edited.
+        Assigns a transaction and its category for editing.
 
-        :param existing_transaction: the transaction which the user chose to edit
-        :type: string
-        :param edit_category: the existing category of the transaction
-        :type: string
-        :return: None
+        This function sets the transaction and category that the user has chosen to edit.
+
+        Parameters:
+        - existing_transaction (string): The transaction to be edited.
+        - edit_category (string): The existing category of the transaction.
+
+        Returns: 
+        - None
         """
         try:
             self.edit_transactions = existing_transaction
@@ -133,12 +173,15 @@ class User:
 
     def edit_transaction_date(self, new_date):
         """
-        Returns the edited transaction with the new date.
+        Returns the transaction with the new date.
 
-        :param new_date: the new date of the transaction.
-        :type: string
-        :return: transactions dict
-        :rtype: dict
+        This function returns the edited transaction with the specified new date.
+
+        Paramters: 
+        - new_date (string): the new date of the transaction.
+        
+        Returns:
+        - transactions dict (dict): A dictionary representing the edited transaction.
         """
         transaction = None
         for transaction in self.transactions[self.edit_category]:
@@ -149,26 +192,33 @@ class User:
 
     def edit_transaction_category(self, new_category):
         """
-        Updates the edited transaction with the new category.
+        Updates the category of the edited transaction.
 
-        :param new_category: the new category of the transaction.
-        :type: string
-        :return: True
-        :rtype: bool
+        This function modifies the category of the previously edited transaction to the
+        specified new category.
+
+        Parameters:
+        - new_category (string): the new category of the transaction.
+
+        Returns (bool): 
+        - True if the category update is successful.
         """
-
         self.transactions[self.edit_category].remove(self.edit_transactions)
         self.transactions[new_category].append(self.edit_transactions)
         return True
 
     def edit_transaction_value(self, new_value):
         """
-        Returns the edited transaction with the new value.
+        Updates the value of the edited transaction and returns the modified transaction.
 
-        :param new_value: the new value of the transaction.
-        :type: string
-        :return: transactions dict
-        :rtype: dict
+        This function modifies the value of the previously edited transaction to the
+        specified new value and returns the modified transaction.
+
+        Parameters:
+        - new_value(string): the new value of the transaction.
+
+        Returns:
+        - transactions (dict): A dictionary representing the edited transaction.
         """
         transaction = None
         for transaction in self.transactions[self.edit_category]:
@@ -185,7 +235,6 @@ class User:
         :type: array
         :return: None
         """
-
         # if there are specific records to delete
         # and it is not all records from the user
         if records is not None and self.transactions != records:
@@ -202,14 +251,16 @@ class User:
 
     def validate_date_format(self, text, date_format):
         """
-        Converts the inputted date to the inputted date format
+        Deletes specified transaction records.
 
-        :param text has the date which is to be converted
-        :type: string
-        :param date_format has the format to which the conversion should be done
-        :type: string
-        :return: date, contains the formatted date
-        :rtype: datetime.dateime
+        This function deletes transaction records from the user's history based on the provided list of records.
+
+        Parameters:
+        - text(string): has the date which is to be converted
+        - date_format(string): has the format to which the conversion should be done
+
+        Return:
+        - date (datetime.dateime): contains the formatted date
         """
         date = None
 
@@ -222,15 +273,17 @@ class User:
 
     def get_records_by_date(self, date: datetime.date, is_month: bool):
         """
-        Given a date and chat_id returns all records that match the filter
-        If is_month is true, only matches year and month, not day
+        Retrieve transaction records that match a given date or month.
 
-        :param date: date for filtering records
-        :type: datetime.date
-        :param is_month: this parameter is true if records for a month are taken
-        :type: bool
-        :return: matched_dates which is the array of records for that day or month
-        :rtype: array
+        This function filters the user's transaction records based on the provided date.
+        If `is_month` is True, it matches the year and month, but not the day.
+
+        Parameters:
+        - date (datetime.date): The date for filtering records
+        - is_month(bool): If True, filter records for the entire month.
+
+        Returns (dictionary): 
+        A dict of matched records categorized by spend category.
         """
         user_history = self.transactions
         if date == "all":
@@ -255,11 +308,17 @@ class User:
 
     def display_transaction(self, transaction):
         """
-        Helper function to turn the dictionary into a user-readable string
+        Convert a dictionary of transactions into a user-readable string.
 
-        :param transaction: dictionary of category, and each value is a dictionary of transactions of that category
-        :return: final_str, which is the transactions stringifies
-        :rtype: string
+        This function takes a dictionary where each key is a spend category, and the
+        corresponding value is a list of transaction records for that category. It
+        then converts this data into a user-readable string format.
+
+        Parameters:
+        - transaction (dict): A dictionary of transaction records organized by category
+        
+        Returns (string):
+        - final_str, which is the transactions stringifies
         """
         final_str = ""
 
@@ -276,8 +335,11 @@ class User:
         Helper function to get the total number of transactions across
         all categories
 
-        :return: number of transactions
-        :rtype: int
+        Parameters:
+        - None
+
+        Return (int):
+        - number of transactions
         """
         total = 0
         for category in self.transactions:
@@ -286,11 +348,17 @@ class User:
 
     def add_monthly_budget(self, amount, userid):
         """
-        Given amount and userid, edit the budget of the current user
+        Set or update the monthly budget for the current user.
 
-        :param amount: budget amount
-        :param userid:
-        :return: None
+        This function allows setting or updating the monthly budget for a user with the
+        specified 'userid'.
+
+        Parameters:
+        - amount (float): The budget amount to be set or updated.
+        - userid (str): The unique identifier for the user.
+
+        Returns:
+        - None
         """
         try:
             if amount != 0:
@@ -301,10 +369,16 @@ class User:
 
     def monthly_total(self):
         """
-        Calculates total expenditure for the current month
+        Calculate the total expenditure for the current month.
 
-        :return: total_value - rounded amount if valid, else 0.
-        :rtype: float
+        This function calculates the total expenditure for the current month based on
+        the user's transaction records.
+
+        Parameters:
+        - None
+
+        Return:
+        - total_value (float) - The total expenditure for the current month, rounded to 2 decimal places.
         """
         date = datetime.today()
         total_value = 0
@@ -316,12 +390,19 @@ class User:
 
     def create_chart(self, userid, start_date=None, end_date=None):
         """
-        This is used to create the matplotlib piechart of all the transactions and
-        their categories. If a category does not have any transactions, then it is not
-        included in the piechart
+        Generate visualizations of transaction data, including a pie chart and a bar graph.
 
-        :param userid:
-        :return: filepath to the image created by matplotlib
+        This function creates visualizations using Matplotlib to represent transaction data. It generates
+        a pie chart and a bar graph, where each segment or bar represents a spending category and its total
+        expenditure.
+
+        Parameter:
+        - userid (str): The unique identifier for the user
+        - start_date (datetime.date or None): Optional start date to filter transactions (inclusion criterion).
+        - end_date (datetime.date or None): Optional end date to filter transactions (inclusion criterion).
+
+        Returns (str):
+        - A list of file paths to the generated images.
         """
         labels = []
         totals = []
