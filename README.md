@@ -30,7 +30,7 @@ And the best part? FinBot is your multi-platform financial sidekick, available o
 
 ## Demo Video
 
-https://youtu.be/NBihyIU13pw
+https://www.youtube.com/watch?v=LkZGFGU5B6I
 
 ## :money_with_wings: About FinBot
 
@@ -274,12 +274,18 @@ I want to see my spendings in the form of graphs
 
 # :grey_question: Documentation
 
-Thorough documentation of all methods and classes can be found at [Github Pages](https://mtkumar123.github.io/MyDollarBot/)
+Thorough documentation of all methods and classes can be found at 
 
 # :construction: Road Map
 
 Our implementation has been tracked in a project board which can be viewed here -
 [FinBot Developer board](https://github.com/users/vyshnavi-adusumelli/projects/2)
+
+Some possible future enhancements are as follows:
+1.	Generative AI integration with this software 
+2.	Category management functionality in Discord.
+3.	Convert into a Dockerized application.
+4.	Calender widget for discord Bot.
 
 
 :heart: Acknowledgements
@@ -289,7 +295,7 @@ We would like to thank Dr. Timothy Menzies for helping us understand the process
 
 :page_facing_up: License
 ---
-This project is licensed under the terms of the MIT license. Please check [License](https://github.com/secheaper/slashbot/blob/main/LICENSE) for more details.
+This project is licensed under the terms of the MIT license. Please check  for more details.
 
 
 :sparkles: Contributors
