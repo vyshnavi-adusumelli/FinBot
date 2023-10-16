@@ -177,7 +177,6 @@ class User:
         Returns (bool): 
         - True if the category update is successful.
         """
-
         self.transactions[self.edit_category].remove(self.edit_transactions)
         self.transactions[new_category].append(self.edit_transactions)
         return True
@@ -210,7 +209,6 @@ class User:
         :type: array
         :return: None
         """
-
         # if there are specific records to delete
         # and it is not all records from the user
         if records is not None and self.transactions != records:
