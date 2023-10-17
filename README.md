@@ -83,7 +83,7 @@ With simple commands, this bot allows you to:
 ```
 5. Ensure that you export the PYTHONPATH variable to the main project folder in the environment variables. This is essential for your Python scripts to locate and import the project modules correctly.
 
-### Telegram Installation
+### Telegram Setup
 1. Begin by downloading and installing the Telegram desktop application for your system from the official website: [Telegram Desktop](https://desktop.telegram.org/).
 
 2.  Log in to your Telegram account. In the Telegram app, search for "BotFather." Click on "Start" to initiate a conversation with BotFather. Enter the following command: /newbot
@@ -102,7 +102,7 @@ With simple commands, this bot allows you to:
 
 9.  After a successful run, go to your bot on Telegram. Enter the "/start" or "/menu" command to initialize your bot, and you're all set to track your expenses!
 
-### Discord Installation
+### Discord Setup
 
 1. Start by downloading and installing the Discord desktop application for your system from the following official website: [Discord Download](https://discord.com/download).
 
