@@ -27,7 +27,7 @@ Test cases are routinely executed,3,https://github.com/vyshnavi-adusumelli/FinBo
 The files CONTRIBUTING.md lists coding standards and lots of tips on how to extend the system without screwing things up,3,https://github.com/vyshnavi-adusumelli/FinBot/blob/main/CONTRIBUTING.md,
 "issues are discussed before they are closed even if you discuss in slack, need a summary statement here",3,"https://github.com/vyshnavi-adusumelli/FinBot/pull/50
 https://github.com/vyshnavi-adusumelli/FinBot/issues?q=is%3Aissue+is%3Aclosed",Issues discussed in the corresponding PRs 
-Chat channel: exists,3,Nothing mentioned about it in the repo but assuming there should have been one,
+Chat channel: exists,3,https://github.com/vyshnavi-adusumelli/FinBot/blob/tpanati-patch-2/docs/workflows/WhatsApp%20Image%202023-10-16%20at%2019.03.06.jpeg,
 Test cases: a large proportion of the issues related to handling failing cases.,3,https://github.com/vyshnavi-adusumelli/FinBot/issues,
 Evidence that the whole team is using the same tools: everyone can get to all tools and files,3,https://github.com/secheaper/slashbot/compare/main...vyshnavi-adusumelli:FinBot:main,
 "Evidence that the whole team is using the same tools (e.g. config files in the repo, updated by lots of different people)",3,https://github.com/secheaper/slashbot/compare/main...vyshnavi-adusumelli:FinBot:main,
@@ -55,7 +55,7 @@ likeGitHub (https://github.com), BitBucket (https://bitbucket.org),LaunchPad
 provides a short overview of how to use your software with some basic examples of use?",Y,,
 "4.3: If you provide more extensive documentation, does this provide
 clear, step-by-step instructions on how to deploy and use your software?",Y,,
-"4.4: Do you provide a comprehensive guide to all your software’s
+"4.4: Do you provide a comprehensive guide to all your softwareâ€™s
 commands, functions and options?",Y,,
 4.5: Do you provide troubleshooting information that describes the symptoms and step-by-step solutions for problems and error messages?,N,,
 "4.6: If your software can be used as a library, package or serviceby other software, do you provide comprehensive API documentation?",N/A,,
@@ -69,7 +69,7 @@ any, you provide to users and developers?",Y,,
 5.4: Are e-mails to your support e-mail address received by more than one person?,N,,
 5.5: Does your project have a ticketing system to manage bug reports and feature requests?,Y,,
 "5.6: Is your project's ticketing system publicly visible to your users, so they can view bug reports and feature requests?",Y,,
-6.1: Is your software’s architecture and design modular?,Y,,
+6.1: Is your softwareâ€™s architecture and design modular?,Y,,
 "6.2: Does your software use an accepted coding standard or
 convention?",Y,,
 "7.1: Does your software allow data to be imported and exported using
