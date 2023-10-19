@@ -3,7 +3,7 @@
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
 ![GitHub](https://img.shields.io/github/languages/top/vyshnavi-adusumelli/FinBot?color=red&label=Python&logo=Python&logoColor=yellow)
 ![GitHub contributors](https://img.shields.io/github/contributors/vyshnavi-adusumelli/FinBot)
-[![DOI]]
+[![DOI](https://zenodo.org/badge/699033519.svg)](https://zenodo.org/badge/latestdoi/699033519)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 [![Platform](https://img.shields.io/badge/Platform-Discord-blue)](https://discord.com/)
 [![codecov](https://codecov.io/gh/vyshnavi-adusumelli/FinBot/branch/main/graph/badge.svg?token=YCKWZTHO7O)](https://app.codecov.io/gh/vyshnavi-adusumelli/FinBot/)
