@@ -6,4 +6,4 @@
 
 ## Scorecard
 
-[Score card - Group 13](https://github.com/vyshnavi-adusumelli/FinBot/blob/tpanati-patch-2/proj/FinBot_proj2_scorecard.csv)
+[Score card - Group 13](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/proj2/FinBot_proj2_scorecard.csv)
