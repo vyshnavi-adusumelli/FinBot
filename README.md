@@ -295,7 +295,7 @@ We would like to thank Dr. Timothy Menzies for helping us understand the process
 
 :page_facing_up: License
 ---
-This project is licensed under the terms of the MIT license. Please check  for more details.
+This project is licensed under the terms of the MIT license. Please check [LICENSE](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/LICENSE) for more details.
 
 
 :sparkles: Contributors
