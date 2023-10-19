@@ -274,7 +274,7 @@ I want to see my spendings in the form of graphs
 
 # :grey_question: Documentation
 
-Thorough documentation of all methods and classes can be found at 
+Thorough documentation of all methods and classes can be found at [github pages](https://mtkumar123.github.io/MyDollarBot/)
 
 # :construction: Road Map
 
