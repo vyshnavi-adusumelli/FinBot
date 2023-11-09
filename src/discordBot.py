@@ -37,8 +37,18 @@ import re
 from datetime import datetime
 from tabulate import tabulate
 
+import csv
+import io
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
+
+import base64
+
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
+EMAIL_ID = os.environ["EMAIL_USER"]
+EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 
 bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
@@ -80,6 +90,7 @@ async def menu(ctx):
     em.add_field(name="**#edit**", value="Edit/Change spending details", inline=False)
     em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
+    em.add_field(name="**#download**", value="Download your history", inline=False)
     
     await ctx.send(embed=em)
 
@@ -722,6 +733,143 @@ async def chart(ctx):
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
+
+@bot.command()
+async def download(ctx):
+    """
+    Handles the command 'download'. Downloads a csv file.
+
+    :param ctx - Discord context window
+    :type: object
+    :return: None
+
+    """
+    try:
+
+        count, table = get_history_csv()
+
+        if count==0:
+            await ctx.send("Sorry! No spending records found!")
+            return
+        
+        buffer = io.StringIO()
+        writer = csv.writer(buffer)
+        
+        writer.writerows(table)
+        buffer.seek(0)
+
+        await ctx.channel.send(file=discord.File(buffer, "history.csv"))
+        
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+
+@bot.command()
+async def sendEmail(ctx):
+    """
+    Handles the command 'sendEmail'. Sends and email with the csvFile.
+
+    :param ctx - Discord context window
+    :type: object
+    :return: None
+    """
+    try:
+
+        count, table = get_history_csv()
+
+        if count==0:
+            await ctx.send("Sorry! No spending records found!")
+            return
+        
+        with open("history.csv", 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerows(table)
+        
+        await ctx.send("Enter your email id")
+        user_email_id = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
+
+        user_email_id = user_email_id.content.strip()
+
+        if not validate_email(user_email_id):
+            ctx.send("Invalid email id!")
+            return
+
+        send_csv_via_email(user_email_id, table)
+
+        await ctx.send("Email sent successfully!")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+
+def validate_email(email_id):
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
+    if re.fullmatch(regex, email_id):
+        return True
+
+    return False
+
+
+def send_csv_via_email(user_email_id, table):
+
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+        
+    writer.writerows(table)
+    buffer.seek(0)
+
+    data = buffer.read()
+    encoded = base64.b64encode(data.encode()).decode()
+
+    message = Mail(
+    from_email='chintoo.joshi98@gmail.com',
+    to_emails="chintoo.joshi98@gmail.com",
+    subject='Your Spending History is Ready to Download! | FinBot',
+    html_content='<strong>Please find the csv file attached to this email</strong>')
+
+    attachment = Attachment()
+    attachment.file_content = FileContent(encoded)
+    attachment.file_type = FileType("text/csv")
+    attachment.file_name = FileName('history.csv')
+    attachment.disposition = Disposition('attachment')
+    message.attachment = attachment
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e.message)
+
+
+def get_history_csv():
+    """
+    Reads through the transactions and appends to the table list. If no transcations are found, returns 0
+    
+    Returns:
+    - count: Count of the transactions.
+    - table: List of transaction
+    """
+    count = 0
+    table = [["Category", "Date", "Amount in $"]]
+
+    if CHANNEL_ID not in list(user_list.keys()) or (len(user_list[CHANNEL_ID].transactions) == 0):
+            return 0, []
+        
+    for category in user_list[CHANNEL_ID].transactions.keys():
+        for transaction in user_list[CHANNEL_ID].transactions[category]:
+            count += 1
+            date = transaction["Date"].strftime("%m/%d/%y")
+            value = format(transaction["Value"], ".2f")
+            table.append([category, date, "$"+value])
+
+    return count, table
+
+
 def get_users():
     """
     Reads user data from files in a specified directory and returns it as a dictionary.
@@ -749,4 +897,3 @@ if __name__ == "__main__":
         user_list = get_users()
         bot.run(BOT_TOKEN)
     except Exception as e: print(f"{e}")
-
