@@ -80,6 +80,7 @@ async def menu(ctx):
     em.add_field(name="**#edit**", value="Edit/Change spending details", inline=False)
     em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
+    em.add_field(name="**#add_category**", value="Add a new category", inline=False)
     
     await ctx.send(embed=em)
 
@@ -743,6 +744,44 @@ def get_users():
                 with open(abspath, "rb") as f: users[u] = pickle.load(f)
 
     return users
+
+@bot.command()
+async def add_category(ctx):
+    """
+    Function to add a new spending category to the user's list.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # user_id = ctx.author.id
+        # channel_id = ctx.channel.id
+
+        # # Assuming user_list is a dictionary containing user-specific data
+        # if CHANNEL_ID not in user_list:
+        #     user_list[CHANNEL_ID] = User()
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        await ctx.send("Please enter the name of the new category:")
+        category_name = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+        # Check if the category already exists
+        if category_name.content.lower() in [category.lower() for category in spend_categories]:
+            await ctx.send("Category already exists. Please choose a different name.")
+            return
+
+        # Add the new category
+        spend_categories.append(category_name.content)
+        await ctx.send(f"Category '{category_name.content}' added successfully!")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
 
 if __name__ == "__main__":
     try:
