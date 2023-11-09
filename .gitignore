@@ -132,3 +132,9 @@ temp.txt
 
 # pickle files
 .pickle
+
+#bash file
+startup.sh
+
+discordData/
+telData/
