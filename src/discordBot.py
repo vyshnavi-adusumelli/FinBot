@@ -82,6 +82,7 @@ async def menu(ctx):
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
     em.add_field(name="**#add_category**", value="Add a new category", inline=False)
     em.add_field(name="**#delete_category**", value="delete a category", inline=False)
+    em.add_field(name="**#display_categories**", value="display categories", inline=False)
     
     await ctx.send(embed=em)
 
@@ -819,6 +820,36 @@ async def delete_category(ctx):
             await ctx.send(f"Category '{deleted_category}' deleted successfully!")
         except (ValueError, IndexError):
             await ctx.send("Invalid input. Please enter a valid category number.")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def display_categories(ctx):
+    """
+    Function to display all spending categories for the user.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # Assuming user_list is a dictionary containing user-specific data
+        if CHANNEL_ID not in user_list:
+            await ctx.send("User data not found. Please add a category before attempting to display.")
+            return
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        if not spend_categories:
+            await ctx.send("No categories found. Please add a category before attempting to display.")
+            return
+
+        category_list = "\n".join(spend_categories)
+        await ctx.send(f"Current categories:\n{category_list}")
 
     except Exception as ex:
         print(str(ex), exc_info=True)
