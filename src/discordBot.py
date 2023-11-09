@@ -91,6 +91,7 @@ async def menu(ctx):
     em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
     em.add_field(name="**#download**", value="Download your history", inline=False)
+    em.add_field(name="**#sendEmail**", value="Receive your history over the email", inline=False)
     
     await ctx.send(embed=em)
 
