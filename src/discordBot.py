@@ -29,7 +29,7 @@ import asyncio
 import discord
 from discord.ext import commands
 from discordUser import User
-from discord.ui import Select, View
+from discord.ui import Select, View, button
 import os
 import pathlib
 import pickle
@@ -85,37 +85,40 @@ async def menu(ctx):
 
 @bot.command()
 async def display(ctx):
-    """
-    Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
-    transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
-    next.
+   """
+   Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
+   transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
+   next.
 
-    Parameters:
-    - ctx (discord.ext.commands.Context): The Discord context window.
 
-    Returns:
-    - None
-    """
-    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
-    else:
-        try:
-            select_options = [discord.SelectOption(label="Day"),discord.SelectOption(label="Month"),]
-            select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
-                
-            async def my_callback(interaction):
-                await interaction.response.send_message(f'You chose: {select.values[0]}')
-                await asyncio.sleep(0.5)
-                await display_total(ctx, select.values[0])
-            
-            select.callback = my_callback
-            view = View(timeout=90)
-            view.add_item(select)
-            
-            await ctx.send('Please select a category to see the total expense', view=view)
+   Parameters:
+   - ctx (discord.ext.commands.Context): The Discord context window.
 
-        except Exception as ex:
-            print(str(ex), exc_info=True)
-            await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+   Returns:
+   - None
+   """
+   if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
+   else:
+       try:
+           class DayMonthView(discord.ui.View):
+              
+               @button(style=discord.ButtonStyle.primary, label="Day", custom_id="day")
+               async def day_button_callback(self, interaction, button):
+                   await interaction.response.send_message(f'You chose day')
+                   await display_total(ctx, 'Day')
+              
+               @button(style=discord.ButtonStyle.primary, label="Month", custom_id="month")
+               async def month_button_callback(self, interaction, button):
+                   await interaction.response.send_message(f'You chose month')
+                   await display_total(ctx, 'Month')
+          
+           await ctx.send('Please select a category to see the total expense', view=DayMonthView())
+
+
+       except Exception as ex:
+           print(str(ex), exc_info=True)
+           await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def display_total(ctx, sel_category):
