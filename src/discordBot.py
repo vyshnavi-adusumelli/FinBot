@@ -1175,15 +1175,19 @@ async def post_amount_input_share(ctx, amount_entered,selected_category,date_to_
         member_id = member[2:-1]
         user = discord.utils.find(lambda m, member_id=member_id : m.id == int(member_id), ctx.channel.members)
         user_id_list.append(user.id)
+    
+    user_list_len = len(user_id_list)
    
     try:
         amount_value = user_list[current_user_key].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  raise Exception("Spent amount has to be a non-zero number.") # cannot be $0 spending
 
+        divided_val = amount_value/user_list_len
+
         for user_id in user_id_list:
             user_key = str(CHANNEL_ID) + "_" + str(user_id)
             if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
-            user_list[user_key].add_transaction(date_to_add, selected_category, amount_value, user_key)
+            user_list[user_key].add_transaction(date_to_add, selected_category, divided_val, user_key)
         
         add_message = "The following expenditure has been recorded."
 
