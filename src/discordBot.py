@@ -123,11 +123,13 @@ async def display(ctx):
                 
                 @button(style=discord.ButtonStyle.primary, label="Day", custom_id="day")
                 async def day_button_callback(self, interaction, button_):
+                    print(button_)
                     await interaction.response.send_message("You chose day")
                     await display_total(ctx, 'Day')
                 
                 @button(style=discord.ButtonStyle.primary, label="Month", custom_id="month")
                 async def month_button_callback(self, interaction, button_):
+                    print(button_)
                     await interaction.response.send_message("You chose month")
                     await display_total(ctx, 'Month')
             
