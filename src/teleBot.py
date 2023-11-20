@@ -353,7 +353,7 @@ def send_email(message):
                     count = count + 1
                     date = transaction["Date"].strftime("%m/%d/%y")
                     value = format(transaction["Value"], ".2f")
-                    table.append([date, category, "$"+value])
+                    table.append([category, date, "$"+value])
             if count == 0: raise Exception("Sorry! No spending records found!")
 
             s = io.StringIO()
