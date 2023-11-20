@@ -163,7 +163,6 @@ async def display_total(ctx, sel_category):
 
     dateFormat = "%m/%d/%Y"
     try:
-        ctx.send(ctx.message.author.name)
         day_week_month = sel_category
 
         if day_week_month not in user_list[user_key].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
@@ -1174,7 +1173,7 @@ async def post_amount_input_share(ctx, amount_entered,selected_category,date_to_
 
     for member in mentioned_members.split():
         member_id = member[2:-1]
-        user = discord.utils.find(lambda m : m.id == int(member_id), ctx.channel.members)
+        user = discord.utils.find(lambda m, member_id=member_id : m.id == int(member_id), ctx.channel.members)
         user_id_list.append(user.id)
    
     try:
