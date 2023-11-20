@@ -140,3 +140,4 @@ startup.sh
 discordData/
 telData/
 history.csv
+*.pickle
