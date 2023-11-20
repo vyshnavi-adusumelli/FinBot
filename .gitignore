@@ -136,5 +136,7 @@ temp.txt
 #bash file
 startup.sh
 
+#Data files
 discordData/
 telData/
+history.csv
