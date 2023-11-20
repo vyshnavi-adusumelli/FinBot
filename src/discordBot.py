@@ -98,7 +98,8 @@ async def menu(ctx):
     em.add_field(name="**#delete_category**", value="Delete a category", inline=False)
     em.add_field(name="**#display_categories**", value="Display categories", inline=False)
     em.add_field(name="**#prompt**", value="Provide a natural language prompt", inline=False)
-    
+    em.add_field(name="**#share**", value="Share expenses with other people", inline=False)
+
     await ctx.send(embed=em)
 
 @bot.command()
