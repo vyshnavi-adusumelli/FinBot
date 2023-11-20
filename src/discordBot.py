@@ -45,13 +45,15 @@ from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileT
 
 import base64
 
+from chatgpt import ChatGPT
+
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
-EMAIL_ID = os.environ["EMAIL_USER"]
-EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 
 bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
+
+chat_gpt = ChatGPT()
 
 @bot.event
 async def on_ready():
@@ -92,6 +94,10 @@ async def menu(ctx):
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
     em.add_field(name="**#download**", value="Download your history", inline=False)
     em.add_field(name="**#sendEmail**", value="Receive your history over the email", inline=False)
+    em.add_field(name="**#add_category**", value="Add a new category", inline=False)
+    em.add_field(name="**#delete_category**", value="Delete a category", inline=False)
+    em.add_field(name="**#display_categories**", value="Display categories", inline=False)
+    em.add_field(name="**#prompt**", value="Provide a natural language prompt", inline=False)
     
     await ctx.send(embed=em)
 
@@ -892,6 +898,147 @@ def get_users():
                 with open(abspath, "rb") as f: users[u] = pickle.load(f)
 
     return users
+  
+@bot.command()
+async def add_category(ctx):
+    """
+    Function to add a new spending category to the user's list.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # user_id = ctx.author.id
+        # channel_id = ctx.channel.id
+
+        # # Assuming user_list is a dictionary containing user-specific data
+        # if CHANNEL_ID not in user_list:
+        #     user_list[CHANNEL_ID] = User()
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        await ctx.send("Please enter the name of the new category:")
+        category_name = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+        # Check if the category already exists
+        if category_name.content.lower() in [category.lower() for category in spend_categories]:
+            await ctx.send("Category already exists. Please choose a different name.")
+            return
+
+        # Add the new category
+        spend_categories.append(category_name.content)
+        await ctx.send(f"Category '{category_name.content}' added successfully!")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def delete_category(ctx):
+    """
+    Function to delete an existing spending category from the user's list.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # Assuming user_list is a dictionary containing user-specific data
+        if CHANNEL_ID not in user_list:
+            await ctx.send("User data not found. Please add a category before attempting to delete.")
+            return
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        if not spend_categories:
+            await ctx.send("No categories found. Please add a category before attempting to delete.")
+            return
+
+        # Display the current categories for the user to choose from
+        category_options = '\n'.join([f"{index + 1}. {category}" for index, category in enumerate(spend_categories)])
+        await ctx.send(f"Current categories:\n{category_options}\n\nPlease enter the number of the category you want to delete:")
+
+        # Wait for the user's response
+        category_number = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+        try:
+            category_index = int(category_number.content) - 1
+            deleted_category = spend_categories.pop(category_index)
+            await ctx.send(f"Category '{deleted_category}' deleted successfully!")
+        except (ValueError, IndexError):
+            await ctx.send("Invalid input. Please enter a valid category number.")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def display_categories(ctx):
+    """
+    Function to display all spending categories for the user.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # Assuming user_list is a dictionary containing user-specific data
+        if CHANNEL_ID not in user_list:
+            await ctx.send("User data not found. Please add a category before attempting to display.")
+            return
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        if not spend_categories:
+            await ctx.send("No categories found. Please add a category before attempting to display.")
+            return
+
+        category_list = "\n".join(spend_categories)
+        await ctx.send(f"Current categories:\n{category_list}")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def prompt(ctx):
+   if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+   await ctx.send("Enter the transaction details please")
+
+
+   def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
+
+
+   try:
+       prompt_message = await bot.wait_for('message', check=check, timeout=120)
+       prompt_message = prompt_message.content
+
+
+       print("Sending this to chatgpt: ", prompt_message)
+
+
+       category, date, amount = chat_gpt.send_message(prompt_message)
+      
+       print(category," ",date, " ", amount)
+
+
+       month, date, year = date.split("-")
+      
+       date_obj = datetime(int(year), int(month), int(date))
+
+
+       await post_amount_input(ctx, amount, category, date_obj)
+
+
+   except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
+
 
 if __name__ == "__main__":
     try:
