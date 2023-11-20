@@ -162,6 +162,7 @@ async def display_total(ctx, sel_category):
 
     dateFormat = "%m/%d/%Y"
     try:
+        ctx.send(ctx.message.author.name)
         day_week_month = sel_category
 
         if day_week_month not in user_list[user_key].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
@@ -257,7 +258,7 @@ async def post_budget_input(ctx, budget_resp):
         if budget_new.content.isnumeric(): await post_budget_input(ctx, budget_new)
         elif '#' not in budget_new.content : await ctx.send("Exception received: 'budget' is not a numeric character. Please re-enter #budget command")
 
-async def select_date(ctx):
+async def select_date(ctx, is_share=False):
     '''
     Function to get date selection from user. This function is invoked from the add to
     enter the date of expense to be added.
@@ -265,6 +266,7 @@ async def select_date(ctx):
     :param ctx - Discord context window
     :param Bot - Discord Bot object
     :param date - date message object received from the user
+    :param is_share - Is request coming from share function
     :type: object
     :return: None
 
@@ -282,10 +284,10 @@ async def select_date(ctx):
         month, date, year = map(int, date_str.split('-'))
 
         # Call the next function with the date, month, and year
-        await process_date(ctx, date, month, year)
+        await process_date(ctx, date, month, year, is_share)
     except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
 
-async def process_date(ctx, date, month, year):
+async def process_date(ctx, date, month, year, is_share=False):
     '''
     Process the date, month, and year here
     You can perform any necessary calculations or operations
@@ -294,6 +296,7 @@ async def process_date(ctx, date, month, year):
     :param date - date string
     :param month - month string
     :param year - year string
+    :param is_share - Is request coming from share function
     :type: object
     :return: None
     '''
@@ -301,7 +304,7 @@ async def process_date(ctx, date, month, year):
     try:
         date_obj = datetime(int(year), int(month), int(date))
         await ctx.send(f"Selected Date: {date_obj.strftime('%m-%d-%Y')}")
-        await select_category(ctx, date_obj)
+        await select_category(ctx, date_obj, is_share)
     except ValueError: await ctx.send("Invalid date, month, or year. Please enter valid values.")
 
 @bot.command()
@@ -319,13 +322,13 @@ async def add(ctx):
     user_key = str(CHANNEL_ID) + "_" + str(current_user)
      
     if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
-    try: await select_date(ctx)
+    try: await select_date(ctx, False)
 
     except Exception as ex:
         print("exception occurred:"+str(ex))
         await ctx.send("Request cannot be processed. Please try again with correct format!")
 
-async def select_category(ctx, date):
+async def select_category(ctx, date, is_share=False):
     """
     Function to enable category selection via a custom-defined category dropdown. This function is invoked from the 'select_date' function 
     to select the category of expense to be added. It utilizes the Select and View classes from discord.ui and a callback to handle the 
@@ -334,6 +337,7 @@ async def select_category(ctx, date):
     Parameters:
     - ctx (discord.ext.commands.Context): The Discord context window.
     - date (discord.Message): The date message object received from the user.
+    - is_share (Bool) - Is request coming from share function
 
     Returns:
     - None
@@ -353,7 +357,7 @@ async def select_category(ctx, date):
             await ctx.send("Invalid category")   
             raise Exception('Sorry I don\'t recognise this category "{}"!'.format(select.values[0]))
 
-        await post_category_selection(ctx, date, select.values[0])
+        await post_category_selection(ctx, date, select.values[0], is_share)
 
     select.callback = my_callback
     
@@ -362,7 +366,7 @@ async def select_category(ctx, date):
   
     await ctx.send('Please select a category', view=view)
 
-async def post_category_selection(ctx, date_to_add,category):
+async def post_category_selection(ctx, date_to_add,category, is_share=False):
     """
     Receives the category selected by the user and then asks for the amount spent. If an invalid category is given,
     an error message is displayed, followed by a command list. If the category given is valid, 'post_amount_input' is
@@ -383,7 +387,10 @@ async def post_category_selection(ctx, date_to_add,category):
         await ctx.send(f'\nHow much did you spend on {selected_category}')
         amount = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
-        await post_amount_input(ctx, amount.content,selected_category,date_to_add)
+        if is_share:
+            await post_amount_input_share(ctx, amount.content, selected_category, date_to_add)
+        else:
+            await post_amount_input(ctx, amount.content,selected_category,date_to_add)
     except Exception as ex:
         print(str(ex), exc_info=True)
         await ctx.send("Request cannot be processed. Please try again with correct format!")
@@ -1126,6 +1133,65 @@ async def prompt(ctx):
 
 
     except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
+
+
+@bot.command()
+async def share(ctx):
+    try: 
+        await select_date(ctx, True)
+
+    except Exception as ex:
+        print("exception occurred:"+str(ex))
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+    
+
+
+async def post_amount_input_share(ctx, amount_entered,selected_category,date_to_add):
+    """
+    Asks for users to share expenses. Receives the amount entered by the user and adds it to the transaction history of every user. An error is displayed if the entered
+    amount is zero. Else, a message is shown that the transaction has been added.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+    - amount_entered (str): The amount entered by the user for the transaction.
+    - selected_category (str): The category of the expense selected by the user.
+    - date_to_add (str): The date of the transaction in a string format.
+
+    Returns:
+    - None
+    """
+
+    current_user = ctx.message.author.id
+    current_user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
+    user_id_list = list()
+    user_id_list.append(ctx.message.author.id)
+
+    await ctx.send("Mention people to share expenses with: ")
+    mentioned_members = await bot.wait_for("message", check=lambda message: message.author == ctx.author, timeout=60.0)
+    mentioned_members = mentioned_members.content
+
+    for member in mentioned_members.split():
+        member_id = member[2:-1]
+        user = discord.utils.find(lambda m : m.id == int(member_id), ctx.channel.members)
+        user_id_list.append(user.id)
+   
+    try:
+        amount_value = user_list[current_user_key].validate_entered_amount(amount_entered)  # validate
+        if amount_value == 0:  raise Exception("Spent amount has to be a non-zero number.") # cannot be $0 spending
+
+        for user_id in user_id_list:
+            user_key = str(CHANNEL_ID) + "_" + str(user_id)
+            if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
+            user_list[user_key].add_transaction(date_to_add, selected_category, amount_value, user_key)
+        
+        add_message = "The following expenditure has been recorded."
+
+        await ctx.send(add_message)
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
 
 
 if __name__ == "__main__":
