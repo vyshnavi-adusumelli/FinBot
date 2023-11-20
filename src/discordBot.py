@@ -37,11 +37,15 @@ import re
 from datetime import datetime
 from tabulate import tabulate
 
+from chatgpt import ChatGPT
+
 BOT_TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
 
 bot = commands.Bot(command_prefix="#", intents=discord.Intents.all())
 user_list = {}
+
+chat_gpt = ChatGPT()
 
 @bot.event
 async def on_ready():
@@ -743,6 +747,40 @@ def get_users():
                 with open(abspath, "rb") as f: users[u] = pickle.load(f)
 
     return users
+
+
+@bot.command()
+async def prompt(ctx):
+   if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+   await ctx.send("Enter the transaction details please")
+
+
+   def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
+
+
+   try:
+       prompt_message = await bot.wait_for('message', check=check, timeout=120)
+       prompt_message = prompt_message.content
+
+
+       print("Sending this to chatgpt: ", prompt_message)
+
+
+       category, date, amount = chat_gpt.send_message(prompt_message)
+      
+       print(category," ",date, " ", amount)
+
+
+       month, date, year = date.split("-")
+      
+       date_obj = datetime(int(year), int(month), int(date))
+
+
+       await post_amount_input(ctx, amount, category, date_obj)
+
+
+   except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
+
 
 if __name__ == "__main__":
     try:
