@@ -103,40 +103,40 @@ async def menu(ctx):
 
 @bot.command()
 async def display(ctx):
-   """
-   Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
-   transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
-   next.
+    """
+    Handles the command 'display'. If the user has no transaction history, a message is displayed. If there is
+    transaction history, user is given choices of time periods to choose from. The function 'display_total' is called
+    next.
 
 
-   Parameters:
-   - ctx (discord.ext.commands.Context): The Discord context window.
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
 
 
-   Returns:
-   - None
-   """
-   if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
-   else:
-       try:
-           class DayMonthView(discord.ui.View):
-              
-               @button(style=discord.ButtonStyle.primary, label="Day", custom_id="day")
-               async def day_button_callback(self, interaction, button):
-                   await interaction.response.send_message(f'You chose day')
-                   await display_total(ctx, 'Day')
-              
-               @button(style=discord.ButtonStyle.primary, label="Month", custom_id="month")
-               async def month_button_callback(self, interaction, button):
-                   await interaction.response.send_message(f'You chose month')
-                   await display_total(ctx, 'Month')
-          
-           await ctx.send('Please select a category to see the total expense', view=DayMonthView())
+    Returns:
+    - None
+    """
+    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
+    else:
+        try:
+            class DayMonthView(discord.ui.View):
+                
+                @button(style=discord.ButtonStyle.primary, label="Day", custom_id="day")
+                async def day_button_callback(self, interaction, button_):
+                    await interaction.response.send_message("You chose day")
+                    await display_total(ctx, 'Day')
+                
+                @button(style=discord.ButtonStyle.primary, label="Month", custom_id="month")
+                async def month_button_callback(self, interaction, button_):
+                    await interaction.response.send_message("You chose month")
+                    await display_total(ctx, 'Month')
+            
+            await ctx.send('Please select a category to see the total expense', view=DayMonthView())
 
 
-       except Exception as ex:
-           print(str(ex), exc_info=True)
-           await ctx.send("Request cannot be processed. Please try again with correct format!")
+        except Exception as ex:
+            print(str(ex), exc_info=True)
+            await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 
 async def display_total(ctx, sel_category):
@@ -416,10 +416,10 @@ async def delete(ctx):
             and user_list[CHANNEL_ID].get_number_of_transactions() != 0):
             
             curr_day = datetime.now()
-            prompt = "Enter the day, month, or All\n"
-            prompt += f"\n\tExample day in format mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n"
-            prompt += f"\n\tExample month in format mm-YYYY: {curr_day.strftime(monthFormat)}"
-            await ctx.send(prompt)
+            prompt_message = "Enter the day, month, or All\n"
+            prompt_message += f"\n\tExample day in format mm-dd-YYYY: {curr_day.strftime(dateFormat)}\n"
+            prompt_message += f"\n\tExample month in format mm-YYYY: {curr_day.strftime(monthFormat)}"
+            await ctx.send(prompt_message)
             delete_type = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
             await process_delete_argument(ctx, delete_type.content)
         else:
@@ -824,7 +824,7 @@ def validate_email(email_id):
 
 
 def send_csv_via_email(user_email_id, table):
-
+    
     buffer = io.StringIO()
     writer = csv.writer(buffer)
         
@@ -836,7 +836,7 @@ def send_csv_via_email(user_email_id, table):
 
     message = Mail(
     from_email='chintoo.joshi98@gmail.com',
-    to_emails="chintoo.joshi98@gmail.com",
+    to_emails=user_email_id,
     subject='Your Spending History is Ready to Download! | FinBot',
     html_content='<strong>Please find the csv file attached to this email</strong>')
 
@@ -852,8 +852,8 @@ def send_csv_via_email(user_email_id, table):
         print(response.status_code)
         print(response.body)
         print(response.headers)
-    except Exception as e:
-        print(e.message)
+    except Exception as ex:
+        print(str(ex))
 
 
 def get_history_csv():
@@ -868,7 +868,7 @@ def get_history_csv():
     table = [["Category", "Date", "Amount in $"]]
 
     if CHANNEL_ID not in list(user_list.keys()) or (len(user_list[CHANNEL_ID].transactions) == 0):
-            return 0, []
+        return 0, []
         
     for category in user_list[CHANNEL_ID].transactions.keys():
         for transaction in user_list[CHANNEL_ID].transactions[category]:
@@ -1012,35 +1012,34 @@ async def display_categories(ctx):
 
 @bot.command()
 async def prompt(ctx):
-   if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
-   await ctx.send("Enter the transaction details please")
+    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    await ctx.send("Enter the transaction details please")
+    
+    def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
 
 
-   def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
+    try:
+        prompt_message = await bot.wait_for('message', check=check, timeout=120)
+        prompt_message = prompt_message.content
 
 
-   try:
-       prompt_message = await bot.wait_for('message', check=check, timeout=120)
-       prompt_message = prompt_message.content
+        print("Sending this to chatgpt: ", prompt_message)
 
 
-       print("Sending this to chatgpt: ", prompt_message)
+        category, date, amount = chat_gpt.send_message(prompt_message)
+
+        print(category," ",date, " ", amount)
 
 
-       category, date, amount = chat_gpt.send_message(prompt_message)
-      
-       print(category," ",date, " ", amount)
+        month, date, year = date.split("-")
+
+        date_obj = datetime(int(year), int(month), int(date))
 
 
-       month, date, year = date.split("-")
-      
-       date_obj = datetime(int(year), int(month), int(date))
+        await post_amount_input(ctx, amount, category, date_obj)
 
 
-       await post_amount_input(ctx, amount, category, date_obj)
-
-
-   except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
+    except asyncio.TimeoutError: await ctx.send("You took too long to respond. Please try again.")
 
 
 if __name__ == "__main__":
