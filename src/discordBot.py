@@ -270,9 +270,6 @@ async def select_date(ctx):
 
     '''
 
-    current_user = ctx.message.author.id
-    user_key = str(CHANNEL_ID) + "_" + str(current_user)
-
     dateFormat = "%m-%d-%Y"
     curr_day = datetime.now()
     await ctx.send("Enter day")
@@ -300,9 +297,6 @@ async def process_date(ctx, date, month, year):
     :type: object
     :return: None
     '''
-
-    current_user = ctx.message.author.id
-    user_key = str(CHANNEL_ID) + "_" + str(current_user)
     
     try:
         date_obj = datetime(int(year), int(month), int(date))
@@ -382,9 +376,6 @@ async def post_category_selection(ctx, date_to_add,category):
     Returns:
     - None
     """
-
-    current_user = ctx.message.author.id
-    user_key = str(CHANNEL_ID) + "_" + str(current_user)
 
     try:
         selected_category = category
@@ -678,9 +669,6 @@ async def edit3(ctx,choice):
     :return: None
     """
 
-    current_user = ctx.message.author.id
-    user_key = str(CHANNEL_ID) + "_" + str(current_user)
-
     choice1 = choice
     if choice1 == "Date":
         await ctx.send ("Please enter the new date (in mm-dd-yyyy format)")
@@ -833,12 +821,8 @@ async def download(ctx):
 
     """
 
-    current_user = ctx.message.author.id
-    user_key = str(CHANNEL_ID) + "_" + str(current_user)
-
     try:
-
-        count, table = get_history_csv()
+        count, table = get_history_csv(ctx)
 
         if count==0:
             await ctx.send("Sorry! No spending records found!")
@@ -867,12 +851,9 @@ async def sendEmail(ctx):
     :return: None
     """
 
-    current_user = ctx.message.author.id
-    user_key = str(CHANNEL_ID) + "_" + str(current_user)
-
     try:
 
-        count, table = get_history_csv()
+        count, table = get_history_csv(ctx)
 
         if count==0:
             await ctx.send("Sorry! No spending records found!")
@@ -942,7 +923,7 @@ def send_csv_via_email(user_email_id, table):
         print(str(ex))
 
 
-def get_history_csv():
+def get_history_csv(ctx):
     """
     Reads through the transactions and appends to the table list. If no transcations are found, returns 0
     
@@ -952,6 +933,9 @@ def get_history_csv():
     """
     count = 0
     table = [["Category", "Date", "Amount in $"]]
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
 
     if user_key not in list(user_list.keys()) or (len(user_list[user_key].transactions) == 0):
         return 0, []
