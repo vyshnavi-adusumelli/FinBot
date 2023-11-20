@@ -116,7 +116,11 @@ async def display(ctx):
     Returns:
     - None
     """
-    if CHANNEL_ID not in user_list or user_list[CHANNEL_ID].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
+    if user_key not in user_list or user_list[user_key].get_number_of_transactions() == 0: await ctx.send("Oops! Looks like you do not have any spending records!")
     else:
         try:
             class DayMonthView(discord.ui.View):
@@ -152,13 +156,17 @@ async def display_total(ctx, sel_category):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     dateFormat = "%m/%d/%Y"
     try:
         day_week_month = sel_category
 
-        if day_week_month not in user_list[CHANNEL_ID].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
+        if day_week_month not in user_list[user_key].spend_display_option: raise Exception('Sorry I can\'t show spendings for "{}"!'.format(day_week_month))
 
-        if len(user_list[CHANNEL_ID].transactions) == 0: raise Exception("Oops! Looks like you do not have any spending records!")
+        if len(user_list[user_key].transactions) == 0: raise Exception("Oops! Looks like you do not have any spending records!")
 
         await ctx.send("Hold on! Calculating...")
 
@@ -166,8 +174,8 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            for category in user_list[CHANNEL_ID].transactions.keys():
-                for transaction in user_list[CHANNEL_ID].transactions[category]:
+            for category in user_list[user_key].transactions.keys():
+                for transaction in user_list[user_key].transactions[category]:
                     if transaction["Date"].strftime("%d") == query.strftime("%d"):
                         query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(category, transaction["Date"].strftime(dateFormat), transaction["Value"])
                         total_value += transaction["Value"]
@@ -179,9 +187,9 @@ async def display_total(ctx, sel_category):
             query = datetime.today()
             query_result = ""
             total_value = 0
-            budget_value = user_list[CHANNEL_ID].monthly_budget
-            for category in user_list[CHANNEL_ID].transactions.keys():
-                for transaction in user_list[CHANNEL_ID].transactions[category]:
+            budget_value = user_list[user_key].monthly_budget
+            for category in user_list[user_key].transactions.keys():
+                for transaction in user_list[user_key].transactions[category]:
                     if transaction["Date"].strftime("%m") == query.strftime("%m"):
                         query_result += "Category: {} ; Date: {} ; Value: {:.2f} \n".format(category,transaction["Date"].strftime(dateFormat),transaction["Value"])
                         total_value += transaction["Value"]
@@ -205,9 +213,13 @@ async def budget(ctx):
     Returns:
     - None
     """
-    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
+    if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
     try:
-        await ctx.send(f"Your current monthly budget is {user_list[CHANNEL_ID].monthly_budget}")
+        await ctx.send(f"Your current monthly budget is {user_list[user_key].monthly_budget}")
         await ctx.send("Enter an amount to update your monthly budget. (Enter numeric values only)")
         budget_resp = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
     except asyncio.TimeoutError:
@@ -228,11 +240,15 @@ async def post_budget_input(ctx, budget_resp):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         amount_entered = budget_resp.content
-        amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
+        amount_value = user_list[user_key].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  raise Exception("Budget amount has to be a positive number.") # cannot be $0 spending
-        user_list[CHANNEL_ID].add_monthly_budget(amount_value, CHANNEL_ID)
+        user_list[user_key].add_monthly_budget(amount_value, user_key)
         await ctx.send(f"The budget for this month has been set as $ {amount_value}")
     
     except Exception as ex:
@@ -253,6 +269,10 @@ async def select_date(ctx):
     :return: None
 
     '''
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     dateFormat = "%m-%d-%Y"
     curr_day = datetime.now()
     await ctx.send("Enter day")
@@ -280,6 +300,9 @@ async def process_date(ctx, date, month, year):
     :type: object
     :return: None
     '''
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
     
     try:
         date_obj = datetime(int(year), int(month), int(date))
@@ -297,8 +320,11 @@ async def add(ctx):
 
     Returns: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
      
-    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+    if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
     try: await select_date(ctx)
 
     except Exception as ex:
@@ -319,7 +345,10 @@ async def select_category(ctx, date):
     - None
     """
 
-    spend_categories = user_list[CHANNEL_ID].spend_categories
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
+    spend_categories = user_list[user_key].spend_categories
     select_options = [discord.SelectOption(label=category) for category in spend_categories]
     select = Select(placeholder="Select a category", max_values=1,min_values=1, options=select_options)
     
@@ -353,6 +382,10 @@ async def post_category_selection(ctx, date_to_add,category):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         selected_category = category
         
@@ -379,20 +412,23 @@ async def post_amount_input(ctx, amount_entered,selected_category,date_to_add):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
    
     try:
-        amount_value = user_list[CHANNEL_ID].validate_entered_amount(amount_entered)  # validate
+        amount_value = user_list[user_key].validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  raise Exception("Spent amount has to be a non-zero number.") # cannot be $0 spending
 
         category_str, amount_str = (selected_category,format(amount_value, ".2f"))
-        user_list[CHANNEL_ID].add_transaction(date_to_add, selected_category, amount_value, CHANNEL_ID)
-        total_value = user_list[CHANNEL_ID].monthly_total()
+        user_list[user_key].add_transaction(date_to_add, selected_category, amount_value, user_key)
+        total_value = user_list[user_key].monthly_total()
         add_message = f"The following expenditure has been recorded: You have spent ${amount_str} for {category_str} on {date_to_add}"
 
-        if user_list[CHANNEL_ID].monthly_budget > 0:
-            if total_value > user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have gone over the monthly budget*")
-            elif total_value == user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have exhausted your monthly budget. You can check/download history*")
-            elif total_value >= 0.8 * user_list[CHANNEL_ID].monthly_budget: await ctx.send("*You have used 80% of the monthly budget*")
+        if user_list[user_key].monthly_budget > 0:
+            if total_value > user_list[user_key].monthly_budget: await ctx.send("*You have gone over the monthly budget*")
+            elif total_value == user_list[user_key].monthly_budget: await ctx.send("*You have exhausted your monthly budget. You can check/download history*")
+            elif total_value >= 0.8 * user_list[user_key].monthly_budget: await ctx.send("*You have used 80% of the monthly budget*")
 
         await ctx.send(add_message)
     except Exception as ex:
@@ -411,11 +447,14 @@ async def delete(ctx):
     - None
     """
 
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     dateFormat = "%m-%d-%Y"
     monthFormat = "%m-%Y"
     try:
-        if (CHANNEL_ID in user_list
-            and user_list[CHANNEL_ID].get_number_of_transactions() != 0):
+        if (user_key in user_list
+            and user_list[user_key].get_number_of_transactions() != 0):
             
             curr_day = datetime.now()
             prompt_message = "Enter the day, month, or All\n"
@@ -445,6 +484,9 @@ async def process_delete_argument(ctx, delete_type):
     - None
     """
 
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     dateFormat = "%m-%d-%Y"
     monthFormat = "%m-%Y"
     text = delete_type #delete_type
@@ -453,20 +495,20 @@ async def process_delete_argument(ctx, delete_type):
     if text.lower() == "all": date = "all"
     else:
         # try and parse as Date-Month-Year
-        if user_list[CHANNEL_ID].validate_date_format(text, dateFormat) is not None: date = user_list[CHANNEL_ID].validate_date_format(text, dateFormat)
+        if user_list[user_key].validate_date_format(text, dateFormat) is not None: date = user_list[user_key].validate_date_format(text, dateFormat)
         # try and parse as Month-Year
-        elif user_list[CHANNEL_ID].validate_date_format(text, monthFormat) is not None:
-            date = user_list[CHANNEL_ID].validate_date_format(text, monthFormat)
+        elif user_list[user_key].validate_date_format(text, monthFormat) is not None:
+            date = user_list[user_key].validate_date_format(text, monthFormat)
             is_month = True
 
     if date is None: await ctx.send("error parsing text")
     else:
         # get the records either by given day, month, or all records
-        records_to_delete = user_list[CHANNEL_ID].get_records_by_date(date, is_month)
+        records_to_delete = user_list[user_key].get_records_by_date(date, is_month)
         # if none of the records match that day
         if len(records_to_delete) == 0: await ctx.send(f"No transactions within {text}")
         response_str = "Confirm records to delete\n"
-        response_str += user_list[CHANNEL_ID].display_transaction(records_to_delete)
+        response_str += user_list[user_key].display_transaction(records_to_delete)
         await ctx.send(response_str)
         response_str = "\nEnter Yes or No"
         await ctx.send(response_str)
@@ -487,9 +529,12 @@ async def handle_confirmation(ctx, message, records_to_delete):
     - None
     """
 
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     if message.lower() == "yes":
-        user_list[CHANNEL_ID].deleteHistory(records_to_delete)
-        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        user_list[user_key].deleteHistory(records_to_delete)
+        user_list[user_key].save_user(user_key)
         await ctx.send("Successfully deleted records")
     else: await ctx.send("No records deleted")
 
@@ -504,15 +549,19 @@ async def history(ctx):
     :type: object
     :return: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         count = 0
         table = [["Category", "Date", "Amount in $"]]
 
-        if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+        if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
 
-        if not user_list[CHANNEL_ID].transactions: raise Exception("Sorry! No spending records found!")
+        if not user_list[user_key].transactions: raise Exception("Sorry! No spending records found!")
 
-        for category, transactions in user_list[CHANNEL_ID].transactions.items():
+        for category, transactions in user_list[user_key].transactions.items():
             for transaction in transactions:
                 count += 1
                 date = transaction["Date"].strftime("%m-%d-%y")
@@ -539,8 +588,11 @@ async def edit(ctx):
     :return: None
     """
 
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
-        if CHANNEL_ID in list(user_list.keys()):
+        if user_key in list(user_list.keys()):
             await ctx.send("Please enter the date of transaction to edit(in mm-dd-yyyy format)")
             date = await bot.wait_for('message', check=lambda message: message.author == ctx.author, timeout=60.0)
 
@@ -580,9 +632,13 @@ async def edit_list2(ctx,date,category,value):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         dateFormat = "%m-%d-%Y"
-        info_date = user_list[CHANNEL_ID].validate_date_format(date, dateFormat)
+        info_date = user_list[user_key].validate_date_format(date, dateFormat)
         info_category = category
         info_value = value
 
@@ -596,10 +652,10 @@ async def edit_list2(ctx,date,category,value):
             await asyncio.sleep(0.5)
             await edit3(ctx, select.values[0])
 
-        for transaction in user_list[CHANNEL_ID].transactions[info_category]:
+        for transaction in user_list[user_key].transactions[info_category]:
             if transaction["Date"].date() == info_date:
                 if transaction["Value"] == float(info_value):
-                    user_list[CHANNEL_ID].store_edit_transaction(transaction, info_category)
+                    user_list[user_key].store_edit_transaction(transaction, info_category)
                     select.callback = my_callback
                     view = View(timeout=90)
                     view.add_item(select)
@@ -621,6 +677,10 @@ async def edit3(ctx,choice):
     :param choice: The user's choice for editing ("Date," "Category," or "Cost").
     :return: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     choice1 = choice
     if choice1 == "Date":
         await ctx.send ("Please enter the new date (in mm-dd-yyyy format)")
@@ -655,13 +715,17 @@ async def edit_date(ctx, message):
     :param message: The user's message containing the new date.
     :return: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     new_date = message.content
     user_date = datetime.strptime(new_date, "%m-%d-%Y")
     if user_date is None:
         await ctx.send ("The date is incorrect")
         return
-    updated_transaction = user_list[CHANNEL_ID].edit_transaction_date(user_date)
-    user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+    updated_transaction = user_list[user_key].edit_transaction_date(user_date)
+    user_list[user_key].save_user(user_key)
     await ctx.send(("Date is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f"))))
 
 
@@ -673,9 +737,13 @@ async def edit_cat(ctx,new_category):
     :param new_category: The new category chosen by the user.
     :return: None
     """
-    updated_transaction = user_list[CHANNEL_ID].edit_transaction_category(new_category)
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
+    updated_transaction = user_list[user_key].edit_transaction_category(new_category)
     if updated_transaction:
-        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
+        user_list[user_key].save_user(user_key)
         await ctx.send("Category has been edited.")
     else: await ctx.send("Category has not been edited successfully")
 
@@ -688,12 +756,16 @@ async def edit_cost(ctx,message):
     :param message: The user's message containing the new cost.
     :return: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     new_cost = message.content
 
-    new_cost = user_list[CHANNEL_ID].validate_entered_amount(new_cost)
+    new_cost = user_list[user_key].validate_entered_amount(new_cost)
     if new_cost != 0:
-        user_list[CHANNEL_ID].save_user(CHANNEL_ID)
-        updated_transaction = user_list[CHANNEL_ID].edit_transaction_value(new_cost)
+        user_list[user_key].save_user(user_key)
+        updated_transaction = user_list[user_key].edit_transaction_value(new_cost)
         await ctx.send("Value is updated. Here is the new transaction. \n Date {}. Value {}. \n".format(updated_transaction["Date"].strftime("%m-%d-%Y %H:%M:%S"),format(updated_transaction["Value"], ".2f")))
 
     else:
@@ -715,6 +787,10 @@ async def chart(ctx):
     :type: object
     :return: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         dateFormat = "%m-%d-%Y"
         curr_day = datetime.now()
@@ -735,7 +811,7 @@ async def chart(ctx):
         start_date_dt = datetime.strptime(start_date_str, "%m-%d-%Y")
         end_date_dt = datetime.strptime(end_date_str, "%m-%d-%Y")
 
-        chart_file = user_list[CHANNEL_ID].create_chart(CHANNEL_ID, start_date_dt, end_date_dt)
+        chart_file = user_list[user_key].create_chart(user_key, start_date_dt, end_date_dt)
         for cf in chart_file:
             with open(cf, "rb") as f:
                 file = discord.File(f)
@@ -756,6 +832,10 @@ async def download(ctx):
     :return: None
 
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
 
         count, table = get_history_csv()
@@ -786,6 +866,10 @@ async def sendEmail(ctx):
     :type: object
     :return: None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
 
         count, table = get_history_csv()
@@ -869,11 +953,11 @@ def get_history_csv():
     count = 0
     table = [["Category", "Date", "Amount in $"]]
 
-    if CHANNEL_ID not in list(user_list.keys()) or (len(user_list[CHANNEL_ID].transactions) == 0):
+    if user_key not in list(user_list.keys()) or (len(user_list[user_key].transactions) == 0):
         return 0, []
         
-    for category in user_list[CHANNEL_ID].transactions.keys():
-        for transaction in user_list[CHANNEL_ID].transactions[category]:
+    for category in user_list[user_key].transactions.keys():
+        for transaction in user_list[user_key].transactions[category]:
             count += 1
             date = transaction["Date"].strftime("%m/%d/%y")
             value = format(transaction["Value"], ".2f")
@@ -915,6 +999,10 @@ async def add_category(ctx):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         # user_id = ctx.author.id
         # channel_id = ctx.channel.id
@@ -923,7 +1011,7 @@ async def add_category(ctx):
         # if CHANNEL_ID not in user_list:
         #     user_list[CHANNEL_ID] = User()
 
-        spend_categories = user_list[CHANNEL_ID].spend_categories
+        spend_categories = user_list[user_key].spend_categories
 
         await ctx.send("Please enter the name of the new category:")
         category_name = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
@@ -952,13 +1040,17 @@ async def delete_category(ctx):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         # Assuming user_list is a dictionary containing user-specific data
-        if CHANNEL_ID not in user_list:
+        if user_key not in user_list:
             await ctx.send("User data not found. Please add a category before attempting to delete.")
             return
 
-        spend_categories = user_list[CHANNEL_ID].spend_categories
+        spend_categories = user_list[user_key].spend_categories
 
         if not spend_categories:
             await ctx.send("No categories found. Please add a category before attempting to delete.")
@@ -993,13 +1085,17 @@ async def display_categories(ctx):
     Returns:
     - None
     """
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
     try:
         # Assuming user_list is a dictionary containing user-specific data
-        if CHANNEL_ID not in user_list:
+        if user_key not in user_list:
             await ctx.send("User data not found. Please add a category before attempting to display.")
             return
 
-        spend_categories = user_list[CHANNEL_ID].spend_categories
+        spend_categories = user_list[user_key].spend_categories
 
         if not spend_categories:
             await ctx.send("No categories found. Please add a category before attempting to display.")
@@ -1014,7 +1110,11 @@ async def display_categories(ctx):
 
 @bot.command()
 async def prompt(ctx):
-    if CHANNEL_ID not in user_list.keys(): user_list[CHANNEL_ID] = User(CHANNEL_ID)
+
+    current_user = ctx.message.author.id
+    user_key = str(CHANNEL_ID) + "_" + str(current_user)
+
+    if user_key not in user_list.keys(): user_list[user_key] = User(user_key)
     await ctx.send("Enter the transaction details please")
     
     def check(msg): return msg.author == ctx.author and msg.channel == ctx.channel
