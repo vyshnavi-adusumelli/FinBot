@@ -84,6 +84,9 @@ async def menu(ctx):
     em.add_field(name="**#edit**", value="Edit/Change spending details", inline=False)
     em.add_field(name="**#budget**", value="Set budget for the month", inline=False)
     em.add_field(name="**#chart**", value="See your expenditure in different charts", inline=False)
+    em.add_field(name="**#add_category**", value="Add a new category", inline=False)
+    em.add_field(name="**#delete_category**", value="delete a category", inline=False)
+    em.add_field(name="**#display_categories**", value="display categories", inline=False)
     
     await ctx.send(embed=em)
 
@@ -747,7 +750,114 @@ def get_users():
                 with open(abspath, "rb") as f: users[u] = pickle.load(f)
 
     return users
+  
+@bot.command()
+async def add_category(ctx):
+    """
+    Function to add a new spending category to the user's list.
 
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # user_id = ctx.author.id
+        # channel_id = ctx.channel.id
+
+        # # Assuming user_list is a dictionary containing user-specific data
+        # if CHANNEL_ID not in user_list:
+        #     user_list[CHANNEL_ID] = User()
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        await ctx.send("Please enter the name of the new category:")
+        category_name = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+        # Check if the category already exists
+        if category_name.content.lower() in [category.lower() for category in spend_categories]:
+            await ctx.send("Category already exists. Please choose a different name.")
+            return
+
+        # Add the new category
+        spend_categories.append(category_name.content)
+        await ctx.send(f"Category '{category_name.content}' added successfully!")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def delete_category(ctx):
+    """
+    Function to delete an existing spending category from the user's list.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # Assuming user_list is a dictionary containing user-specific data
+        if CHANNEL_ID not in user_list:
+            await ctx.send("User data not found. Please add a category before attempting to delete.")
+            return
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        if not spend_categories:
+            await ctx.send("No categories found. Please add a category before attempting to delete.")
+            return
+
+        # Display the current categories for the user to choose from
+        category_options = '\n'.join([f"{index + 1}. {category}" for index, category in enumerate(spend_categories)])
+        await ctx.send(f"Current categories:\n{category_options}\n\nPlease enter the number of the category you want to delete:")
+
+        # Wait for the user's response
+        category_number = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+        try:
+            category_index = int(category_number.content) - 1
+            deleted_category = spend_categories.pop(category_index)
+            await ctx.send(f"Category '{deleted_category}' deleted successfully!")
+        except (ValueError, IndexError):
+            await ctx.send("Invalid input. Please enter a valid category number.")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
+
+@bot.command()
+async def display_categories(ctx):
+    """
+    Function to display all spending categories for the user.
+
+    Parameters:
+    - ctx (discord.ext.commands.Context): The Discord context window.
+
+    Returns:
+    - None
+    """
+    try:
+        # Assuming user_list is a dictionary containing user-specific data
+        if CHANNEL_ID not in user_list:
+            await ctx.send("User data not found. Please add a category before attempting to display.")
+            return
+
+        spend_categories = user_list[CHANNEL_ID].spend_categories
+
+        if not spend_categories:
+            await ctx.send("No categories found. Please add a category before attempting to display.")
+            return
+
+        category_list = "\n".join(spend_categories)
+        await ctx.send(f"Current categories:\n{category_list}")
+
+    except Exception as ex:
+        print(str(ex), exc_info=True)
+        await ctx.send("Request cannot be processed. Please try again with correct format!")
 
 @bot.command()
 async def prompt(ctx):
