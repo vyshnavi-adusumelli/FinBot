@@ -62,14 +62,14 @@ With simple commands, this bot allows you to:
 
 A detailed explanation can be found on : https://github.com/Vishnu-ve56/SE-Fall23-Group9/blob/main/proj3/README.md
 
-The aim of the project was to move all telegram features to discord and have them up and running. We also added new features which improved the software engineering aspects of thep project whilst also delivering impactful value to the users. 
+The aim of the project was to move all telegram features to discord and have them up and running. We also added new features which improved the software engineering aspects of the project whilst also delivering impactful value to the users. 
 
-- **Add Category Feature:**
-- **Delete Category Feature:**
-- **List Categories Feature:**
-- **Download expenses:**
-- **Send Email with expenses:**
-- **OpenAI Integration:**
+- **Add Category Feature**
+- **Delete Category Feature**
+- **List Categories Feature**
+- **Download expenses**
+- **Send Email with expenses**
+- **OpenAI Integration**
 - **Improved UI**
 
 # :star: What's New? (Project 2)
