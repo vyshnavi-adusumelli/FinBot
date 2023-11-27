@@ -30,7 +30,8 @@ And the best part? FinBot is your multi-platform financial sidekick, available o
 
 ## Demo Video
 
-https://www.youtube.com/watch?v=LkZGFGU5B6I
+Latest Version as of Project 3, 2023, Team 9:
+https://www.youtube.com/watch?v=X3ZyGA6PUtM
 
 ## :money_with_wings: About FinBot
 
@@ -57,7 +58,22 @@ With simple commands, this bot allows you to:
 
 📈 **Visualize your spending:** Numbers can be daunting, but FinBot transforms them into a captivating visual experience. Use the '/chart' option to see your spending as graphs and pie charts. This punchline to your story helps you spot trends and make smarter financial choices.
 
-# :star: What's New?
+# :star: What's New? (Project 3)
+
+A detailed explanation can be found on : https://github.com/Vishnu-ve56/SE-Fall23-Group9/blob/main/proj3/README.md
+
+The aim of the project was to move all telegram features to discord and have them up and running. We also added new features which improved the software engineering aspects of the project whilst also delivering impactful value to the users. 
+
+- **Add Category Feature**
+- **Delete Category Feature**
+- **List Categories Feature**
+- **Download expenses**
+- **Send Email with expenses**
+- **OpenAI Integration**
+- **Shared Expenses**
+- **Improved UI**
+
+# :star: What's New? (Project 2)
 
 - **Multi-Platform Functionality:** With our latest update, FinBot is no longer limited to Telegram; we've extended its capabilities to Discord as well, providing you with a seamless multi-platform experience.
 - **Unified User Experience:** Whether you prefer Telegram or Discord, you can now enjoy the same user-friendly experience for recording your daily expenses, managing your budget, and more.
@@ -141,6 +157,9 @@ With simple commands, this bot allows you to:
 # :information_desk_person: Use cases
 
 ## Discord
+
+Mentioned below are features implemented as a part of project 2. For the latest additions and features (Project 3, 2023), please visit:
+[https://github.com/Vishnu-ve56/SE-Fall23-Group9/blob/main/proj3/README.md]
 
 ### Menu
 View all the commands Finbot offers to manage your expenses
@@ -287,6 +306,9 @@ Some possible future enhancements are as follows:
 3.	Convert into a Dockerized application.
 4.	Calender widget for discord Bot.
 
+# Project 3 Accomplishments
+
+The above inmprovements mentioned were all incorporated into the latest version of the project. Instead of dockerisation, we implemented the integration feature with OpenAI. 
 
 :heart: Acknowledgements
 ---
@@ -298,7 +320,7 @@ We would like to thank Dr. Timothy Menzies for helping us understand the process
 This project is licensed under the terms of the MIT license. Please check [LICENSE](https://github.com/vyshnavi-adusumelli/FinBot/blob/main/LICENSE) for more details.
 
 
-:sparkles: Contributors
+:sparkles: Contributors (Project 2)
 ---
 
 <table>
@@ -310,8 +332,14 @@ This project is licensed under the terms of the MIT license. Please check [LICEN
   </tr>
 </table>
 
+::sparkles: Contributors (Project 3)
+---
 
+- Vishnu Vinod Erapalli [@Vishnu-ve56](https://github.com/vishnu-ve56/)
+- Akhil Namboodiri [@akhil-here](https://github.com/akhil-here)
+- Achintya Prathikantam [@achintya05](https://github.com/achintya05)
+- Sukhad Joshi [@sukhadj](https://github.com/sukhadj)
 
 # :calling: Support
 
-For any support, email us at vadusum@ncsu.edu
+For any support, email us at sjoshi32@ncsu.edu, verapal@ncsu.edu
