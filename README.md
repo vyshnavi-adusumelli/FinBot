@@ -70,6 +70,7 @@ The aim of the project was to move all telegram features to discord and have the
 - **Download expenses**
 - **Send Email with expenses**
 - **OpenAI Integration**
+- **Shared Expenses**
 - **Improved UI**
 
 # :star: What's New? (Project 2)
